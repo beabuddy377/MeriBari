@@ -195,35 +195,13 @@ header{
   margin-top:2px;
 }
 
-.headerBtns{
+ .headerBtns{
   display:flex;
   align-items:center;
   gap:8px;
   margin-left:auto;
 }
 
-.headerNav{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  margin-left:auto;
-  margin-right:12px;
-}
-
-.navBtn{
-  background:#f8fafc;
-  color:var(--muted);
-  border:1px solid transparent;
-  padding:10px 15px;
-  border-radius:10px;
-  font-weight:800;
-}
-
-.navBtn.active{
-  background:var(--blue-soft);
-  color:var(--blue-dark);
-  border-color:#dbeafe;
-}
 
 .breakBtn{
   background:var(--orange-soft);
@@ -232,17 +210,9 @@ header{
 }
 
 .breakBtn.onBreak{
-  background:var(--red-soft);
-  color:var(--red);
-  border-color:#fecaca;
-}
-
-.allPatientsPage{
-  padding-bottom:20px;
-}
-
-.allPatientsTableCard{
-  overflow:hidden;
+  background:var(--green-soft);
+  color:var(--green);
+  border-color:#bbf7d0;
 }
 
 .allPatientsControls{
@@ -252,75 +222,14 @@ header{
   margin-bottom:16px;
 }
 
-.patientsTableWrap{
-  width:100%;
-  overflow-x:auto;
-}
-
-.patientsTable{
-  width:100%;
-  min-width:1280px;
-  border-collapse:collapse;
-  font-size:13px;
-}
-
-.patientsTable th{
-  background:#f8fafc;
-  color:#667085;
-  font-size:12px;
-  font-weight:850;
-  text-transform:uppercase;
-  white-space:nowrap;
-  padding:13px 12px;
-  text-align:left;
-  border-bottom:1px solid var(--line);
-}
-
-.patientsTable td{
-  padding:15px 12px;
-  border-bottom:1px solid #f0f2f5;
-  vertical-align:middle;
-  white-space:nowrap;
-}
-
-.patientsTable tbody tr:hover{
-  background:#fafcff;
-}
-
-.patientNoCell{
-  color:var(--blue);
-  font-weight:900;
-}
-
-.patientNameCell{
-  font-weight:800;
-}
-
-.refundStatus{
-  color:var(--red);
-  font-weight:750;
-}
-
-.noRefund{
-  color:var(--muted);
+.allPatientsControls input,
+.allPatientsControls select{
+  min-width:0;
 }
 
 @media(max-width:760px){
-  .headerNav{
-    order:3;
-    width:100%;
-    margin:0;
-    justify-content:center;
-    padding:4px 0 8px;
-  }
-
   .allPatientsControls{
     grid-template-columns:1fr;
-  }
-
-  .navBtn{
-    padding:8px 11px;
-    font-size:12px;
   }
 }
 
@@ -1036,6 +945,123 @@ select:focus{
 
 .modalFooter button{
   flex:1;
+}
+
+/* ALL PATIENTS PAGE */
+
+.headerNav{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-left:auto;
+  margin-right:12px;
+}
+
+.navBtn{
+  background:#f8fafc;
+  color:var(--muted);
+  border:1px solid transparent;
+  padding:10px 15px;
+  border-radius:10px;
+  font-weight:800;
+}
+
+.navBtn:hover{
+  background:var(--blue-soft);
+  color:var(--blue-dark);
+}
+
+.navBtn.active{
+  background:var(--blue-soft);
+  color:var(--blue-dark);
+  border-color:#dbeafe;
+}
+
+.allPatientsPage{
+  padding-bottom:20px;
+}
+
+.allPatientsTableCard{
+  overflow:hidden;
+}
+
+.patientsTableWrap{
+  width:100%;
+  overflow-x:auto;
+  margin-top:14px;
+}
+
+.patientsTable{
+  width:100%;
+  min-width:1200px;
+  border-collapse:collapse;
+  font-size:13px;
+}
+
+.patientsTable th{
+  background:#f8fafc;
+  color:#667085;
+  font-size:12px;
+  font-weight:850;
+  text-transform:uppercase;
+  white-space:nowrap;
+  padding:13px 12px;
+  text-align:left;
+  border-bottom:1px solid var(--line);
+}
+
+.patientsTable td{
+  padding:15px 12px;
+  border-bottom:1px solid #f0f2f5;
+  vertical-align:middle;
+  white-space:nowrap;
+}
+
+.patientsTable tbody tr:hover{
+  background:#fafcff;
+}
+
+.patientNoCell{
+  color:var(--blue);
+  font-weight:900;
+}
+
+.patientNameCell{
+  font-weight:800;
+}
+
+.refundStatus{
+  color:var(--red);
+  font-weight:750;
+}
+
+.noRefund{
+  color:var(--muted);
+}
+
+@media(max-width:760px){
+  .headerNav{
+    order:3;
+    width:100%;
+    margin:0;
+    justify-content:center;
+    padding:4px 0 8px;
+  }
+
+  header{
+    flex-wrap:wrap;
+    padding-top:8px;
+    padding-bottom:8px;
+  }
+
+  .headerBtns{
+    margin-left:auto;
+  }
+
+  .navBtn{
+    padding:8px 11px;
+    font-size:12px;
+  }
 }
 
 /* MOBILE STICKY ACTION */
@@ -2016,6 +2042,7 @@ let doctorData = null;
 let tokenAppointmentId = null;
 
 let currentView = "dashboard";
+
 let allPatientsDate = "";
 let allPatientsSearch = "";
 let allPatientsSort = "asc";
@@ -3398,7 +3425,7 @@ async function refundPatient(
 
 
 /* =========================================================
-   QUEUE BREAK
+   QUEUE BREAK + ALL PATIENTS PAGE / SPA VIEW
 ========================================================= */
 
 function updateBreakButton(){
@@ -3423,7 +3450,9 @@ function updateBreakButton(){
 
 async function toggleBreak(){
 
-  if(!fb.ready || !myDoctorId) return;
+  if(!fb.ready || !myDoctorId){
+    return;
+  }
 
   const isBreak =
     (queueLive.status || "OPEN") === "BREAK";
@@ -3455,10 +3484,6 @@ async function toggleBreak(){
 }
 
 
-/* =========================================================
-   ALL PATIENTS PAGE / SPA VIEW
-========================================================= */
-
 function getTodayInputValue(){
 
   const d = new Date();
@@ -3476,7 +3501,9 @@ function getTodayInputValue(){
 
 function getPatientDateKey(ts){
 
-  if(!ts || !ts.seconds) return "";
+  if(!ts || !ts.seconds){
+    return "";
+  }
 
   const d =
     new Date(ts.seconds * 1000);
@@ -3505,7 +3532,9 @@ function setAllPatientsDate(value){
 function setAllPatientsSearch(value){
 
   allPatientsSearch =
-    String(value || "").trim().toLowerCase();
+    String(value || "")
+      .trim()
+      .toLowerCase();
 
   renderAllPatientsPage();
 
@@ -3515,7 +3544,9 @@ function setAllPatientsSearch(value){
 function setAllPatientsSort(value){
 
   allPatientsSort =
-    value === "desc" ? "desc" : "asc";
+    value === "desc"
+      ? "desc"
+      : "asc";
 
   renderAllPatientsPage();
 
@@ -3524,7 +3555,7 @@ function setAllPatientsSort(value){
 
 function getFilteredAllPatients(){
 
-  const date =
+  const selectedDate =
     allPatientsDate ||
     getTodayInputValue();
 
@@ -3534,20 +3565,28 @@ function getFilteredAllPatients(){
   const list =
     allPatients.filter(a => {
 
-      if(getPatientDateKey(a.createdAt) !== date){
+      if(
+        getPatientDateKey(a.createdAt) !==
+        selectedDate
+      ){
         return false;
       }
 
-      if(!search) return true;
+      if(!search){
+        return true;
+      }
 
       const name =
-        String(a.patientName || "").toLowerCase();
+        String(a.patientName || "")
+          .toLowerCase();
 
       const mobile =
-        String(a.patientMobile || "").toLowerCase();
+        String(a.patientMobile || "")
+          .toLowerCase();
 
       const token =
-        String(a.tokenNumber ?? "").toLowerCase();
+        String(a.tokenNumber ?? "")
+          .toLowerCase();
 
       return (
         name.includes(search) ||
@@ -3589,26 +3628,19 @@ function showView(view){
   const page =
     document.getElementById("allPatientsPage");
 
-  document
-    .getElementById("dashboardTab")
-    .classList
-    .toggle(
-      "active",
-      currentView === "dashboard"
-    );
+  const dashboardTab =
+    document.getElementById("dashboardTab");
 
-  document
-    .getElementById("allPatientsTab")
-    .classList
-    .toggle(
-      "active",
-      currentView === "allPatients"
-    );
+  const allPatientsTab =
+    document.getElementById("allPatientsTab");
 
-  if(currentView === "allPatients"){
+  if(view === "allPatients"){
 
     app.classList.add("hidden");
     page.classList.remove("hidden");
+
+    dashboardTab.classList.remove("active");
+    allPatientsTab.classList.add("active");
 
     if(!allPatientsDate){
       allPatientsDate =
@@ -3622,7 +3654,8 @@ function showView(view){
     app.classList.remove("hidden");
     page.classList.add("hidden");
 
-    render();
+    dashboardTab.classList.add("active");
+    allPatientsTab.classList.remove("active");
 
   }
 
@@ -3678,7 +3711,7 @@ function renderAllPatientsPage(){
         <input
           type="search"
           value="${esc(allPatientsSearch)}"
-          placeholder="Search Name, Token Number, Mobile Number..."
+          placeholder="Search Name, Token, Mobile..."
           oninput="setAllPatientsSearch(this.value)"
         >
 
@@ -3718,6 +3751,7 @@ function renderAllPatientsPage(){
             <thead>
 
               <tr>
+
                 <th>S.No. / Patient No.</th>
                 <th>Patient Name</th>
                 <th>Age & Gender</th>
@@ -3728,9 +3762,11 @@ function renderAllPatientsPage(){
                 <th>Amount Paid</th>
                 <th>Refund Status</th>
                 <th>Mobile No.</th>
+
               </tr>
 
             </thead>
+
 
             <tbody>
 
@@ -3851,9 +3887,13 @@ function renderAllPatientsPage(){
         `
         <div class="emptyState">
 
-          <div class="emptyIcon">ðŸ—‚ï¸</div>
+          <div class="emptyIcon">
+            ðŸ—‚ï¸
+          </div>
 
-          <div>No patients found for this date</div>
+          <div>
+            No patients found for this date
+          </div>
 
           <div class="small">
             Change the date, search text, or sorting order.
@@ -3884,6 +3924,7 @@ function updateMobileAction(){
 
   if(
     !myDoctorId ||
+    currentView === "allPatients" ||
     document
       .getElementById("mainScreen")
       .classList
@@ -4031,7 +4072,9 @@ function render(){
 
           <div class="queueSideValue">
             ${esc(
-              queueLive.status || "OPEN"
+              queueLive.status === "BREAK"
+                ? "DOCTOR ON BREAK"
+                : (queueLive.status || "OPEN")
             )}
           </div>
 
@@ -4564,6 +4607,63 @@ function render(){
     </div>
 
 
+    <!-- ALL PATIENTS â€” DETAILED LIST -->
+
+    <div class="card">
+
+      <div class="sectionHead">
+        <div class="sectionHeadLeft">
+          <h3>All Patients</h3>
+          <span class="countBadge">${allPatients.length}</span>
+        </div>
+      </div>
+
+      ${
+        allPatients.length
+        ?
+        `
+        <div class="patientList">
+          ${allPatients.map(a => `
+            <div class="patientCard">
+              <div>
+                <div class="patientName">
+                  ${esc(a.patientName)}
+                  ${a.tokenNumber ? ` <span class="small">â€¢ Token #${a.tokenNumber}</span>` : ""}
+                </div>
+                <div class="patientMeta">
+                  <span>${a.patientAge ? a.patientAge+" yrs" : "Age N/A"}</span>
+                  <span>â€¢</span>
+                  <span class="tag ${a.source==='walk_in'?'warning':'blueTag'}">${a.source==='walk_in'?'OFFLINE':'ONLINE'}</span>
+                  <span>â€¢</span>
+                  <span class="tag ${a.status==='completed'?'':a.status==='cancelled'||a.status==='no_show'?'redTag':'warning'}">${esc(a.status)}</span>
+                  ${a.refunded ? `<span class="tag redTag">Refunded â‚¹${a.refundAmount}</span>` : ""}
+                </div>
+                <div class="patientComplaint">
+                  ${a.complaint ? esc(a.complaint) : "No complaint provided"}
+                  ${a.patientMobile ? ` â€¢ ${esc(a.patientMobile)}` : ""}
+                </div>
+                <div class="small" style="margin-top:6px">
+                  ${fmtDate(a.createdAt)}
+                  ${a.amountPaid ? ` â€¢ â‚¹${a.amountPaid}${a.paymentMethod?" ("+esc(a.paymentMethod.toUpperCase())+")":""}` : ""}
+                </div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+        `
+        :
+        `
+        <div class="emptyState">
+          <div class="emptyIcon">ðŸ—‚ï¸</div>
+          <div>No patients yet</div>
+          <div class="small">Every booking â€” online or walk-in â€” will show up here.</div>
+        </div>
+        `
+      }
+
+    </div>
+
+
     <!-- REFUND -->
 
     <div class="card">
@@ -4709,6 +4809,13 @@ function render(){
 
 
   if(currentView === "allPatients"){
+
+    renderAllPatientsPage();
+
+  }
+
+
+  if(currentView === "allPatients"){
     renderAllPatientsPage();
   }
 
@@ -4728,4 +4835,4 @@ updateBreakButton();
 </script>
 
 </body>
-  </html>
+        </html>
