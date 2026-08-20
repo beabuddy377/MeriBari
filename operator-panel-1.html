@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MeriBari â€” Doctor's Panel</title>
+<title>MeriBari — Doctor's Panel</title>
 
 <style>
 :root{
@@ -195,42 +195,10 @@ header{
   margin-top:2px;
 }
 
- .headerBtns{
+.headerBtns{
   display:flex;
   align-items:center;
   gap:8px;
-  margin-left:auto;
-}
-
-
-.breakBtn{
-  background:var(--orange-soft);
-  color:var(--orange);
-  border:1px solid #fed7aa;
-}
-
-.breakBtn.onBreak{
-  background:var(--green-soft);
-  color:var(--green);
-  border-color:#bbf7d0;
-}
-
-.allPatientsControls{
-  display:grid;
-  grid-template-columns:180px 1fr 230px;
-  gap:10px;
-  margin-bottom:16px;
-}
-
-.allPatientsControls input,
-.allPatientsControls select{
-  min-width:0;
-}
-
-@media(max-width:760px){
-  .allPatientsControls{
-    grid-template-columns:1fr;
-  }
 }
 
 /* CONNECTION */
@@ -947,123 +915,6 @@ select:focus{
   flex:1;
 }
 
-/* ALL PATIENTS PAGE */
-
-.headerNav{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  margin-left:auto;
-  margin-right:12px;
-}
-
-.navBtn{
-  background:#f8fafc;
-  color:var(--muted);
-  border:1px solid transparent;
-  padding:10px 15px;
-  border-radius:10px;
-  font-weight:800;
-}
-
-.navBtn:hover{
-  background:var(--blue-soft);
-  color:var(--blue-dark);
-}
-
-.navBtn.active{
-  background:var(--blue-soft);
-  color:var(--blue-dark);
-  border-color:#dbeafe;
-}
-
-.allPatientsPage{
-  padding-bottom:20px;
-}
-
-.allPatientsTableCard{
-  overflow:hidden;
-}
-
-.patientsTableWrap{
-  width:100%;
-  overflow-x:auto;
-  margin-top:14px;
-}
-
-.patientsTable{
-  width:100%;
-  min-width:1200px;
-  border-collapse:collapse;
-  font-size:13px;
-}
-
-.patientsTable th{
-  background:#f8fafc;
-  color:#667085;
-  font-size:12px;
-  font-weight:850;
-  text-transform:uppercase;
-  white-space:nowrap;
-  padding:13px 12px;
-  text-align:left;
-  border-bottom:1px solid var(--line);
-}
-
-.patientsTable td{
-  padding:15px 12px;
-  border-bottom:1px solid #f0f2f5;
-  vertical-align:middle;
-  white-space:nowrap;
-}
-
-.patientsTable tbody tr:hover{
-  background:#fafcff;
-}
-
-.patientNoCell{
-  color:var(--blue);
-  font-weight:900;
-}
-
-.patientNameCell{
-  font-weight:800;
-}
-
-.refundStatus{
-  color:var(--red);
-  font-weight:750;
-}
-
-.noRefund{
-  color:var(--muted);
-}
-
-@media(max-width:760px){
-  .headerNav{
-    order:3;
-    width:100%;
-    margin:0;
-    justify-content:center;
-    padding:4px 0 8px;
-  }
-
-  header{
-    flex-wrap:wrap;
-    padding-top:8px;
-    padding-bottom:8px;
-  }
-
-  .headerBtns{
-    margin-left:auto;
-  }
-
-  .navBtn{
-    padding:8px 11px;
-    font-size:12px;
-  }
-}
-
 /* MOBILE STICKY ACTION */
 
 .mobileAction{
@@ -1257,7 +1108,7 @@ select:focus{
     id="connbar"
     class="connbar hidden"
   >
-    âš  Firebase not configured yet.
+    ⚠ Firebase not configured yet.
   </div>
 
 
@@ -1299,7 +1150,7 @@ select:focus{
     <input
       id="loginPass"
       type="password"
-      placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+      placeholder="••••••••"
     >
 
     <button
@@ -1435,12 +1286,12 @@ select:focus{
         <label>Working Hours</label>
         <input
           id="pfHours"
-          placeholder="10 AM â€“ 2 PM"
+          placeholder="10 AM – 2 PM"
         >
       </div>
 
       <div>
-        <label>Consultation Fee (â‚¹)</label>
+        <label>Consultation Fee (₹)</label>
         <input
           id="pfFee"
           type="number"
@@ -1459,7 +1310,7 @@ select:focus{
       style="width:100%"
       onclick="createDoctorProfile()"
     >
-      Create Profile & Start â†’
+      Create Profile & Start →
     </button>
 
     <div
@@ -1521,35 +1372,13 @@ select:focus{
       </div>
 
 
-      <div class="headerNav">
-
-        <button
-          id="dashboardTab"
-          class="navBtn active"
-          onclick="showView('dashboard')"
-        >
-          Dashboard
-        </button>
-
-        <button
-          id="allPatientsTab"
-          class="navBtn"
-          onclick="showView('allPatients')"
-        >
-          All Patients
-        </button>
-
-      </div>
-
-
       <div class="headerBtns">
 
         <button
-          id="breakBtn"
-          class="breakBtn"
-          onclick="toggleBreak()"
+          class="primary"
+          onclick="callNext()"
         >
-          â˜• 5 Min Break
+          Call Next →
         </button>
 
         <button
@@ -1565,11 +1394,6 @@ select:focus{
 
 
     <div id="app"></div>
-
-    <div
-      id="allPatientsPage"
-      class="allPatientsPage hidden"
-    ></div>
 
   </div>
 
@@ -1597,7 +1421,7 @@ select:focus{
     class="primary"
     onclick="callNext()"
   >
-    Call Next â†’
+    Call Next →
   </button>
 
 </div>
@@ -1626,7 +1450,7 @@ select:focus{
         class="closeBtn"
         onclick="closeTokenModal()"
       >
-        âœ•
+        ✕
       </button>
 
     </div>
@@ -1727,7 +1551,7 @@ select:focus{
 
     <div class="modalHeader">
       <div class="modalTitle">Edit Doctor Profile</div>
-      <button class="closeBtn" onclick="closeEditProfileModal()">âœ•</button>
+      <button class="closeBtn" onclick="closeEditProfileModal()">✕</button>
     </div>
 
     <div class="modalBody">
@@ -1772,11 +1596,11 @@ select:focus{
 
         <div>
           <label>Working Hours</label>
-          <input id="epHours" placeholder="10 AM â€“ 2 PM">
+          <input id="epHours" placeholder="10 AM – 2 PM">
         </div>
 
         <div>
-          <label>Consultation Fee (â‚¹)</label>
+          <label>Consultation Fee (₹)</label>
           <input id="epFee" type="number" placeholder="500">
         </div>
 
@@ -2040,12 +1864,6 @@ let allPatients = [];
 let doctorData = null;
 
 let tokenAppointmentId = null;
-
-let currentView = "dashboard";
-
-let allPatientsDate = "";
-let allPatientsSearch = "";
-let allPatientsSort = "asc";
 
 
 /* =========================================================
@@ -2550,7 +2368,6 @@ function listenAll(){
             };
 
 
-      updateBreakButton();
       updateMobileAction();
 
       render();
@@ -2588,7 +2405,7 @@ function listenAll(){
     });
 
 
-  /* All patients â€” full history, for the detailed list */
+  /* All patients — full history, for the detailed list */
 
   fb.db
     .collection("appointments")
@@ -2685,7 +2502,7 @@ function esc(x){
 function fmtDate(ts){
   if(!ts || !ts.seconds) return "-";
   const d = new Date(ts.seconds*1000);
-  return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}) + " â€¢ " + d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+  return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}) + " • " + d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
 }
 
 function nextTokenNumber(){
@@ -2733,7 +2550,7 @@ function openTokenModal(
     .getElementById("modalPatientMeta")
     .textContent =
       patientAge
-        ? `Online booking â€¢ ${patientAge} years`
+        ? `Online booking • ${patientAge} years`
         : "Online booking";
 
 
@@ -2888,15 +2705,6 @@ async function confirmTokenAssignment(){
 ========================================================= */
 
 async function callNext(){
-
-  if(
-    (queueLive.status || "OPEN") === "BREAK"
-  ){
-
-    alert("Doctor is currently on break.");
-
-    return;
-  }
 
   if(!fb.ready){
 
@@ -3342,7 +3150,7 @@ async function refundPatient(
 
   const input =
     prompt(
-      `Refund amount for ${patientName}\n\nAmount paid: â‚¹${amountPaid}`,
+      `Refund amount for ${patientName}\n\nAmount paid: ₹${amountPaid}`,
       amountPaid
     );
 
@@ -3425,492 +3233,6 @@ async function refundPatient(
 
 
 /* =========================================================
-   QUEUE BREAK + ALL PATIENTS PAGE / SPA VIEW
-========================================================= */
-
-function updateBreakButton(){
-
-  const btn =
-    document.getElementById("breakBtn");
-
-  if(!btn) return;
-
-  const isBreak =
-    (queueLive.status || "OPEN") === "BREAK";
-
-  btn.classList.toggle("onBreak",isBreak);
-
-  btn.textContent =
-    isBreak
-      ? "â–¶ Resume Queue"
-      : "â˜• 5 Min Break";
-
-}
-
-
-async function toggleBreak(){
-
-  if(!fb.ready || !myDoctorId){
-    return;
-  }
-
-  const isBreak =
-    (queueLive.status || "OPEN") === "BREAK";
-
-  try{
-
-    await fb.db
-      .collection("queue")
-      .doc(myDoctorId)
-      .set({
-        status:isBreak ? "OPEN" : "BREAK",
-        lastUpdated:
-          firebase.firestore.FieldValue.serverTimestamp()
-      },{
-        merge:true
-      });
-
-  }catch(e){
-
-    console.error(e);
-
-    alert(
-      "Unable to update queue status: " +
-      e.message
-    );
-
-  }
-
-}
-
-
-function getTodayInputValue(){
-
-  const d = new Date();
-
-  return (
-    d.getFullYear() +
-    "-" +
-    String(d.getMonth()+1).padStart(2,"0") +
-    "-" +
-    String(d.getDate()).padStart(2,"0")
-  );
-
-}
-
-
-function getPatientDateKey(ts){
-
-  if(!ts || !ts.seconds){
-    return "";
-  }
-
-  const d =
-    new Date(ts.seconds * 1000);
-
-  return (
-    d.getFullYear() +
-    "-" +
-    String(d.getMonth()+1).padStart(2,"0") +
-    "-" +
-    String(d.getDate()).padStart(2,"0")
-  );
-
-}
-
-
-function setAllPatientsDate(value){
-
-  allPatientsDate =
-    value || getTodayInputValue();
-
-  renderAllPatientsPage();
-
-}
-
-
-function setAllPatientsSearch(value){
-
-  allPatientsSearch =
-    String(value || "")
-      .trim()
-      .toLowerCase();
-
-  renderAllPatientsPage();
-
-}
-
-
-function setAllPatientsSort(value){
-
-  allPatientsSort =
-    value === "desc"
-      ? "desc"
-      : "asc";
-
-  renderAllPatientsPage();
-
-}
-
-
-function getFilteredAllPatients(){
-
-  const selectedDate =
-    allPatientsDate ||
-    getTodayInputValue();
-
-  const search =
-    allPatientsSearch;
-
-  const list =
-    allPatients.filter(a => {
-
-      if(
-        getPatientDateKey(a.createdAt) !==
-        selectedDate
-      ){
-        return false;
-      }
-
-      if(!search){
-        return true;
-      }
-
-      const name =
-        String(a.patientName || "")
-          .toLowerCase();
-
-      const mobile =
-        String(a.patientMobile || "")
-          .toLowerCase();
-
-      const token =
-        String(a.tokenNumber ?? "")
-          .toLowerCase();
-
-      return (
-        name.includes(search) ||
-        mobile.includes(search) ||
-        token.includes(search)
-      );
-
-    });
-
-  list.sort((a,b) => {
-
-    const A =
-      Number(a.tokenNumber) || 0;
-
-    const B =
-      Number(b.tokenNumber) || 0;
-
-    return allPatientsSort === "desc"
-      ? B - A
-      : A - B;
-
-  });
-
-  return list;
-
-}
-
-
-function showView(view){
-
-  currentView =
-    view === "allPatients"
-      ? "allPatients"
-      : "dashboard";
-
-  const app =
-    document.getElementById("app");
-
-  const page =
-    document.getElementById("allPatientsPage");
-
-  const dashboardTab =
-    document.getElementById("dashboardTab");
-
-  const allPatientsTab =
-    document.getElementById("allPatientsTab");
-
-  if(view === "allPatients"){
-
-    app.classList.add("hidden");
-    page.classList.remove("hidden");
-
-    dashboardTab.classList.remove("active");
-    allPatientsTab.classList.add("active");
-
-    if(!allPatientsDate){
-      allPatientsDate =
-        getTodayInputValue();
-    }
-
-    renderAllPatientsPage();
-
-  }else{
-
-    app.classList.remove("hidden");
-    page.classList.add("hidden");
-
-    dashboardTab.classList.add("active");
-    allPatientsTab.classList.remove("active");
-
-  }
-
-  updateMobileAction();
-
-}
-
-
-function renderAllPatientsPage(){
-
-  const page =
-    document.getElementById("allPatientsPage");
-
-  if(!page) return;
-
-  if(!allPatientsDate){
-    allPatientsDate =
-      getTodayInputValue();
-  }
-
-  const list =
-    getFilteredAllPatients();
-
-  page.innerHTML = `
-
-    <div class="card allPatientsTableCard">
-
-      <div class="sectionHead">
-
-        <div class="sectionHeadLeft">
-
-          <h3>
-            All Patients List
-          </h3>
-
-          <span class="countBadge">
-            ${list.length}
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <div class="allPatientsControls">
-
-        <input
-          type="date"
-          value="${allPatientsDate}"
-          onchange="setAllPatientsDate(this.value)"
-        >
-
-        <input
-          type="search"
-          value="${esc(allPatientsSearch)}"
-          placeholder="Search Name, Token, Mobile..."
-          oninput="setAllPatientsSearch(this.value)"
-        >
-
-        <select
-          onchange="setAllPatientsSort(this.value)"
-        >
-
-          <option
-            value="asc"
-            ${allPatientsSort === "asc" ? "selected" : ""}
-          >
-            Token #1 â†’ #N (Puraana Pehle)
-          </option>
-
-          <option
-            value="desc"
-            ${allPatientsSort === "desc" ? "selected" : ""}
-          >
-            Token #N â†’ #1 (Naya Pehle)
-          </option>
-
-        </select>
-
-      </div>
-
-
-      ${
-        list.length
-
-        ?
-
-        `
-        <div class="patientsTableWrap">
-
-          <table class="patientsTable">
-
-            <thead>
-
-              <tr>
-
-                <th>S.No. / Patient No.</th>
-                <th>Patient Name</th>
-                <th>Age & Gender</th>
-                <th>Complaint</th>
-                <th>Booking Time</th>
-                <th>Booking Source</th>
-                <th>Payment</th>
-                <th>Amount Paid</th>
-                <th>Refund Status</th>
-                <th>Mobile No.</th>
-
-              </tr>
-
-            </thead>
-
-
-            <tbody>
-
-              ${list.map(a => {
-
-                const token =
-                  Number(a.tokenNumber);
-
-                const patientNo =
-                  token > 0
-                    ? "#" + token
-                    : "#â€”";
-
-                const age =
-                  a.patientAge
-                    ? a.patientAge + " Yrs"
-                    : "N/A";
-
-                const gender =
-                  a.patientGender ||
-                  a.gender ||
-                  "Unspecified";
-
-                const source =
-                  a.source === "walk_in"
-                    ? "Walk-in"
-                    : "Online";
-
-                const payment =
-                  a.paymentMethod
-                    ? String(a.paymentMethod).toUpperCase()
-                    : "N/A";
-
-                const refund =
-                  a.refunded
-                    ? "Refunded (â‚¹" +
-                      (a.refundAmount || 0) +
-                      ")"
-                    : "N/A";
-
-                return `
-
-                  <tr>
-
-                    <td class="patientNoCell">
-                      ${patientNo}
-                    </td>
-
-                    <td class="patientNameCell">
-                      ${esc(a.patientName || "N/A")}
-                    </td>
-
-                    <td>
-                      ${esc(age)} / ${esc(gender)}
-                    </td>
-
-                    <td>
-                      ${
-                        a.complaint
-                          ? esc(a.complaint)
-                          : "No complaint provided"
-                      }
-                    </td>
-
-                    <td>
-                      ${fmtDate(a.createdAt)}
-                    </td>
-
-                    <td>
-                      <span class="tag ${
-                        a.source === "walk_in"
-                          ? "warning"
-                          : "blueTag"
-                      }">
-                        ${source}
-                      </span>
-                    </td>
-
-                    <td>
-                      ${esc(payment)}
-                    </td>
-
-                    <td>
-                      â‚¹${a.amountPaid || 0}
-                    </td>
-
-                    <td class="${
-                      a.refunded
-                        ? "refundStatus"
-                        : "noRefund"
-                    }">
-                      ${refund}
-                    </td>
-
-                    <td>
-                      ${
-                        a.patientMobile
-                          ? esc(a.patientMobile)
-                          : "N/A"
-                      }
-                    </td>
-
-                  </tr>
-
-                `;
-
-              }).join("")}
-
-            </tbody>
-
-          </table>
-
-        </div>
-        `
-
-        :
-
-        `
-        <div class="emptyState">
-
-          <div class="emptyIcon">
-            ðŸ—‚ï¸
-          </div>
-
-          <div>
-            No patients found for this date
-          </div>
-
-          <div class="small">
-            Change the date, search text, or sorting order.
-          </div>
-
-        </div>
-        `
-      }
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
    MOBILE
 ========================================================= */
 
@@ -3924,7 +3246,6 @@ function updateMobileAction(){
 
   if(
     !myDoctorId ||
-    currentView === "allPatients" ||
     document
       .getElementById("mainScreen")
       .classList
@@ -3981,8 +3302,8 @@ function render(){
       }
       <div style="flex:1;min-width:180px">
         <div style="font-weight:900;font-size:16px">${esc(doctorData?.name||"Doctor")}</div>
-        <div class="small">${esc(doctorData?.specialty||"")} â€¢ ${esc(doctorData?.clinicName||"")}</div>
-        <div class="small">Consultation Fee: â‚¹${doctorData?.consultationFee||0} â€¢ ${esc(doctorData?.workingHours||"Hours not set")}</div>
+        <div class="small">${esc(doctorData?.specialty||"")} • ${esc(doctorData?.clinicName||"")}</div>
+        <div class="small">Consultation Fee: ₹${doctorData?.consultationFee||0} • ${esc(doctorData?.workingHours||"Hours not set")}</div>
       </div>
       <button class="outline" onclick="openEditProfileModal()">Edit Profile</button>
     </div>
@@ -4054,7 +3375,7 @@ function render(){
             class="primary nextBtn"
             onclick="callNext()"
           >
-            Call Next â†’
+            Call Next →
           </button>
 
         </div>
@@ -4072,9 +3393,7 @@ function render(){
 
           <div class="queueSideValue">
             ${esc(
-              queueLive.status === "BREAK"
-                ? "DOCTOR ON BREAK"
-                : (queueLive.status || "OPEN")
+              queueLive.status || "OPEN"
             )}
           </div>
 
@@ -4109,7 +3428,7 @@ function render(){
           Waiting
 
           <span class="kpiIcon">
-            ðŸ‘¥
+            👥
           </span>
 
         </div>
@@ -4128,7 +3447,7 @@ function render(){
           Current
 
           <span class="kpiIcon">
-            ðŸ©º
+            🩺
           </span>
 
         </div>
@@ -4147,7 +3466,7 @@ function render(){
           Requests
 
           <span class="kpiIcon">
-            ðŸ“‹
+            📋
           </span>
 
         </div>
@@ -4170,7 +3489,7 @@ function render(){
         <div class="sectionHeadLeft">
 
           <h3>
-            âž• Add Walk-in Patient
+            ➕ Add Walk-in Patient
           </h3>
 
           <span class="tag warning">
@@ -4271,7 +3590,7 @@ function render(){
           <input
             id="wiAmount"
             type="number"
-            placeholder="â‚¹ Amount"
+            placeholder="₹ Amount"
           >
 
         </div>
@@ -4290,7 +3609,7 @@ function render(){
             class="primary"
             onclick="addWalkIn()"
           >
-            Add Patient â†’
+            Add Patient →
           </button>
 
         </div>
@@ -4350,16 +3669,16 @@ function render(){
                     }
                   </span>
 
-                  <span>â€¢</span>
+                  <span>•</span>
 
                   <span class="tag blueTag">
                     ONLINE
                   </span>
 
-                  <span>â€¢</span>
+                  <span>•</span>
 
                   <span>
-                    â‚¹${p.amountPaid || 0}
+                    ₹${p.amountPaid || 0}
                   </span>
 
                 </div>
@@ -4408,7 +3727,7 @@ function render(){
         <div class="emptyState">
 
           <div class="emptyIcon">
-            ðŸ“‹
+            📋
           </div>
 
           <div>
@@ -4544,7 +3863,7 @@ function render(){
 
                     `
                     <span class="tag redTag">
-                      Refunded â‚¹${a.refundAmount}
+                      Refunded ₹${a.refundAmount}
                     </span>
                     `
 
@@ -4555,7 +3874,7 @@ function render(){
                     ?
 
                     `
-                    â‚¹${a.amountPaid}
+                    ₹${a.amountPaid}
 
                     ${
                       a.paymentMethod
@@ -4589,7 +3908,7 @@ function render(){
         <div class="emptyState">
 
           <div class="emptyIcon">
-            ðŸŽ«
+            🎫
           </div>
 
           <div>
@@ -4607,7 +3926,7 @@ function render(){
     </div>
 
 
-    <!-- ALL PATIENTS â€” DETAILED LIST -->
+    <!-- ALL PATIENTS — DETAILED LIST -->
 
     <div class="card">
 
@@ -4628,23 +3947,23 @@ function render(){
               <div>
                 <div class="patientName">
                   ${esc(a.patientName)}
-                  ${a.tokenNumber ? ` <span class="small">â€¢ Token #${a.tokenNumber}</span>` : ""}
+                  ${a.tokenNumber ? ` <span class="small">• Token #${a.tokenNumber}</span>` : ""}
                 </div>
                 <div class="patientMeta">
                   <span>${a.patientAge ? a.patientAge+" yrs" : "Age N/A"}</span>
-                  <span>â€¢</span>
+                  <span>•</span>
                   <span class="tag ${a.source==='walk_in'?'warning':'blueTag'}">${a.source==='walk_in'?'OFFLINE':'ONLINE'}</span>
-                  <span>â€¢</span>
+                  <span>•</span>
                   <span class="tag ${a.status==='completed'?'':a.status==='cancelled'||a.status==='no_show'?'redTag':'warning'}">${esc(a.status)}</span>
-                  ${a.refunded ? `<span class="tag redTag">Refunded â‚¹${a.refundAmount}</span>` : ""}
+                  ${a.refunded ? `<span class="tag redTag">Refunded ₹${a.refundAmount}</span>` : ""}
                 </div>
                 <div class="patientComplaint">
                   ${a.complaint ? esc(a.complaint) : "No complaint provided"}
-                  ${a.patientMobile ? ` â€¢ ${esc(a.patientMobile)}` : ""}
+                  ${a.patientMobile ? ` • ${esc(a.patientMobile)}` : ""}
                 </div>
                 <div class="small" style="margin-top:6px">
                   ${fmtDate(a.createdAt)}
-                  ${a.amountPaid ? ` â€¢ â‚¹${a.amountPaid}${a.paymentMethod?" ("+esc(a.paymentMethod.toUpperCase())+")":""}` : ""}
+                  ${a.amountPaid ? ` • ₹${a.amountPaid}${a.paymentMethod?" ("+esc(a.paymentMethod.toUpperCase())+")":""}` : ""}
                 </div>
               </div>
             </div>
@@ -4654,9 +3973,9 @@ function render(){
         :
         `
         <div class="emptyState">
-          <div class="emptyIcon">ðŸ—‚ï¸</div>
+          <div class="emptyIcon">🗂️</div>
           <div>No patients yet</div>
-          <div class="small">Every booking â€” online or walk-in â€” will show up here.</div>
+          <div class="small">Every booking — online or walk-in — will show up here.</div>
         </div>
         `
       }
@@ -4671,7 +3990,7 @@ function render(){
       <div class="sectionHead">
 
         <h3>
-          ðŸ’° Refund Patient
+          💰 Refund Patient
         </h3>
 
       </div>
@@ -4732,7 +4051,7 @@ function render(){
 
                   ${
                     a.tokenNumber
-                      ? ` â€¢ Token #${a.tokenNumber}`
+                      ? ` • Token #${a.tokenNumber}`
                       : ""
                   }
 
@@ -4742,7 +4061,7 @@ function render(){
 
 
               <div>
-                â‚¹${a.amountPaid || 0}
+                ₹${a.amountPaid || 0}
               </div>
 
 
@@ -4755,7 +4074,7 @@ function render(){
 
                     `
                     <span class="tag redTag">
-                      Refunded â‚¹${a.refundAmount}
+                      Refunded ₹${a.refundAmount}
                     </span>
                     `
 
@@ -4808,18 +4127,6 @@ function render(){
   `;
 
 
-  if(currentView === "allPatients"){
-
-    renderAllPatientsPage();
-
-  }
-
-
-  if(currentView === "allPatients"){
-    renderAllPatientsPage();
-  }
-
-  updateBreakButton();
   updateMobileAction();
 
 }
@@ -4830,9 +4137,8 @@ function render(){
 ========================================================= */
 
 render();
-updateBreakButton();
 
 </script>
 
 </body>
-        </html>
+  </html>
