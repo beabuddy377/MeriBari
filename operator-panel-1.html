@@ -199,6 +199,129 @@ header{
   display:flex;
   align-items:center;
   gap:8px;
+  margin-left:auto;
+}
+
+.headerNav{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-left:auto;
+  margin-right:12px;
+}
+
+.navBtn{
+  background:#f8fafc;
+  color:var(--muted);
+  border:1px solid transparent;
+  padding:10px 15px;
+  border-radius:10px;
+  font-weight:800;
+}
+
+.navBtn.active{
+  background:var(--blue-soft);
+  color:var(--blue-dark);
+  border-color:#dbeafe;
+}
+
+.breakBtn{
+  background:var(--orange-soft);
+  color:var(--orange);
+  border:1px solid #fed7aa;
+}
+
+.breakBtn.onBreak{
+  background:var(--red-soft);
+  color:var(--red);
+  border-color:#fecaca;
+}
+
+.allPatientsPage{
+  padding-bottom:20px;
+}
+
+.allPatientsTableCard{
+  overflow:hidden;
+}
+
+.allPatientsControls{
+  display:grid;
+  grid-template-columns:180px 1fr 230px;
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.patientsTableWrap{
+  width:100%;
+  overflow-x:auto;
+}
+
+.patientsTable{
+  width:100%;
+  min-width:1280px;
+  border-collapse:collapse;
+  font-size:13px;
+}
+
+.patientsTable th{
+  background:#f8fafc;
+  color:#667085;
+  font-size:12px;
+  font-weight:850;
+  text-transform:uppercase;
+  white-space:nowrap;
+  padding:13px 12px;
+  text-align:left;
+  border-bottom:1px solid var(--line);
+}
+
+.patientsTable td{
+  padding:15px 12px;
+  border-bottom:1px solid #f0f2f5;
+  vertical-align:middle;
+  white-space:nowrap;
+}
+
+.patientsTable tbody tr:hover{
+  background:#fafcff;
+}
+
+.patientNoCell{
+  color:var(--blue);
+  font-weight:900;
+}
+
+.patientNameCell{
+  font-weight:800;
+}
+
+.refundStatus{
+  color:var(--red);
+  font-weight:750;
+}
+
+.noRefund{
+  color:var(--muted);
+}
+
+@media(max-width:760px){
+  .headerNav{
+    order:3;
+    width:100%;
+    margin:0;
+    justify-content:center;
+    padding:4px 0 8px;
+  }
+
+  .allPatientsControls{
+    grid-template-columns:1fr;
+  }
+
+  .navBtn{
+    padding:8px 11px;
+    font-size:12px;
+  }
 }
 
 /* CONNECTION */
@@ -915,123 +1038,6 @@ select:focus{
   flex:1;
 }
 
-/* ALL PATIENTS PAGE */
-
-.headerNav{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  margin-left:auto;
-  margin-right:12px;
-}
-
-.navBtn{
-  background:#f8fafc;
-  color:var(--muted);
-  border:1px solid transparent;
-  padding:10px 15px;
-  border-radius:10px;
-  font-weight:800;
-}
-
-.navBtn:hover{
-  background:var(--blue-soft);
-  color:var(--blue-dark);
-}
-
-.navBtn.active{
-  background:var(--blue-soft);
-  color:var(--blue-dark);
-  border-color:#dbeafe;
-}
-
-.allPatientsPage{
-  padding-bottom:20px;
-}
-
-.allPatientsTableCard{
-  overflow:hidden;
-}
-
-.patientsTableWrap{
-  width:100%;
-  overflow-x:auto;
-  margin-top:14px;
-}
-
-.patientsTable{
-  width:100%;
-  min-width:1200px;
-  border-collapse:collapse;
-  font-size:13px;
-}
-
-.patientsTable th{
-  background:#f8fafc;
-  color:#667085;
-  font-size:12px;
-  font-weight:850;
-  text-transform:uppercase;
-  white-space:nowrap;
-  padding:13px 12px;
-  text-align:left;
-  border-bottom:1px solid var(--line);
-}
-
-.patientsTable td{
-  padding:15px 12px;
-  border-bottom:1px solid #f0f2f5;
-  vertical-align:middle;
-  white-space:nowrap;
-}
-
-.patientsTable tbody tr:hover{
-  background:#fafcff;
-}
-
-.patientNoCell{
-  color:var(--blue);
-  font-weight:900;
-}
-
-.patientNameCell{
-  font-weight:800;
-}
-
-.refundStatus{
-  color:var(--red);
-  font-weight:750;
-}
-
-.noRefund{
-  color:var(--muted);
-}
-
-@media(max-width:760px){
-  .headerNav{
-    order:3;
-    width:100%;
-    margin:0;
-    justify-content:center;
-    padding:4px 0 8px;
-  }
-
-  header{
-    flex-wrap:wrap;
-    padding-top:8px;
-    padding-bottom:8px;
-  }
-
-  .headerBtns{
-    margin-left:auto;
-  }
-
-  .navBtn{
-    padding:8px 11px;
-    font-size:12px;
-  }
-}
-
 /* MOBILE STICKY ACTION */
 
 .mobileAction{
@@ -1513,10 +1519,11 @@ select:focus{
       <div class="headerBtns">
 
         <button
-          class="primary"
-          onclick="callNext()"
+          id="breakBtn"
+          class="breakBtn"
+          onclick="toggleBreak()"
         >
-          Call Next →
+          ☕ 5 Min Break
         </button>
 
         <button
@@ -2009,6 +2016,9 @@ let doctorData = null;
 let tokenAppointmentId = null;
 
 let currentView = "dashboard";
+let allPatientsDate = "";
+let allPatientsSearch = "";
+let allPatientsSort = "asc";
 
 
 /* =========================================================
@@ -2513,6 +2523,7 @@ function listenAll(){
             };
 
 
+      updateBreakButton();
       updateMobileAction();
 
       render();
@@ -2805,7 +2816,7 @@ async function confirmTokenAssignment(){
   if(duplicate){
 
     error.textContent =
-      `Patient #${token} is already in the live queue.`;
+      `Token #${token} is already in the live queue.`;
 
     return;
 
@@ -2850,6 +2861,15 @@ async function confirmTokenAssignment(){
 ========================================================= */
 
 async function callNext(){
+
+  if(
+    (queueLive.status || "OPEN") === "BREAK"
+  ){
+
+    alert("Doctor is currently on break.");
+
+    return;
+  }
 
   if(!fb.ready){
 
@@ -2984,12 +3004,6 @@ async function addWalkIn(){
     ) || 0;
 
 
-  const gender =
-    document
-      .getElementById("wiGender")
-      .value;
-
-
   const mobile =
     document
       .getElementById("wiMobile")
@@ -3059,8 +3073,6 @@ async function addWalkIn(){
 
         patientAge:age,
 
-        patientGender:gender,
-
         patientMobile:mobile,
 
         complaint,
@@ -3102,11 +3114,6 @@ async function addWalkIn(){
 
     document
       .getElementById("wiAge")
-      .value = "";
-
-
-    document
-      .getElementById("wiGender")
       .value = "";
 
 
@@ -3158,7 +3165,7 @@ function askWalkInToken(
 
     const token =
       window.prompt(
-        `Patient number for ${name}\n\nSuggested: ${suggested}`,
+        `Token number for ${name}\n\nSuggested: ${suggested}`,
         suggested
       );
 
@@ -3182,7 +3189,7 @@ function askWalkInToken(
     ){
 
       alert(
-        "Enter a valid patient number."
+        "Enter a valid token number."
       );
 
       resolve(null);
@@ -3202,7 +3209,7 @@ function askWalkInToken(
     if(duplicate){
 
       alert(
-        `Patient #${parsed} is already in use.`
+        `Token #${parsed} is already in use.`
       );
 
       resolve(null);
@@ -3391,12 +3398,190 @@ async function refundPatient(
 
 
 /* =========================================================
+   QUEUE BREAK
+========================================================= */
+
+function updateBreakButton(){
+
+  const btn =
+    document.getElementById("breakBtn");
+
+  if(!btn) return;
+
+  const isBreak =
+    (queueLive.status || "OPEN") === "BREAK";
+
+  btn.classList.toggle("onBreak",isBreak);
+
+  btn.textContent =
+    isBreak
+      ? "▶ Resume Queue"
+      : "☕ 5 Min Break";
+
+}
+
+
+async function toggleBreak(){
+
+  if(!fb.ready || !myDoctorId) return;
+
+  const isBreak =
+    (queueLive.status || "OPEN") === "BREAK";
+
+  try{
+
+    await fb.db
+      .collection("queue")
+      .doc(myDoctorId)
+      .set({
+        status:isBreak ? "OPEN" : "BREAK",
+        lastUpdated:
+          firebase.firestore.FieldValue.serverTimestamp()
+      },{
+        merge:true
+      });
+
+  }catch(e){
+
+    console.error(e);
+
+    alert(
+      "Unable to update queue status: " +
+      e.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
    ALL PATIENTS PAGE / SPA VIEW
 ========================================================= */
 
+function getTodayInputValue(){
+
+  const d = new Date();
+
+  return (
+    d.getFullYear() +
+    "-" +
+    String(d.getMonth()+1).padStart(2,"0") +
+    "-" +
+    String(d.getDate()).padStart(2,"0")
+  );
+
+}
+
+
+function getPatientDateKey(ts){
+
+  if(!ts || !ts.seconds) return "";
+
+  const d =
+    new Date(ts.seconds * 1000);
+
+  return (
+    d.getFullYear() +
+    "-" +
+    String(d.getMonth()+1).padStart(2,"0") +
+    "-" +
+    String(d.getDate()).padStart(2,"0")
+  );
+
+}
+
+
+function setAllPatientsDate(value){
+
+  allPatientsDate =
+    value || getTodayInputValue();
+
+  renderAllPatientsPage();
+
+}
+
+
+function setAllPatientsSearch(value){
+
+  allPatientsSearch =
+    String(value || "").trim().toLowerCase();
+
+  renderAllPatientsPage();
+
+}
+
+
+function setAllPatientsSort(value){
+
+  allPatientsSort =
+    value === "desc" ? "desc" : "asc";
+
+  renderAllPatientsPage();
+
+}
+
+
+function getFilteredAllPatients(){
+
+  const date =
+    allPatientsDate ||
+    getTodayInputValue();
+
+  const search =
+    allPatientsSearch;
+
+  const list =
+    allPatients.filter(a => {
+
+      if(getPatientDateKey(a.createdAt) !== date){
+        return false;
+      }
+
+      if(!search) return true;
+
+      const name =
+        String(a.patientName || "").toLowerCase();
+
+      const mobile =
+        String(a.patientMobile || "").toLowerCase();
+
+      const token =
+        String(a.tokenNumber ?? "").toLowerCase();
+
+      return (
+        name.includes(search) ||
+        mobile.includes(search) ||
+        token.includes(search)
+      );
+
+    });
+
+  list.sort((a,b) => {
+
+    const A =
+      Number(a.tokenNumber) || 0;
+
+    const B =
+      Number(b.tokenNumber) || 0;
+
+    return allPatientsSort === "desc"
+      ? B - A
+      : A - B;
+
+  });
+
+  return list;
+
+}
+
+
 function showView(view){
 
-  currentView = view;
+  currentView =
+    view === "allPatients"
+      ? "allPatients"
+      : "dashboard";
 
   const app =
     document.getElementById("app");
@@ -3404,19 +3589,31 @@ function showView(view){
   const page =
     document.getElementById("allPatientsPage");
 
-  const dashboardTab =
-    document.getElementById("dashboardTab");
+  document
+    .getElementById("dashboardTab")
+    .classList
+    .toggle(
+      "active",
+      currentView === "dashboard"
+    );
 
-  const allPatientsTab =
-    document.getElementById("allPatientsTab");
+  document
+    .getElementById("allPatientsTab")
+    .classList
+    .toggle(
+      "active",
+      currentView === "allPatients"
+    );
 
-  if(view === "allPatients"){
+  if(currentView === "allPatients"){
 
     app.classList.add("hidden");
     page.classList.remove("hidden");
 
-    dashboardTab.classList.remove("active");
-    allPatientsTab.classList.add("active");
+    if(!allPatientsDate){
+      allPatientsDate =
+        getTodayInputValue();
+    }
 
     renderAllPatientsPage();
 
@@ -3425,8 +3622,7 @@ function showView(view){
     app.classList.remove("hidden");
     page.classList.add("hidden");
 
-    dashboardTab.classList.add("active");
-    allPatientsTab.classList.remove("active");
+    render();
 
   }
 
@@ -3442,6 +3638,13 @@ function renderAllPatientsPage(){
 
   if(!page) return;
 
+  if(!allPatientsDate){
+    allPatientsDate =
+      getTodayInputValue();
+  }
+
+  const list =
+    getFilteredAllPatients();
 
   page.innerHTML = `
 
@@ -3456,7 +3659,7 @@ function renderAllPatientsPage(){
           </h3>
 
           <span class="countBadge">
-            ${allPatients.length}
+            ${list.length}
           </span>
 
         </div>
@@ -3464,8 +3667,46 @@ function renderAllPatientsPage(){
       </div>
 
 
+      <div class="allPatientsControls">
+
+        <input
+          type="date"
+          value="${allPatientsDate}"
+          onchange="setAllPatientsDate(this.value)"
+        >
+
+        <input
+          type="search"
+          value="${esc(allPatientsSearch)}"
+          placeholder="Search Name, Token Number, Mobile Number..."
+          oninput="setAllPatientsSearch(this.value)"
+        >
+
+        <select
+          onchange="setAllPatientsSort(this.value)"
+        >
+
+          <option
+            value="asc"
+            ${allPatientsSort === "asc" ? "selected" : ""}
+          >
+            Token #1 → #N (Puraana Pehle)
+          </option>
+
+          <option
+            value="desc"
+            ${allPatientsSort === "desc" ? "selected" : ""}
+          >
+            Token #N → #1 (Naya Pehle)
+          </option>
+
+        </select>
+
+      </div>
+
+
       ${
-        allPatients.length
+        list.length
 
         ?
 
@@ -3477,7 +3718,6 @@ function renderAllPatientsPage(){
             <thead>
 
               <tr>
-
                 <th>S.No. / Patient No.</th>
                 <th>Patient Name</th>
                 <th>Age & Gender</th>
@@ -3488,18 +3728,21 @@ function renderAllPatientsPage(){
                 <th>Amount Paid</th>
                 <th>Refund Status</th>
                 <th>Mobile No.</th>
-
               </tr>
 
             </thead>
 
-
             <tbody>
 
-              ${allPatients.map((a,index) => {
+              ${list.map(a => {
+
+                const token =
+                  Number(a.tokenNumber);
 
                 const patientNo =
-                  String(index + 1).padStart(2,"0");
+                  token > 0
+                    ? "#" + token
+                    : "#—";
 
                 const age =
                   a.patientAge
@@ -3523,7 +3766,9 @@ function renderAllPatientsPage(){
 
                 const refund =
                   a.refunded
-                    ? `Refunded (₹${a.refundAmount || 0})`
+                    ? "Refunded (₹" +
+                      (a.refundAmount || 0) +
+                      ")"
                     : "N/A";
 
                 return `
@@ -3531,7 +3776,7 @@ function renderAllPatientsPage(){
                   <tr>
 
                     <td class="patientNoCell">
-                      #${patientNo}
+                      ${patientNo}
                     </td>
 
                     <td class="patientNameCell">
@@ -3608,10 +3853,10 @@ function renderAllPatientsPage(){
 
           <div class="emptyIcon">🗂️</div>
 
-          <div>No patients yet</div>
+          <div>No patients found for this date</div>
 
           <div class="small">
-            Every booking — online or walk-in — will appear here.
+            Change the date, search text, or sorting order.
           </div>
 
         </div>
@@ -3639,7 +3884,6 @@ function updateMobileAction(){
 
   if(
     !myDoctorId ||
-    currentView === "allPatients" ||
     document
       .getElementById("mainScreen")
       .classList
@@ -3724,7 +3968,7 @@ function render(){
 
 
         <h1 class="heroTitle">
-          Patient #${queueLive.currentToken || 0}
+          Token #${queueLive.currentToken || 0}
         </h1>
 
 
@@ -3797,7 +4041,7 @@ function render(){
         <div class="queueSideBox">
 
           <div class="queueSideLabel">
-            Next Suggested Patient No.
+            Next Suggested Token
           </div>
 
           <div class="queueSideValue">
@@ -3883,7 +4127,7 @@ function render(){
         <div class="sectionHeadLeft">
 
           <h3>
-            ➕ Add Offline Patient
+            ➕ Add Walk-in Patient
           </h3>
 
           <span class="tag warning">
@@ -3922,35 +4166,6 @@ function render(){
             type="number"
             placeholder="Age"
           >
-
-        </div>
-
-
-        <div>
-
-          <label class="formLabel">
-            Gender
-          </label>
-
-          <select id="wiGender">
-
-            <option value="">
-              Choose Gender
-            </option>
-
-            <option value="Male">
-              Male
-            </option>
-
-            <option value="Female">
-              Female
-            </option>
-
-            <option value="Other">
-              Other
-            </option>
-
-          </select>
 
         </div>
 
@@ -4022,7 +4237,7 @@ function render(){
         <div class="formBottom">
 
           <span class="small">
-            Suggested patient no.:
+            Suggested token:
             <b>
               #${nextTokenNumber()}
             </b>
@@ -4132,7 +4347,7 @@ function render(){
                     )
                   "
                 >
-                  Assign Patient #${nextTokenNumber()}
+                  Assign #${nextTokenNumber()}
                 </button>
 
               </div>
@@ -4349,63 +4564,6 @@ function render(){
     </div>
 
 
-    <!-- ALL PATIENTS — DETAILED LIST -->
-
-    <div class="card">
-
-      <div class="sectionHead">
-        <div class="sectionHeadLeft">
-          <h3>All Patients</h3>
-          <span class="countBadge">${allPatients.length}</span>
-        </div>
-      </div>
-
-      ${
-        allPatients.length
-        ?
-        `
-        <div class="patientList">
-          ${allPatients.map(a => `
-            <div class="patientCard">
-              <div>
-                <div class="patientName">
-                  ${esc(a.patientName)}
-                  ${a.tokenNumber ? ` <span class="small">• Patient #${a.tokenNumber}</span>` : ""}
-                </div>
-                <div class="patientMeta">
-                  <span>${a.patientAge ? a.patientAge+" yrs" : "Age N/A"}</span>
-                  <span>•</span>
-                  <span class="tag ${a.source==='walk_in'?'warning':'blueTag'}">${a.source==='walk_in'?'OFFLINE':'ONLINE'}</span>
-                  <span>•</span>
-                  <span class="tag ${a.status==='completed'?'':a.status==='cancelled'||a.status==='no_show'?'redTag':'warning'}">${esc(a.status)}</span>
-                  ${a.refunded ? `<span class="tag redTag">Refunded ₹${a.refundAmount}</span>` : ""}
-                </div>
-                <div class="patientComplaint">
-                  ${a.complaint ? esc(a.complaint) : "No complaint provided"}
-                  ${a.patientMobile ? ` • ${esc(a.patientMobile)}` : ""}
-                </div>
-                <div class="small" style="margin-top:6px">
-                  ${fmtDate(a.createdAt)}
-                  ${a.amountPaid ? ` • ₹${a.amountPaid}${a.paymentMethod?" ("+esc(a.paymentMethod.toUpperCase())+")":""}` : ""}
-                </div>
-              </div>
-            </div>
-          `).join("")}
-        </div>
-        `
-        :
-        `
-        <div class="emptyState">
-          <div class="emptyIcon">🗂️</div>
-          <div>No patients yet</div>
-          <div class="small">Every booking — online or walk-in — will show up here.</div>
-        </div>
-        `
-      }
-
-    </div>
-
-
     <!-- REFUND -->
 
     <div class="card">
@@ -4474,7 +4632,7 @@ function render(){
 
                   ${
                     a.tokenNumber
-                      ? ` • Patient #${a.tokenNumber}`
+                      ? ` • Token #${a.tokenNumber}`
                       : ""
                   }
 
@@ -4551,12 +4709,10 @@ function render(){
 
 
   if(currentView === "allPatients"){
-
     renderAllPatientsPage();
-
   }
 
-
+  updateBreakButton();
   updateMobileAction();
 
 }
@@ -4567,6 +4723,7 @@ function render(){
 ========================================================= */
 
 render();
+updateBreakButton();
 
 </script>
 
