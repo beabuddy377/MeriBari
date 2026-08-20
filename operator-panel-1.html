@@ -1228,6 +1228,12 @@ select:focus{
 
     <div class="profileGrid">
 
+      <div class="full" style="text-align:center">
+        <label>Profile Photo</label>
+        <img id="pfPhotoPreview" class="hidden" style="width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 10px;display:block">
+        <input id="pfPhoto" type="file" accept="image/*" onchange="previewPhoto('pfPhoto','pfPhotoPreview')">
+      </div>
+
       <div class="full">
         <label>Doctor Name</label>
         <input
@@ -1331,6 +1337,12 @@ select:focus{
         </div>
 
         <div class="doctorMini">
+
+          <img
+            id="doctorAvatarImg"
+            class="avatar hidden"
+            style="object-fit:cover"
+          >
 
           <div
             id="doctorAvatar"
@@ -1516,6 +1528,91 @@ select:focus{
         Confirm Token
       </button>
 
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- EDIT PROFILE MODAL -->
+
+<div
+  id="editProfileModal"
+  class="modalOverlay hidden"
+  onclick="closeEditProfileModal(event)"
+>
+
+  <div
+    class="modal"
+    style="max-width:520px"
+    onclick="event.stopPropagation()"
+  >
+
+    <div class="modalHeader">
+      <div class="modalTitle">Edit Doctor Profile</div>
+      <button class="closeBtn" onclick="closeEditProfileModal()">✕</button>
+    </div>
+
+    <div class="modalBody">
+
+      <div class="profileGrid">
+
+        <div class="full" style="text-align:center">
+          <label>Profile Photo</label>
+          <img id="epPhotoPreview" class="hidden" style="width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 10px;display:block">
+          <input id="epPhoto" type="file" accept="image/*" onchange="previewPhoto('epPhoto','epPhotoPreview')">
+        </div>
+
+        <div class="full">
+          <label>Doctor Name</label>
+          <input id="epName" placeholder="Dr. Full Name">
+        </div>
+
+        <div>
+          <label>Specialty</label>
+          <input id="epSpecialty" placeholder="e.g. Cardiologist">
+        </div>
+
+        <div>
+          <label>Experience</label>
+          <input id="epExp" placeholder="e.g. 10 Years">
+        </div>
+
+        <div class="full">
+          <label>Qualifications</label>
+          <input id="epQual" placeholder="MBBS, MD">
+        </div>
+
+        <div class="full">
+          <label>Clinic Name</label>
+          <input id="epClinic" placeholder="Clinic name">
+        </div>
+
+        <div class="full">
+          <label>Clinic Address</label>
+          <input id="epAddress" placeholder="Clinic address">
+        </div>
+
+        <div>
+          <label>Working Hours</label>
+          <input id="epHours" placeholder="10 AM – 2 PM">
+        </div>
+
+        <div>
+          <label>Consultation Fee (₹)</label>
+          <input id="epFee" type="number" placeholder="500">
+        </div>
+
+      </div>
+
+      <div id="editProfileErr" class="loginErr"></div>
+
+    </div>
+
+    <div class="modalFooter">
+      <button class="outline" onclick="closeEditProfileModal()">Cancel</button>
+      <button class="primary" onclick="saveEditProfile()">Save Changes</button>
     </div>
 
   </div>
@@ -1762,9 +1859,51 @@ let active = [];
 
 let refundResults = [];
 
+let allPatients = [];
+
 let doctorData = null;
 
 let tokenAppointmentId = null;
+
+
+/* =========================================================
+   PHOTO HELPERS
+   Photos are resized client-side and stored as a small base64
+   string directly on the doctor doc (no Firebase Storage needed).
+========================================================= */
+
+function previewPhoto(inputId, imgId){
+  const file = document.getElementById(inputId).files[0];
+  if(!file) return;
+  resizeImageToDataUrl(file, 200).then(dataUrl => {
+    const img = document.getElementById(imgId);
+    img.src = dataUrl;
+    img.classList.remove("hidden");
+    img.dataset.pendingPhoto = dataUrl;
+  });
+}
+
+function resizeImageToDataUrl(file, maxSize){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if(w > h){ if(w > maxSize){ h = Math.round(h*maxSize/w); w = maxSize; } }
+        else{ if(h > maxSize){ w = Math.round(w*maxSize/h); h = maxSize; } }
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL("image/jpeg", 0.75));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 
 /* =========================================================
@@ -1901,6 +2040,9 @@ async function createDoctorProfile(){
 
     emergencyNumber:
       "To be configured by Admin",
+
+    photoUrl:
+      document.getElementById("pfPhotoPreview").dataset.pendingPhoto || "",
 
     isActive:true,
 
@@ -2117,6 +2259,85 @@ function updateDoctorHeader(){
     .textContent =
       initials || "DR";
 
+
+  const imgEl = document.getElementById("doctorAvatarImg");
+  const initialsEl = document.getElementById("doctorAvatar");
+  if(doctorData.photoUrl){
+    imgEl.src = doctorData.photoUrl;
+    imgEl.classList.remove("hidden");
+    initialsEl.classList.add("hidden");
+  }else{
+    imgEl.classList.add("hidden");
+    initialsEl.classList.remove("hidden");
+  }
+
+}
+
+
+/* =========================================================
+   EDIT PROFILE MODAL
+========================================================= */
+
+function openEditProfileModal(){
+  if(!doctorData) return;
+  document.getElementById("epName").value = doctorData.name || "";
+  document.getElementById("epSpecialty").value = doctorData.specialty || "";
+  document.getElementById("epExp").value = doctorData.experience || "";
+  document.getElementById("epQual").value = (doctorData.qualifications||[]).join(", ");
+  document.getElementById("epClinic").value = doctorData.clinicName || "";
+  document.getElementById("epAddress").value = doctorData.clinicAddress || "";
+  document.getElementById("epHours").value = doctorData.workingHours || "";
+  document.getElementById("epFee").value = doctorData.consultationFee || "";
+  document.getElementById("epPhoto").value = "";
+  const preview = document.getElementById("epPhotoPreview");
+  if(doctorData.photoUrl){
+    preview.src = doctorData.photoUrl;
+    preview.classList.remove("hidden");
+    preview.dataset.pendingPhoto = doctorData.photoUrl;
+  }else{
+    preview.classList.add("hidden");
+    preview.dataset.pendingPhoto = "";
+  }
+  document.getElementById("editProfileErr").textContent = "";
+  document.getElementById("editProfileModal").classList.remove("hidden");
+}
+
+function closeEditProfileModal(event){
+  if(event && event.target !== event.currentTarget) return;
+  document.getElementById("editProfileModal").classList.add("hidden");
+}
+
+async function saveEditProfile(){
+  const errBox = document.getElementById("editProfileErr");
+  errBox.textContent = "";
+  const name = document.getElementById("epName").value.trim();
+  const fee = Number(document.getElementById("epFee").value);
+  if(!name || !fee){
+    errBox.textContent = "Doctor name and consultation fee are required.";
+    return;
+  }
+  const updates = {
+    name,
+    specialty: document.getElementById("epSpecialty").value.trim(),
+    experience: document.getElementById("epExp").value.trim(),
+    qualifications: document.getElementById("epQual").value.split(",").map(s=>s.trim()).filter(Boolean),
+    clinicName: document.getElementById("epClinic").value.trim(),
+    clinicAddress: document.getElementById("epAddress").value.trim(),
+    workingHours: document.getElementById("epHours").value.trim(),
+    consultationFee: fee,
+    photoUrl: document.getElementById("epPhotoPreview").dataset.pendingPhoto || "",
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  try{
+    await fb.db.collection("doctors").doc(myDoctorId).update(updates);
+    doctorData = { ...doctorData, ...updates };
+    updateDoctorHeader();
+    closeEditProfileModal();
+    render();
+  }catch(e){
+    console.error(e);
+    errBox.textContent = "Could not save changes: " + e.message;
+  }
 }
 
 
@@ -2177,6 +2398,37 @@ function listenAll(){
             ...d.data()
           })
         );
+
+
+      render();
+
+    });
+
+
+  /* All patients — full history, for the detailed list */
+
+  fb.db
+    .collection("appointments")
+    .where(
+      "doctorId",
+      "==",
+      myDoctorId
+    )
+    .onSnapshot(snap => {
+
+      allPatients =
+        snap.docs
+          .map(
+            d => ({
+              id:d.id,
+              ...d.data()
+            })
+          )
+          .sort(
+            (a,b) =>
+              (b.createdAt?.seconds || 0) -
+              (a.createdAt?.seconds || 0)
+          );
 
 
       render();
@@ -2246,6 +2498,12 @@ function esc(x){
 
 }
 
+
+function fmtDate(ts){
+  if(!ts || !ts.seconds) return "-";
+  const d = new Date(ts.seconds*1000);
+  return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}) + " • " + d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+}
 
 function nextTokenNumber(){
 
@@ -3035,6 +3293,21 @@ function render(){
     .getElementById("app")
     .innerHTML = `
 
+    <!-- DOCTOR PROFILE -->
+
+    <div class="card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      ${doctorData?.photoUrl
+        ? `<img src="${doctorData.photoUrl}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex:none">`
+        : `<div class="avatar" style="width:64px;height:64px;font-size:22px">${esc((doctorData?.name||"Dr").replace("Dr.","").trim().split(/\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"DR")}</div>`
+      }
+      <div style="flex:1;min-width:180px">
+        <div style="font-weight:900;font-size:16px">${esc(doctorData?.name||"Doctor")}</div>
+        <div class="small">${esc(doctorData?.specialty||"")} • ${esc(doctorData?.clinicName||"")}</div>
+        <div class="small">Consultation Fee: ₹${doctorData?.consultationFee||0} • ${esc(doctorData?.workingHours||"Hours not set")}</div>
+      </div>
+      <button class="outline" onclick="openEditProfileModal()">Edit Profile</button>
+    </div>
+
 
     <!-- QUEUE HERO -->
 
@@ -3646,6 +3919,63 @@ function render(){
             Add a walk-in or assign a token to an online booking.
           </div>
 
+        </div>
+        `
+      }
+
+    </div>
+
+
+    <!-- ALL PATIENTS — DETAILED LIST -->
+
+    <div class="card">
+
+      <div class="sectionHead">
+        <div class="sectionHeadLeft">
+          <h3>All Patients</h3>
+          <span class="countBadge">${allPatients.length}</span>
+        </div>
+      </div>
+
+      ${
+        allPatients.length
+        ?
+        `
+        <div class="patientList">
+          ${allPatients.map(a => `
+            <div class="patientCard">
+              <div>
+                <div class="patientName">
+                  ${esc(a.patientName)}
+                  ${a.tokenNumber ? ` <span class="small">• Token #${a.tokenNumber}</span>` : ""}
+                </div>
+                <div class="patientMeta">
+                  <span>${a.patientAge ? a.patientAge+" yrs" : "Age N/A"}</span>
+                  <span>•</span>
+                  <span class="tag ${a.source==='walk_in'?'warning':'blueTag'}">${a.source==='walk_in'?'OFFLINE':'ONLINE'}</span>
+                  <span>•</span>
+                  <span class="tag ${a.status==='completed'?'':a.status==='cancelled'||a.status==='no_show'?'redTag':'warning'}">${esc(a.status)}</span>
+                  ${a.refunded ? `<span class="tag redTag">Refunded ₹${a.refundAmount}</span>` : ""}
+                </div>
+                <div class="patientComplaint">
+                  ${a.complaint ? esc(a.complaint) : "No complaint provided"}
+                  ${a.patientMobile ? ` • ${esc(a.patientMobile)}` : ""}
+                </div>
+                <div class="small" style="margin-top:6px">
+                  ${fmtDate(a.createdAt)}
+                  ${a.amountPaid ? ` • ₹${a.amountPaid}${a.paymentMethod?" ("+esc(a.paymentMethod.toUpperCase())+")":""}` : ""}
+                </div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+        `
+        :
+        `
+        <div class="emptyState">
+          <div class="emptyIcon">🗂️</div>
+          <div>No patients yet</div>
+          <div class="small">Every booking — online or walk-in — will show up here.</div>
         </div>
         `
       }
