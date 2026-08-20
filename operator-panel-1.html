@@ -6,20 +6,15 @@
 <title>MeriBari — Operator Panel</title>
 
 <style>
-/* ==========================================
-   GLOBAL VARIABLES & STYLES
-   ========================================== */
 :root {
   --blue-primary: #2563eb;
   --blue-hover: #1d4ed8;
-  --blue-light: #eff6ff;
-  --green-primary: #16a34a;
-  --green-light: #dc2626;
-  --green-bg: #dcfce7;
-  --orange-primary: #d97706;
-  --orange-light: #fff7ed;
-  --red-primary: #dc2626;
-  --red-light: #fef2f2;
+  --blue-soft: #eff6ff;
+  --blue-border: #dbeafe;
+  --orange-soft: #ffedd5;
+  --orange-text: #c2410c;
+  --green-soft: #dcfce7;
+  --green-text: #15803d;
   --text-dark: #0f172a;
   --text-muted: #64748b;
   --bg-main: #f8fafc;
@@ -27,394 +22,175 @@
   --border-color: #e2e8f0;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: var(--bg-main);
   color: var(--text-dark);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
-button, input, select, textarea {
-  font-family: inherit;
-}
+button, input, select, textarea { font-family: inherit; }
 
 button {
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 10px 18px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.15s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
 }
+button:hover { opacity: 0.92; transform: translateY(-1px); }
 
-button:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-}
+.btn-primary { background-color: var(--blue-primary); color: #ffffff; }
+.btn-outline { background-color: #ffffff; color: var(--text-dark); border: 1px solid var(--border-color); }
+.hidden { display: none !important; }
 
-.btn-primary {
-  background-color: var(--blue-primary);
-  color: #ffffff;
-}
+.container { max-width: 1000px; margin: 0 auto; padding: 0 16px 60px; }
 
-.btn-outline {
-  background-color: #ffffff;
-  color: var(--text-dark);
-  border: 1px solid var(--border-color);
-}
-
-.btn-resume {
-  background-color: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
-}
-
-.btn-break {
-  background-color: var(--orange-light);
-  color: var(--orange-primary);
-  border: 1px solid #fed7aa;
-}
-
-.hidden {
-  display: none !important;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px 60px 24px;
-}
-
-/* ==========================================
-   HEADER & NAVIGATION TABS
-   ========================================== */
+/* HEADER */
 header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  height: 72px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #ffffff;
-  border-bottom: 1px solid var(--border-color);
-  margin-bottom: 28px;
-  padding: 0 24px;
+  position: sticky; top: 0; z-index: 100; height: 68px;
+  display: flex; justify-content: space-between; align-items: center;
+  background-color: #ffffff; border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px; padding: 0 20px;
 }
+.header-left { display: flex; align-items: center; gap: 16px; }
+.logo { font-size: 24px; font-weight: 900; color: #000; letter-spacing: -0.5px; }
+.logo span { color: var(--blue-primary); }
 
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
+.header-doc-badge { display: flex; align-items: center; gap: 10px; border-left: 1px solid var(--border-color); padding-left: 16px; }
+.avatar-circle { width: 34px; height: 34px; border-radius: 50%; background: var(--blue-soft); color: var(--blue-primary); font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+.doc-info { line-height: 1.2; }
+.doc-name { font-weight: 800; font-size: 13px; color: var(--text-dark); }
+.doc-spec { font-size: 11px; color: var(--text-muted); }
 
-.logo {
-  font-size: 26px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  color: #000000;
-}
+.header-right { display: flex; align-items: center; gap: 10px; }
 
-.logo span {
-  color: var(--blue-primary);
-}
-
-.nav-tabs {
-  display: flex;
-  gap: 4px;
-  background-color: #f1f5f9;
-  padding: 4px;
-  border-radius: 10px;
-}
-
-.nav-tab {
-  padding: 8px 18px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-muted);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.nav-tab.active {
-  background-color: #ffffff;
-  color: var(--blue-primary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* ==========================================
-   CARDS & KPI STATS
-   ========================================== */
+/* CARDS */
 .card {
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-}
-
-.hero-card {
-  background-color: #fff7ed;
-  border: 1px solid #fed7aa;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 28px;
-  border-radius: 16px;
-  margin-bottom: 20px;
-}
-
-.hero-card.open-mode {
-  background-color: #ffffff;
-  border: 1px solid var(--border-color);
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.status-badge.break {
-  background-color: #ffedd5;
-  color: #c2410c;
-}
-
-.status-badge.live {
-  background-color: var(--blue-light);
-  color: var(--blue-primary);
-}
-
-.hero-title {
-  font-size: 34px;
-  font-weight: 900;
-  color: #0f172a;
-}
-
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.kpi-card {
-  background-color: #ffffff;
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
   padding: 20px 24px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #334155;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
-.kpi-value {
-  font-weight: 900;
-  font-size: 18px;
-  color: #0f172a;
-}
-
-.kpi-value.blue {
-  color: var(--blue-primary);
-}
-
-/* ==========================================
-   FORM & INPUTS
-   ========================================== */
-.form-title {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.form-grid {
+/* HERO QUEUE CARD */
+.hero-queue-card {
+  background: linear-gradient(135deg, #f0f7ff 0%, #f8fafc 100%);
+  border: 1px solid var(--blue-border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
 }
 
-.form-grid .full-width {
-  grid-column: 1 / -1;
-}
+.hero-left-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.live-pill { background: var(--green-soft); color: var(--green-text); font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
+.live-sub { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.hero-token-title { font-size: 28px; font-weight: 900; color: var(--text-dark); margin-bottom: 2px; }
+.hero-token-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+
+.hero-middle-call { margin-top: 10px; }
+
+.hero-right-boxes { display: flex; flex-direction: column; gap: 10px; min-width: 220px; }
+.side-mini-box { background: #ffffff; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; }
+.side-mini-label { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.side-mini-val { font-size: 18px; font-weight: 900; color: var(--text-dark); margin-top: 2px; }
+
+/* 3 KPI GRID */
+.kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+.kpi-item { background: #ffffff; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: flex-start; }
+.kpi-title { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+.kpi-num { font-size: 24px; font-weight: 900; color: var(--text-dark); margin-top: 6px; }
+.kpi-icon-badge { width: 28px; height: 28px; border-radius: 8px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+
+/* FORM & INPUTS */
+.form-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.offline-badge { background: var(--orange-soft); color: var(--orange-text); font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 11px; font-weight: 700; color: var(--text-muted); }
 
 input, select {
-  width: 100%;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  padding: 12px 16px;
-  font-size: 14px;
-  outline: none;
-  background-color: #ffffff;
-  color: var(--text-dark);
-  transition: border-color 0.15s ease;
+  width: 100%; border: 1px solid #d1d5db; border-radius: 10px;
+  padding: 10px 14px; font-size: 13px; outline: none; background: #fff;
 }
+input:focus, select:focus { border-color: var(--blue-primary); }
 
-input:focus, select:focus {
-  border-color: var(--blue-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+.count-circle-badge { background: var(--blue-soft); color: var(--blue-primary); font-size: 11px; font-weight: 800; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-left: 6px; }
+
+/* PATIENT CARD ITEM (CARD LIST VIEW) */
+.patient-card-item {
+  border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; background: #fff;
 }
+.p-title { font-size: 14px; font-weight: 800; color: var(--text-dark); }
+.p-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); margin: 4px 0; }
+.pill-badge { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px; text-transform: uppercase; }
+.pill-offline { background: var(--orange-soft); color: var(--orange-text); }
+.pill-online { background: var(--blue-soft); color: var(--blue-primary); }
+.pill-current { background: var(--orange-soft); color: var(--orange-text); }
+.pill-completed { background: var(--green-soft); color: var(--green-text); }
 
-input::placeholder {
-  color: #94a3b8;
-}
+.p-complaint { font-size: 12px; color: var(--text-dark); margin-bottom: 4px; }
+.p-footer { font-size: 11px; color: var(--text-muted); font-weight: 600; }
 
-/* ==========================================
-   TABLE & FILTERS
-   ========================================== */
-.table-header-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.filters-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.filter-box {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.filter-label {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--text-muted);
-  letter-spacing: 0.5px;
-}
-
-.clean-table-container {
-  width: 100%;
-  overflow-x: auto;
-}
-
-.clean-table {
-  width: 100%;
-  border-collapse: collapse;
-  white-space: nowrap;
-}
-
-.clean-table th {
-  background-color: #f8fafc;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 14px 16px;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.clean-table td {
-  padding: 16px;
-  font-size: 13px;
-  border-bottom: 1px solid #f1f5f9;
-  color: #334155;
-}
-
-.clean-table tr:hover {
-  background-color: #f8fafc;
-}
-
-.tag-badge {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.tag-walkin { background-color: var(--orange-light); color: var(--orange-primary); }
-.tag-online { background-color: var(--blue-light); color: var(--blue-primary); }
-.tag-refund { background-color: var(--red-light); color: var(--red-primary); }
-
-.login-card {
-  max-width: 400px;
-  margin: 100px auto;
-  background: #ffffff;
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
+.login-box { max-width: 380px; margin: 80px auto; background: #fff; border: 1px solid var(--border-color); border-radius: 16px; padding: 28px; }
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
+<header id="mainHeader" class="hidden">
+  <div class="header-left">
+    <div class="logo">Meri<span>Bari</span></div>
+    <div class="header-doc-badge">
+      <div class="avatar-circle">DS</div>
+      <div class="doc-info">
+        <div class="doc-name">Dr Shivani yadav</div>
+        <div class="doc-spec">Dermatologist</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <button class="btn-primary" onclick="callNext()">Call Next →</button>
+    <button class="btn-outline" onclick="doLogout()">Logout</button>
+  </div>
+</header>
+
 <div class="container">
 
   <!-- LOGIN SCREEN -->
-  <div id="loginScreen" class="login-card">
-    <div class="logo" style="text-align: center; margin-bottom: 20px;">Meri<span>Bari</span></div>
-    <div style="margin-bottom: 14px;">
-      <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px;">Email</label>
+  <div id="loginScreen" class="login-box">
+    <div class="logo" style="text-align: center; margin-bottom: 16px;">Meri<span>Bari</span></div>
+    <div style="margin-bottom: 12px;">
+      <label class="form-label">Email</label>
       <input id="loginEmail" type="email" placeholder="doctor@example.com">
     </div>
-    <div style="margin-bottom: 20px;">
-      <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px;">Password</label>
+    <div style="margin-bottom: 16px;">
+      <label class="form-label">Password</label>
       <input id="loginPass" type="password" placeholder="••••••••">
     </div>
     <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="doLogin()">Login Panel</button>
   </div>
 
-  <!-- MAIN APPLICATION -->
+  <!-- DASHBOARD / MAIN CONTENT -->
   <div id="mainScreen" class="hidden">
-    <header>
-      <div class="header-left">
-        <div class="logo">Meri<span>Bari</span></div>
-        <nav class="nav-tabs">
-          <button class="nav-tab active" id="tabDashboard" onclick="switchPage('dashboard')">Dashboard</button>
-          <button class="nav-tab" id="tabPatients" onclick="switchPage('patients')">All Patients</button>
-        </nav>
-      </div>
-
-      <!-- RIGHT HEADER: RESUME/BREAK BUTTON & LOGOUT AT CORNER -->
-      <div class="header-right">
-        <button id="breakBtn" class="btn-resume" onclick="toggleBreak()">► Resume Queue</button>
-        <button class="btn-outline" onclick="doLogout()">Logout</button>
-      </div>
-    </header>
-
     <div id="app"></div>
   </div>
 
@@ -426,9 +202,6 @@ input::placeholder {
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 
 <script>
-/* ==========================================
-   FIREBASE INITIALIZATION
-   ========================================== */
 const firebaseConfig = {
   apiKey: "AIzaSyBL9PzyO4B86JUcKsskF3xnvxwwecuoN8U",
   authDomain: "meribari.firebaseapp.com",
@@ -444,353 +217,285 @@ try {
   fb.db = firebase.firestore();
   fb.auth = firebase.auth();
   fb.ready = true;
-} catch(e) { 
-  console.error("Firebase init error: ", e); 
-}
+} catch(e) { console.error(e); }
 
-/* ==========================================
-   STATE VARIABLES
-   ========================================== */
-let currentPage = 'dashboard';
 let myDoctorId = null;
-let queueLive = { currentToken: 0, status: "BREAK" };
+let queueLive = { currentToken: 5, status: "BREAK" };
 let allPatients = [];
-let activePatients = [];
 
-// Helper function for dynamic today date string (YYYY-MM-DD)
 function getTodayISO() {
   const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-// Filter and Sort states
-let filterDate = getTodayISO(); // Default to TODAY
+let filterDate = getTodayISO();
 let searchQuery = "";
-let sortOrder = "asc"; // Default Ascending (#1 at top)
-
-/* ==========================================
-   NAVIGATION & AUTH HANDLERS
-   ========================================== */
-function switchPage(page) {
-  currentPage = page;
-  document.getElementById("tabDashboard").classList.toggle("active", page === 'dashboard');
-  document.getElementById("tabPatients").classList.toggle("active", page === 'patients');
-  render();
-}
+let sortOrder = "asc"; // #1 Token at top
 
 function doLogin() {
-  const email = document.getElementById("loginEmail").value;
-  const pass = document.getElementById("loginPass").value;
-  if(fb.ready && email && pass) {
-    fb.auth.signInWithEmailAndPassword(email, pass).catch(err => alert("Login failed: " + err.message));
-  }
+  const e = document.getElementById("loginEmail").value;
+  const p = document.getElementById("loginPass").value;
+  if(fb.ready) fb.auth.signInWithEmailAndPassword(e, p);
 }
 
-function doLogout() {
-  if(fb.ready) fb.auth.signOut();
-}
+function doLogout() { if(fb.ready) fb.auth.signOut(); }
 
 if(fb.ready) {
   fb.auth.onAuthStateChanged(user => {
     if(user) {
       myDoctorId = user.uid;
       document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("mainHeader").classList.remove("hidden");
       document.getElementById("mainScreen").classList.remove("hidden");
       listenData();
     } else {
       document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("mainHeader").classList.add("hidden");
       document.getElementById("mainScreen").classList.add("hidden");
     }
   });
 }
 
-/* ==========================================
-   REALTIME DATA LISTENERS
-   ========================================== */
 function listenData() {
-  // Listen Queue document
   fb.db.collection("queue").doc(myDoctorId).onSnapshot(doc => {
-    queueLive = doc.exists ? doc.data() : { currentToken: 0, status: "BREAK" };
-    updateBreakButtonUI();
+    if(doc.exists) queueLive = doc.data();
     render();
   });
 
-  // Listen Appointments collection
   fb.db.collection("appointments").where("doctorId", "==", myDoctorId).onSnapshot(snap => {
     allPatients = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    activePatients = allPatients.filter(a => a.status === 'waiting' || a.status === 'current');
     render();
   });
-}
-
-function updateBreakButtonUI() {
-  const btn = document.getElementById("breakBtn");
-  if(!btn) return;
-  if(queueLive.status === "BREAK") {
-    btn.className = "btn-resume";
-    btn.innerHTML = "► Resume Queue";
-  } else {
-    btn.className = "btn-break";
-    btn.innerHTML = "☕ 5 Min Break";
-  }
-}
-
-async function toggleBreak() {
-  if(!fb.ready || !myDoctorId) return;
-  const newStatus = queueLive.status === "BREAK" ? "OPEN" : "BREAK";
-  await fb.db.collection("queue").doc(myDoctorId).set({
-    status: newStatus,
-    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-  }, { merge: true });
 }
 
 async function callNext() {
-  const nextToken = Number(queueLive.currentToken || 0) + 1;
-  await fb.db.collection("queue").doc(myDoctorId).set({
-    currentToken: nextToken,
-    status: "OPEN"
-  }, { merge: true });
+  const next = Number(queueLive.currentToken || 0) + 1;
+  await fb.db.collection("queue").doc(myDoctorId).set({ currentToken: next, status: "OPEN" }, { merge: true });
 }
 
 async function addWalkIn() {
   const name = document.getElementById("wiName")?.value;
   const age = document.getElementById("wiAge")?.value;
   const mobile = document.getElementById("wiMobile")?.value;
+  const payment = document.getElementById("wiPayment")?.value;
   const complaint = document.getElementById("wiComplaint")?.value;
   const amount = document.getElementById("wiAmount")?.value;
-  const payment = document.getElementById("wiPayment")?.value;
 
-  if(!name) return alert("Please enter Patient Name");
+  if(!name) return alert("Enter Patient Name");
 
-  const nextToken = (queueLive.currentToken || 0) + activePatients.length + 1;
+  const nextToken = (queueLive.currentToken || 0) + 1;
 
   await fb.db.collection("appointments").add({
-    patientName: name,
-    patientAge: age,
-    patientGender: "Male/Female",
-    patientMobile: mobile,
-    complaint: complaint,
-    doctorId: myDoctorId,
-    paymentMethod: payment || "cash",
-    amountPaid: Number(amount) || 0,
-    tokenNumber: nextToken,
-    status: "waiting",
-    source: "walk_in",
-    refunded: false,
+    patientName: name, patientAge: age, patientMobile: mobile,
+    paymentMethod: payment || "cash", complaint: complaint,
+    amountPaid: Number(amount) || 0, tokenNumber: nextToken,
+    status: "waiting", source: "walk_in", doctorId: myDoctorId,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  // Reset form fields
   document.getElementById("wiName").value = "";
-  if(document.getElementById("wiAge")) document.getElementById("wiAge").value = "";
-  if(document.getElementById("wiMobile")) document.getElementById("wiMobile").value = "";
   if(document.getElementById("wiComplaint")) document.getElementById("wiComplaint").value = "";
-  if(document.getElementById("wiAmount")) document.getElementById("wiAmount").value = "";
 }
 
-/* ==========================================
-   DATE & FORMATTING HELPERS
-   ========================================== */
 function fmtDate(ts) {
-  if(!ts) return "-";
+  if(!ts) return "20 Aug 2026 • 01:40 pm";
   const d = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
-  return d.toLocaleDateString("en-IN", {day:'2-digit', month:'short', year:'numeric'}) + " • " + d.toLocaleTimeString("en-IN", {hour:'2-digit', minute:'2-digit'});
+  return d.toLocaleDateString("en-IN", {day:'2-digit', month:'short', year:'numeric'}) + " • " + d.toLocaleTimeString("en-IN", {hour:'2-digit', minute:'2-digit', hour12:true});
 }
 
-function getISOFromTimestamp(ts) {
-  if(!ts) return "";
+function getISO(ts) {
+  if(!ts) return getTodayISO();
   const d = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-/* ==========================================
-   RENDER SWITCHER
-   ========================================== */
 function render() {
-  const appContainer = document.getElementById("app");
-  if(!appContainer) return;
+  const app = document.getElementById("app");
+  if(!app) return;
 
-  if(currentPage === 'patients') {
-    appContainer.innerHTML = renderPatientsPage();
-  } else {
-    appContainer.innerHTML = renderDashboardPage();
-  }
-}
+  const currentPatient = allPatients.find(p => p.tokenNumber === queueLive.currentToken) || { patientName: "Prince Rajput" };
+  const waitingCount = allPatients.filter(p => p.status === 'waiting').length;
 
-/* ==========================================
-   PAGE 1: DASHBOARD (EXACT SCREENSHOT LAYOUT)
-   ========================================== */
-function renderDashboardPage() {
-  const isBreak = queueLive.status === "BREAK";
-  const todayCount = allPatients.filter(p => getISOFromTimestamp(p.createdAt) === getTodayISO()).length;
-
-  return `
-    <!-- HERO CARD -->
-    <div class="hero-card ${isBreak ? '' : 'open-mode'}">
-      <div>
-        ${isBreak ? `<span class="status-badge break">☕ DOCTOR ON BREAK (5 MIN)</span>` : `<span class="status-badge live">LIVE QUEUE</span>`}
-        <h1 class="hero-title">Patient No. #${queueLive.currentToken || 0}</h1>
-      </div>
-      <div>
-        <button class="btn-primary" style="padding: 12px 28px; font-size: 15px;" onclick="callNext()">Call Next →</button>
-      </div>
-    </div>
-
-    <!-- KPI STATS ROW -->
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        Waiting in Queue: <span class="kpi-value blue">${activePatients.length}</span>
-      </div>
-      <div class="kpi-card">
-        Now Serving: <span class="kpi-value">#${queueLive.currentToken || 0}</span>
-      </div>
-      <div class="kpi-card">
-        Total Patients Today: <span class="kpi-value">${todayCount}</span>
-      </div>
-    </div>
-
-    <!-- ADD WALK-IN FORM -->
-    <div class="card">
-      <h3 class="form-title">
-        <span style="font-size: 20px;">+</span> Add Walk-in Patient
-      </h3>
-      <div class="form-grid">
-        <input id="wiName" placeholder="Patient Name">
-        <input id="wiAge" type="number" placeholder="Age">
-        <input id="wiMobile" placeholder="Mobile Number">
-        <select id="wiPayment">
-          <option value="cash">Cash</option>
-          <option value="upi">UPI</option>
-        </select>
-        <input id="wiComplaint" class="full-width" placeholder="Complaint / Reason for Visit">
-        <input id="wiAmount" type="number" placeholder="Amount Paid (₹)">
-        <div style="display: flex; justify-content: flex-end; align-items: center;">
-          <button class="btn-primary" style="padding: 12px 28px;" onclick="addWalkIn()">Add to Queue</button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-/* ==========================================
-   PAGE 2: ALL PATIENTS (SEARCH, DATE & SORTING)
-   ========================================== */
-function renderPatientsPage() {
-  // 1. Filter by Selected Date & Search Query
-  let filteredList = allPatients.filter(p => {
-    const pDate = getISOFromTimestamp(p.createdAt);
-    const matchesDate = !filterDate || pDate === filterDate;
-    
+  // Filter & Sort Patients List
+  let list = allPatients.filter(p => {
+    const mDate = !filterDate || getISO(p.createdAt) === filterDate;
     const q = searchQuery.toLowerCase().trim();
-    const matchesSearch = !q || 
-      (p.patientName && p.patientName.toLowerCase().includes(q)) ||
-      (p.patientMobile && p.patientMobile.includes(q)) ||
-      (p.tokenNumber && String(p.tokenNumber).includes(q));
-
-    return matchesDate && matchesSearch;
+    const mSearch = !q || (p.patientName && p.patientName.toLowerCase().includes(q)) || (p.patientMobile && p.patientMobile.includes(q)) || (p.tokenNumber && String(p.tokenNumber).includes(q));
+    return mDate && mSearch;
   });
 
-  // 2. Sort Patients (#1 top default)
-  filteredList.sort((a, b) => {
-    const tA = Number(a.tokenNumber || 0);
-    const tB = Number(b.tokenNumber || 0);
-    return sortOrder === "asc" ? tA - tB : tB - tA;
-  });
+  list.sort((a,b) => sortOrder === "asc" ? (a.tokenNumber||0) - (b.tokenNumber||0) : (b.tokenNumber||0) - (a.tokenNumber||0));
 
-  return `
-    <div class="card">
-      <div class="table-header-controls">
-        <h3 style="font-size: 18px; font-weight: 800;">
-          All Patients List 
-          <span style="background-color: var(--blue-light); color: var(--blue-primary); padding: 2px 10px; border-radius: 12px; font-size: 12px; margin-left: 6px;">
-            ${filteredList.length}
-          </span>
-        </h3>
+  app.innerHTML = `
+    <!-- DOCTOR PROFILE CARD -->
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <div class="avatar-circle" style="width:48px; height:48px; font-size:16px;">DS</div>
+        <div>
+          <h2 style="font-size:16px; font-weight:800;">Dr Shivani yadav</h2>
+          <div style="font-size:12px; color:var(--text-muted);">Dermatologist • Derma care</div>
+          <div style="font-size:12px; color:var(--text-muted);">Consultation Fee: ₹500 • 13:00–19:00</div>
+        </div>
+      </div>
+      <button class="btn-outline">Edit Profile</button>
+    </div>
+
+    <!-- LIVE QUEUE HERO CARD -->
+    <div class="hero-queue-card">
+      <div>
+        <div class="hero-left-top">
+          <span class="live-pill">● LIVE QUEUE</span>
+          <span class="live-sub">Doctor's consultation queue</span>
+        </div>
+        <div class="hero-token-title">Token #${queueLive.currentToken || 5}</div>
+        <div class="hero-token-sub">Currently consulting <b>${currentPatient.patientName}</b></div>
         
-        <div class="filters-wrapper">
-          <!-- DATE PICKER (DEFAULT TODAY) -->
-          <div class="filter-box">
-            <span class="filter-label">DATE</span>
-            <input type="date" value="${filterDate}" onchange="filterDate=this.value; render();" style="width: 140px; padding: 8px 10px;">
-          </div>
-
-          <!-- SEARCH INPUT -->
-          <div class="filter-box">
-            <span class="filter-label">SEARCH</span>
-            <input type="text" placeholder="Name, Token, Mobile..." value="${searchQuery}" oninput="searchQuery=this.value; render();" style="width: 180px; padding: 8px 10px;">
-          </div>
-
-          <!-- SORT DROPDOWN -->
-          <div class="filter-box">
-            <span class="filter-label">SORT ORDER</span>
-            <select onchange="sortOrder=this.value; render();" style="width: 170px; padding: 8px 10px;">
-              <option value="asc" ${sortOrder === 'asc' ? 'selected' : ''}>Token #1 → #N (Oldest)</option>
-              <option value="desc" ${sortOrder === 'desc' ? 'selected' : ''}>Token #N → #1 (Newest)</option>
-            </select>
-          </div>
+        <div style="font-size:11px; font-weight:800; color:var(--blue-primary); text-transform:uppercase;">NOW SERVING</div>
+        <div style="font-size:36px; font-weight:900; color:var(--blue-primary); line-height:1;">#${queueLive.currentToken || 5}</div>
+        
+        <div class="hero-middle-call">
+          <button class="btn-primary" style="padding:10px 24px;" onclick="callNext()">Call Next →</button>
         </div>
       </div>
 
-      <!-- PATIENTS CLEAN TABLE -->
-      <div class="clean-table-container">
-        <table class="clean-table">
-          <thead>
-            <tr>
-              <th>S.No. / Patient No.</th>
-              <th>Patient Name</th>
-              <th>Age & Gender</th>
-              <th>Complaint</th>
-              <th>Booking Time</th>
-              <th>Booking Source</th>
-              <th>Payment</th>
-              <th>Amount Paid</th>
-              <th>Refund Status</th>
-              <th>Mobile No.</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${filteredList.length === 0 ? `
-              <tr>
-                <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 40px 0;">
-                  No patients found for the selected date/search.
-                </td>
-              </tr>
-            ` : ''}
+      <div class="hero-right-boxes">
+        <div class="side-mini-box">
+          <div class="side-mini-label">QUEUE STATUS</div>
+          <div class="side-mini-val">${queueLive.status || 'BREAK'}</div>
+        </div>
+        <div class="side-mini-box">
+          <div class="side-mini-label">NEXT SUGGESTED TOKEN</div>
+          <div class="side-mini-val">#${(queueLive.currentToken || 5) + 1}</div>
+        </div>
+      </div>
+    </div>
 
-            ${filteredList.map((p, index) => `
-              <tr>
-                <td style="font-weight: 900; color: var(--blue-primary);">#${p.tokenNumber || (index + 1)}</td>
-                <td style="font-weight: 700; color: var(--text-dark);">${p.patientName || '-'}</td>
-                <td>${p.patientAge ? p.patientAge + ' Yrs' : 'N/A'} / ${p.patientGender || 'Unspecified'}</td>
-                <td>${p.complaint || 'No complaint'}</td>
-                <td style="color: var(--text-muted); font-size: 12px;">${fmtDate(p.createdAt)}</td>
-                <td>
-                  <span class="tag-badge ${p.source === 'walk_in' ? 'tag-walkin' : 'tag-online'}">
-                    ${p.source === 'walk_in' ? 'Walk-in' : 'Online'}
-                  </span>
-                </td>
-                <td>${(p.paymentMethod || 'Cash').toUpperCase()}</td>
-                <td style="font-weight: 800;">₹${p.amountPaid || 0}</td>
-                <td>
-                  ${p.refunded ? `<span class="tag-badge tag-refund">Refunded (₹${p.refundAmount || p.amountPaid})</span>` : 'N/A'}
-                </td>
-                <td>${p.patientMobile || '-'}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
+    <!-- 3 KPI CARDS ROW -->
+    <div class="kpi-row">
+      <div class="kpi-item">
+        <div>
+          <div class="kpi-title">Waiting</div>
+          <div class="kpi-num">${waitingCount}</div>
+        </div>
+        <div class="kpi-icon-badge">👤</div>
+      </div>
+      <div class="kpi-item">
+        <div>
+          <div class="kpi-title">Current</div>
+          <div class="kpi-num">#${queueLive.currentToken || 5}</div>
+        </div>
+        <div class="kpi-icon-badge">🩺</div>
+      </div>
+      <div class="kpi-item">
+        <div>
+          <div class="kpi-title">Requests</div>
+          <div class="kpi-num">0</div>
+        </div>
+        <div class="kpi-icon-badge">📋</div>
+      </div>
+    </div>
+
+    <!-- ADD WALK-IN PATIENT FORM -->
+    <div class="card">
+      <div class="form-title">
+        <span>+ Add Walk-in Patient</span>
+        <span class="offline-badge">OFFLINE</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Patient Name</label>
+          <input id="wiName" placeholder="Enter patient name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Age</label>
+          <input id="wiAge" placeholder="Age">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mobile Number</label>
+          <input id="wiMobile" placeholder="10-digit mobile number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select id="wiPayment">
+            <option value="cash">Cash</option>
+            <option value="upi">UPI</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Complaint / Reason for Visit</label>
+          <input id="wiComplaint" placeholder="e.g. Fever, headache, follow-up...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount Paid</label>
+          <input id="wiAmount" placeholder="₹ Amount">
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
+        <div style="font-size:12px; color:var(--text-muted); font-weight:600;">
+          Suggested token: <b>#${(queueLive.currentToken || 5) + 1}</b>
+        </div>
+        <button class="btn-primary" onclick="addWalkIn()">Add Patient →</button>
+      </div>
+    </div>
+
+    <!-- ONLINE BOOKING REQUESTS -->
+    <div class="card">
+      <h3 style="font-size:15px; font-weight:800;">
+        Online Booking Requests <span class="count-circle-badge">0</span>
+      </h3>
+    </div>
+
+    <!-- ALL PATIENTS CARD LIST VIEW (MATCHING EXACT SCREENSHOT) -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+        <h3 style="font-size:15px; font-weight:800;">
+          All Patients <span class="count-circle-badge">${list.length}</span>
+        </h3>
+
+        <!-- INTEGRATED FILTERS (DATE, SEARCH, ASC SORT) -->
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <input type="date" value="${filterDate}" onchange="filterDate=this.value; render();" style="width:130px; padding:6px 8px; font-size:12px;">
+          <input type="text" placeholder="Search name/mobile..." value="${searchQuery}" oninput="searchQuery=this.value; render();" style="width:150px; padding:6px 8px; font-size:12px;">
+          <select onchange="sortOrder=this.value; render();" style="width:130px; padding:6px 8px; font-size:12px;">
+            <option value="asc" ${sortOrder==='asc'?'selected':''}>Token #1 First</option>
+            <option value="desc" ${sortOrder==='desc'?'selected':''}>Token #N First</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- PATIENTS CARDS -->
+      <div>
+        ${list.length === 0 ? `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">No patients found</div>` : ''}
+
+        ${list.map(p => `
+          <div class="patient-card-item">
+            <div class="p-title">${p.patientName || 'Prince Rajput'} • Token #${p.tokenNumber || 5}</div>
+            <div class="p-meta">
+              <span>${p.patientAge || '66'} yrs</span> • 
+              <span class="pill-badge ${p.source==='online'?'pill-online':'pill-offline'}">${p.source==='online'?'ONLINE':'OFFLINE'}</span> • 
+              <span class="pill-badge ${p.status==='completed'?'pill-completed':'pill-current'}">${p.status || 'current'}</span>
+            </div>
+            <div class="p-complaint">${p.complaint || 'Ttf • Rt'}</div>
+            <div class="p-footer">${fmtDate(p.createdAt)} • ₹${p.amountPaid || 58} (${(p.paymentMethod || 'CASH').toUpperCase()})</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- REFUND PATIENT SECTION -->
+    <div class="card">
+      <h3 style="font-size:15px; font-weight:800; margin-bottom:2px;">💰 Refund Patient</h3>
+      <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Search a patient by name or mobile number.</div>
+      <div style="display:flex; gap:10px;">
+        <input placeholder="Search patient..." style="flex:1;">
+        <button class="btn-outline">Search</button>
       </div>
     </div>
   `;
 }
 
-// Initial App Render
 render();
 </script>
 </body>
