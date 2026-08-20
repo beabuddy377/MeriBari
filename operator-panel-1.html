@@ -1593,7 +1593,7 @@ select:focus{
     <div class="modalHeader">
 
       <div class="modalTitle">
-        Assign Token
+        Assign Patient Number
       </div>
 
       <button
@@ -1630,7 +1630,7 @@ select:focus{
       <div class="suggestedToken">
 
         <span>
-          Suggested next token
+          Suggested next patient
         </span>
 
         <b id="modalSuggested">
@@ -1644,14 +1644,14 @@ select:focus{
         class="formLabel"
         style="margin-top:15px"
       >
-        Token Number
+        Patient Number
       </label>
 
       <input
         id="modalTokenInput"
         type="number"
         min="1"
-        placeholder="Enter token number"
+        placeholder="Enter patient number"
       >
 
       <div
@@ -1675,7 +1675,7 @@ select:focus{
         class="primary"
         onclick="confirmTokenAssignment()"
       >
-        Confirm Token
+        Confirm Patient
       </button>
 
     </div>
@@ -2799,7 +2799,7 @@ async function confirmTokenAssignment(){
   if(!token || token < 1){
 
     error.textContent =
-      "Please enter a valid token number.";
+      "Please enter a valid patient number.";
 
     return;
 
@@ -2816,7 +2816,7 @@ async function confirmTokenAssignment(){
   if(duplicate){
 
     error.textContent =
-      `Token #${token} is already in the live queue.`;
+      `Patient #${token} is already in the live queue.`;
 
     return;
 
@@ -2848,7 +2848,7 @@ async function confirmTokenAssignment(){
     console.error(e);
 
     error.textContent =
-      "Could not assign token: " +
+      "Could not assign patient number: " +
       e.message;
 
   }
@@ -2963,7 +2963,7 @@ async function callNext(){
     console.error(e);
 
     alert(
-      "Unable to call next token: " +
+      "Unable to call next patient: " +
       e.message
     );
 
@@ -3002,6 +3002,12 @@ async function addWalkIn(){
         .getElementById("wiAge")
         .value
     ) || 0;
+
+
+  const gender =
+    document
+      .getElementById("wiGender")
+      .value;
 
 
   const mobile =
@@ -3073,6 +3079,8 @@ async function addWalkIn(){
 
         patientAge:age,
 
+        patientGender:gender,
+
         patientMobile:mobile,
 
         complaint,
@@ -3118,6 +3126,11 @@ async function addWalkIn(){
 
 
     document
+      .getElementById("wiGender")
+      .value = "";
+
+
+    document
       .getElementById("wiMobile")
       .value = "";
 
@@ -3153,7 +3166,7 @@ async function addWalkIn(){
 
 /*
   Simple fallback modal-style prompt for walk-ins.
-  Online appointments use the proper token modal above.
+  Online appointments use the proper patient-number modal above.
 */
 
 function askWalkInToken(
@@ -3165,7 +3178,7 @@ function askWalkInToken(
 
     const token =
       window.prompt(
-        `Token number for ${name}\n\nSuggested: ${suggested}`,
+        `Patient number for ${name}\n\nSuggested patient number: ${suggested}`,
         suggested
       );
 
@@ -3189,7 +3202,7 @@ function askWalkInToken(
     ){
 
       alert(
-        "Enter a valid token number."
+        "Enter a valid patient number."
       );
 
       resolve(null);
@@ -3209,7 +3222,7 @@ function askWalkInToken(
     if(duplicate){
 
       alert(
-        `Token #${parsed} is already in use.`
+        `Patient #${parsed} is already in use.`
       );
 
       resolve(null);
@@ -3678,7 +3691,7 @@ function renderAllPatientsPage(){
         <input
           type="search"
           value="${esc(allPatientsSearch)}"
-          placeholder="Search Name, Token Number, Mobile Number..."
+          placeholder="Search Name, Patient Number, Mobile Number..."
           oninput="setAllPatientsSearch(this.value)"
         >
 
@@ -3690,14 +3703,14 @@ function renderAllPatientsPage(){
             value="asc"
             ${allPatientsSort === "asc" ? "selected" : ""}
           >
-            Token #1 → #N (Puraana Pehle)
+            Patient #1 → #N (Puraana Pehle)
           </option>
 
           <option
             value="desc"
             ${allPatientsSort === "desc" ? "selected" : ""}
           >
-            Token #N → #1 (Naya Pehle)
+            Patient #N → #1 (Naya Pehle)
           </option>
 
         </select>
@@ -3968,7 +3981,7 @@ function render(){
 
 
         <h1 class="heroTitle">
-          Token #${queueLive.currentToken || 0}
+          Patient #${queueLive.currentToken || 0}
         </h1>
 
 
@@ -4041,7 +4054,7 @@ function render(){
         <div class="queueSideBox">
 
           <div class="queueSideLabel">
-            Next Suggested Token
+            Next Suggested Patient
           </div>
 
           <div class="queueSideValue">
@@ -4127,7 +4140,7 @@ function render(){
         <div class="sectionHeadLeft">
 
           <h3>
-            ➕ Add Walk-in Patient
+            ➕ Add Offline Patient
           </h3>
 
           <span class="tag warning">
@@ -4166,6 +4179,33 @@ function render(){
             type="number"
             placeholder="Age"
           >
+
+        </div>
+
+
+        <div>
+
+          <label class="formLabel">
+            Gender
+          </label>
+
+          <select id="wiGender">
+            <option value="">
+              Select Gender
+            </option>
+
+            <option value="Male">
+              Male
+            </option>
+
+            <option value="Female">
+              Female
+            </option>
+
+            <option value="Other">
+              Other
+            </option>
+          </select>
 
         </div>
 
@@ -4237,7 +4277,7 @@ function render(){
         <div class="formBottom">
 
           <span class="small">
-            Suggested token:
+            Suggested patient:
             <b>
               #${nextTokenNumber()}
             </b>
@@ -4554,7 +4594,7 @@ function render(){
           </div>
 
           <div class="small">
-            Add a walk-in or assign a token to an online booking.
+            Add an offline patient or assign a patient number to an online booking.
           </div>
 
         </div>
@@ -4632,7 +4672,7 @@ function render(){
 
                   ${
                     a.tokenNumber
-                      ? ` • Token #${a.tokenNumber}`
+                      ? ` • Patient #${a.tokenNumber}`
                       : ""
                   }
 
