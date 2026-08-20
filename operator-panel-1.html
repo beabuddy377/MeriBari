@@ -119,35 +119,40 @@ button:disabled{
   color:var(--red);
 }
 
+.break-btn{
+  background:var(--orange-soft);
+  color:var(--orange);
+  border:1px solid #fed7aa;
+}
+
+.break-btn:hover{
+  background:#ffedd5;
+}
+
 .hidden{
   display:none!important;
 }
 
 .wrap{
-  max-width:1180px;
+  max-width:1240px;
   margin:auto;
   padding:0 22px 80px;
 }
 
-/* HEADER */
+/* HEADER & NAV */
 
 header{
   position:sticky;
   top:0;
   z-index:50;
-
   min-height:72px;
-
   display:flex;
-  justify-content:space-between;
+  justify-space:space-between;
   align-items:center;
-
   margin:0 -22px 22px;
   padding:0 22px;
-
   background:rgba(255,255,255,.94);
   backdrop-filter:blur(18px);
-
   border-bottom:1px solid var(--line);
 }
 
@@ -164,7 +169,7 @@ header{
 .headerLeft{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:20px;
 }
 
 .doctorMini{
@@ -193,6 +198,36 @@ header{
   font-size:11px;
   color:var(--muted);
   margin-top:2px;
+}
+
+.navTabs{
+  display:flex;
+  gap:6px;
+  background:#f1f5f9;
+  padding:4px;
+  border-radius:12px;
+}
+
+.navTab{
+  padding:8px 16px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:750;
+  color:var(--muted);
+  background:transparent;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+
+.navTab:hover{
+  color:var(--text);
+  transform:none;
+}
+
+.navTab.active{
+  background:#fff;
+  color:var(--blue);
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
 }
 
 .headerBtns{
@@ -334,19 +369,28 @@ header{
   margin-top:4px;
 }
 
-/* LIVE */
+/* LIVE BADGES */
 
 .liveBadge{
   display:inline-flex;
   align-items:center;
   gap:7px;
-
   font-size:11px;
   font-weight:850;
-
   color:#15803d;
   background:var(--green-soft);
+  padding:6px 10px;
+  border-radius:999px;
+}
 
+.breakBadge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-size:11px;
+  font-weight:850;
+  color:var(--orange);
+  background:var(--orange-soft);
   padding:6px 10px;
   border-radius:999px;
 }
@@ -434,7 +478,6 @@ header{
   justify-content:space-between;
   align-items:center;
   gap:10px;
-
   margin-bottom:15px;
 }
 
@@ -447,17 +490,12 @@ header{
 .countBadge{
   min-width:25px;
   height:25px;
-
   display:inline-grid;
   place-items:center;
-
   padding:0 8px;
-
   border-radius:999px;
-
   background:var(--blue-soft);
   color:var(--blue-dark);
-
   font-size:11px;
   font-weight:850;
 }
@@ -485,17 +523,12 @@ header{
 input,
 select{
   width:100%;
-
   border:1px solid #d0d5dd;
   border-radius:10px;
-
   padding:11px 12px;
-
   outline:none;
-
   background:#fff;
   color:var(--text);
-
   transition:
     border-color .15s,
     box-shadow .15s;
@@ -516,13 +549,10 @@ select:focus{
 
 .formBottom{
   grid-column:1/-1;
-
   display:flex;
   justify-content:space-between;
   align-items:center;
-
   gap:12px;
-
   margin-top:2px;
 }
 
@@ -538,23 +568,25 @@ select:focus{
   border-collapse:collapse;
   border:none!important;
   margin-top:5px;
+  white-space:nowrap;
 }
 
 .cleanTable th,
 .cleanTable td{
   border:none!important;
-  padding:12px 10px;
+  padding:12px 14px;
   text-align:left;
   vertical-align:middle;
 }
 
 .cleanTable th{
   font-size:11px;
-  font-weight:750;
+  font-weight:800;
   color:var(--muted);
   text-transform:uppercase;
   letter-spacing:.5px;
-  padding-bottom:8px;
+  padding-bottom:10px;
+  background:#fafafa;
 }
 
 .cleanTable tr{
@@ -573,7 +605,6 @@ select:focus{
 .patientName{
   font-size:14px;
   font-weight:850;
-  margin-bottom:3px;
 }
 
 .patientMeta{
@@ -581,7 +612,6 @@ select:focus{
   flex-wrap:wrap;
   align-items:center;
   gap:7px;
-
   color:var(--muted);
   font-size:12px;
 }
@@ -589,6 +619,10 @@ select:focus{
 .patientComplaint{
   color:#475467;
   font-size:12px;
+  max-width:200px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 /* TAGS */
@@ -596,14 +630,10 @@ select:focus{
 .tag{
   display:inline-flex;
   align-items:center;
-
-  padding:5px 9px;
-
+  padding:4px 8px;
   border-radius:999px;
-
   font-size:10px;
   font-weight:800;
-
   background:var(--green-soft);
   color:var(--green);
 }
@@ -624,7 +654,7 @@ select:focus{
 }
 
 .queueToken{
-  font-size:16px;
+  font-size:15px;
   font-weight:900;
   color:var(--blue);
 }
@@ -632,13 +662,6 @@ select:focus{
 .queuePatient{
   font-size:13px;
   font-weight:800;
-}
-
-.queuePatient small{
-  display:block;
-  margin-top:3px;
-  color:var(--muted);
-  font-weight:500;
 }
 
 .paymentText{
@@ -685,25 +708,18 @@ select:focus{
 .loginWrap{
   max-width:390px;
   margin:80px auto;
-
   background:#fff;
-
   border:1px solid var(--line);
   border-radius:18px;
-
   padding:28px;
-
   box-shadow:var(--shadow-lg);
 }
 
 .loginWrap label{
   display:block;
-
   font-size:12px;
   font-weight:750;
-
   margin:13px 0 6px;
-
   color:#344054;
 }
 
@@ -750,33 +766,22 @@ select:focus{
 .modalOverlay{
   position:fixed;
   inset:0;
-
   z-index:100;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   padding:20px;
-
   background:rgba(15,23,42,.55);
-
   backdrop-filter:blur(5px);
 }
 
 .modal{
   width:100%;
   max-width:430px;
-
   background:#fff;
-
   border-radius:18px;
-
-  box-shadow:
-    0 25px 70px rgba(15,23,42,.25);
-
+  box-shadow:0 25px 70px rgba(15,23,42,.25);
   overflow:hidden;
-
   animation:modalIn .18s ease;
 }
 
@@ -785,7 +790,6 @@ select:focus{
     opacity:0;
     transform:translateY(10px) scale(.98);
   }
-
   to{
     opacity:1;
     transform:none;
@@ -796,9 +800,7 @@ select:focus{
   display:flex;
   justify-content:space-between;
   align-items:center;
-
   padding:18px 20px;
-
   border-bottom:1px solid var(--line);
 }
 
@@ -810,12 +812,9 @@ select:focus{
 .closeBtn{
   width:34px;
   height:34px;
-
   padding:0;
-
   display:grid;
   place-items:center;
-
   background:#f2f4f7;
   color:#475467;
 }
@@ -827,11 +826,8 @@ select:focus{
 .modalPatient{
   background:var(--blue-soft);
   border:1px solid #dbeafe;
-
   border-radius:13px;
-
   padding:14px;
-
   margin-bottom:15px;
 }
 
@@ -849,15 +845,10 @@ select:focus{
   display:flex;
   align-items:center;
   justify-content:space-between;
-
   margin:10px 0;
-
   padding:12px 14px;
-
   border-radius:12px;
-
   background:#f8fafc;
-
   border:1px solid var(--line);
 }
 
@@ -869,9 +860,7 @@ select:focus{
 .modalFooter{
   display:flex;
   gap:8px;
-
   padding:15px 20px;
-
   border-top:1px solid var(--line);
 }
 
@@ -886,7 +875,6 @@ select:focus{
 }
 
 @media(max-width:760px){
-
   .wrap{
     padding:0 13px 95px;
   }
@@ -894,7 +882,6 @@ select:focus{
   header{
     margin:0 -13px 14px;
     padding:0 13px;
-
     min-height:62px;
   }
 
@@ -969,7 +956,6 @@ select:focus{
 
   .formBottom{
     grid-column:auto;
-
     flex-direction:column;
     align-items:stretch;
   }
@@ -991,21 +977,14 @@ select:focus{
     left:0;
     right:0;
     bottom:0;
-
     z-index:80;
-
     display:flex;
     align-items:center;
     justify-content:space-between;
-
     gap:10px;
-
     padding:10px 13px;
-
     background:rgba(255,255,255,.96);
-
     border-top:1px solid var(--line);
-
     backdrop-filter:blur(15px);
   }
 
@@ -1024,7 +1003,6 @@ select:focus{
     flex:1;
     max-width:210px;
   }
-
 }
 
 @media(min-width:761px){
@@ -1039,130 +1017,47 @@ select:focus{
 
 <div class="wrap">
 
-  <div
-    id="connbar"
-    class="connbar hidden"
-  >
+  <div id="connbar" class="connbar hidden">
     ⚠ Firebase not configured yet.
   </div>
 
-
   <!-- LOGIN -->
-
-  <div
-    id="loginScreen"
-    class="loginWrap"
-  >
-
-    <div
-      class="logo"
-      style="text-align:center"
-    >
+  <div id="loginScreen" class="loginWrap">
+    <div class="logo" style="text-align:center">
       Meri<span>Bari</span>
     </div>
-
-    <p
-      id="loginTitle"
-      style="
-        text-align:center;
-        color:var(--muted);
-        margin-top:7px
-      "
-    >
+    <p id="loginTitle" style="text-align:center;color:var(--muted);margin-top:7px">
       Doctor / Operator Login
     </p>
 
     <label>Email</label>
-
-    <input
-      id="loginEmail"
-      type="email"
-      placeholder="doctor@example.com"
-    >
+    <input id="loginEmail" type="email" placeholder="doctor@example.com">
 
     <label>Password</label>
+    <input id="loginPass" type="password" placeholder="••••••••">
 
-    <input
-      id="loginPass"
-      type="password"
-      placeholder="••••••••"
-    >
-
-    <button
-      id="loginBtn"
-      class="primary"
-      style="
-        width:100%;
-        margin-top:16px
-      "
-      onclick="doLogin()"
-    >
+    <button id="loginBtn" class="primary" style="width:100%;margin-top:16px" onclick="doLogin()">
       Login
     </button>
 
-    <div
-      id="loginErr"
-      class="loginErr"
-    ></div>
+    <div id="loginErr" class="loginErr"></div>
 
-    <p
-      style="
-        text-align:center;
-        margin-top:14px;
-        font-size:13px
-      "
-    >
-      <span id="modeLoginText">
-        New here?
-      </span>
-
-      <a
-        href="#"
-        id="modeToggle"
-        onclick="
-          toggleAuthMode();
-          return false;
-        "
-        style="
-          color:var(--blue);
-          font-weight:750;
-        "
-      >
+    <p style="text-align:center;margin-top:14px;font-size:13px">
+      <span id="modeLoginText">New here? </span>
+      <a href="#" id="modeToggle" onclick="toggleAuthMode(); return false;" style="color:var(--blue);font-weight:750;">
         Create Account
       </a>
     </p>
-
   </div>
 
-
-  <!-- PROFILE -->
-
-  <div
-    id="profileSetupScreen"
-    class="loginWrap hidden"
-    style="max-width:520px"
-  >
-
+  <!-- PROFILE SETUP -->
+  <div id="profileSetupScreen" class="loginWrap hidden" style="max-width:520px">
     <div class="profileIntro">
-
-      <div class="logo">
-        Meri<span>Bari</span>
-      </div>
-
-      <div
-        style="
-          color:var(--muted);
-          font-size:13px
-        "
-      >
-        Set up your Doctor Profile
-      </div>
-
+      <div class="logo">Meri<span>Bari</span></div>
+      <div style="color:var(--muted);font-size:13px">Set up your Doctor Profile</div>
     </div>
 
-
     <div class="profileGrid">
-
       <div class="full" style="text-align:center">
         <label>Profile Photo</label>
         <img id="pfPhotoPreview" class="hidden" style="width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 10px;display:block">
@@ -1171,162 +1066,91 @@ select:focus{
 
       <div class="full">
         <label>Doctor Name</label>
-        <input
-          id="pfName"
-          placeholder="Dr. Full Name"
-        >
+        <input id="pfName" placeholder="Dr. Full Name">
       </div>
 
       <div>
         <label>Specialty</label>
-        <input
-          id="pfSpecialty"
-          placeholder="e.g. Cardiologist"
-        >
+        <input id="pfSpecialty" placeholder="e.g. Cardiologist">
       </div>
 
       <div>
         <label>Experience</label>
-        <input
-          id="pfExp"
-          placeholder="e.g. 10 Years"
-        >
+        <input id="pfExp" placeholder="e.g. 10 Years">
       </div>
 
       <div class="full">
         <label>Qualifications</label>
-        <input
-          id="pfQual"
-          placeholder="MBBS, MD"
-        >
+        <input id="pfQual" placeholder="MBBS, MD">
       </div>
 
       <div class="full">
         <label>Clinic Name</label>
-        <input
-          id="pfClinic"
-          placeholder="Clinic name"
-        >
+        <input id="pfClinic" placeholder="Clinic name">
       </div>
 
       <div class="full">
         <label>Clinic Address</label>
-        <input
-          id="pfAddress"
-          placeholder="Clinic address"
-        >
+        <input id="pfAddress" placeholder="Clinic address">
       </div>
 
       <div>
         <label>Working Hours</label>
-        <input
-          id="pfHours"
-          placeholder="10 AM – 2 PM"
-        >
+        <input id="pfHours" placeholder="10 AM – 2 PM">
       </div>
 
       <div>
         <label>Consultation Fee (₹)</label>
-        <input
-          id="pfFee"
-          type="number"
-          placeholder="500"
-        >
+        <input id="pfFee" type="number" placeholder="500">
       </div>
-
     </div>
 
     <p class="small" style="margin:14px 0">
       Platform and service fees are configured automatically.
     </p>
 
-    <button
-      class="primary"
-      style="width:100%"
-      onclick="createDoctorProfile()"
-    >
+    <button class="primary" style="width:100%" onclick="createDoctorProfile()">
       Create Profile & Start →
     </button>
-
-    <div
-      id="profileErr"
-      class="loginErr"
-    ></div>
-
+    <div id="profileErr" class="loginErr"></div>
   </div>
 
-
-  <!-- MAIN -->
-
-  <div
-    id="mainScreen"
-    class="hidden"
-  >
+  <!-- MAIN APP -->
+  <div id="mainScreen" class="hidden">
 
     <header>
-
       <div class="headerLeft">
-
-        <div class="logo">
-          Meri<span>Bari</span>
-        </div>
+        <div class="logo">Meri<span>Bari</span></div>
 
         <div class="doctorMini">
-
-          <img
-            id="doctorAvatarImg"
-            class="avatar hidden"
-            style="object-fit:cover"
-          >
-
-          <div
-            id="doctorAvatar"
-            class="avatar"
-          >
-            Dr
-          </div>
-
+          <img id="doctorAvatarImg" class="avatar hidden" style="object-fit:cover">
+          <div id="doctorAvatar" class="avatar">Dr</div>
           <div>
-            <div
-              id="doctorMiniName"
-              class="doctorMiniName"
-            >
-              Doctor
-            </div>
-
-            <div
-              id="doctorMiniSub"
-              class="doctorMiniSub"
-            >
-              Operator Panel
-            </div>
+            <div id="doctorMiniName" class="doctorMiniName">Doctor</div>
+            <div id="doctorMiniSub" class="doctorMiniSub">Operator Panel</div>
           </div>
-
         </div>
 
+        <nav class="navTabs">
+          <button class="navTab active" id="tabDashboard" onclick="switchPage('dashboard')">Dashboard</button>
+          <button class="navTab" id="tabPatients" onclick="switchPage('patients')">All Patients</button>
+        </nav>
       </div>
 
-
       <div class="headerBtns">
+        <button id="breakBtn" class="break-btn" onclick="toggleBreak()">
+          ☕ 5 Min Break
+        </button>
 
-        <button
-          class="primary"
-          onclick="callNext()"
-        >
+        <button class="primary" onclick="callNext()">
           Call Next →
         </button>
 
-        <button
-          class="outline"
-          onclick="doLogout()"
-        >
+        <button class="outline" onclick="doLogout()">
           Logout
         </button>
-
       </div>
-
     </header>
-
 
     <div id="app"></div>
 
@@ -1334,165 +1158,58 @@ select:focus{
 
 </div>
 
-
-<!-- MOBILE ACTION -->
-
-<div
-  id="mobileAction"
-  class="mobileAction hidden"
->
-
+<!-- MOBILE ACTION BAR -->
+<div id="mobileAction" class="mobileAction hidden">
   <div class="mobileCurrent">
-
     Now serving
-
-    <b id="mobileToken">
-      #0
-    </b>
-
+    <b id="mobileToken">#0</b>
   </div>
-
-  <button
-    class="primary"
-    onclick="callNext()"
-  >
+  <button class="primary" onclick="callNext()">
     Call Next →
   </button>
-
 </div>
 
-
-<!-- TOKEN / PATIENT NO MODAL -->
-
-<div
-  id="tokenModal"
-  class="modalOverlay hidden"
-  onclick="closeTokenModal(event)"
->
-
-  <div
-    class="modal"
-    onclick="event.stopPropagation()"
-  >
-
+<!-- PATIENT NO MODAL -->
+<div id="tokenModal" class="modalOverlay hidden" onclick="closeTokenModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
     <div class="modalHeader">
-
-      <div class="modalTitle">
-        Assign Patient No.
-      </div>
-
-      <button
-        class="closeBtn"
-        onclick="closeTokenModal()"
-      >
-        ✕
-      </button>
-
+      <div class="modalTitle">Assign Patient No.</div>
+      <button class="closeBtn" onclick="closeTokenModal()">✕</button>
     </div>
-
 
     <div class="modalBody">
-
       <div class="modalPatient">
-
-        <div
-          id="modalPatientName"
-          class="modalPatientName"
-        >
-          Patient
-        </div>
-
-        <div
-          id="modalPatientMeta"
-          class="modalPatientMeta"
-        >
-          Online booking
-        </div>
-
+        <div id="modalPatientName" class="modalPatientName">Patient</div>
+        <div id="modalPatientMeta" class="modalPatientMeta">Online booking</div>
       </div>
-
 
       <div class="suggestedToken">
-
-        <span>
-          Suggested next Patient No.
-        </span>
-
-        <b id="modalSuggested">
-          #1
-        </b>
-
+        <span>Suggested next Patient No.</span>
+        <b id="modalSuggested">#1</b>
       </div>
 
-
-      <label
-        class="formLabel"
-        style="margin-top:15px"
-      >
-        Patient No.
-      </label>
-
-      <input
-        id="modalTokenInput"
-        type="number"
-        min="1"
-        placeholder="Enter patient number"
-      >
-
-      <div
-        id="modalTokenError"
-        class="loginErr"
-      ></div>
-
+      <label class="formLabel" style="margin-top:15px">Patient No.</label>
+      <input id="modalTokenInput" type="number" min="1" placeholder="Enter patient number">
+      <div id="modalTokenError" class="loginErr"></div>
     </div>
-
 
     <div class="modalFooter">
-
-      <button
-        class="outline"
-        onclick="closeTokenModal()"
-      >
-        Cancel
-      </button>
-
-      <button
-        class="primary"
-        onclick="confirmTokenAssignment()"
-      >
-        Confirm Patient No.
-      </button>
-
+      <button class="outline" onclick="closeTokenModal()">Cancel</button>
+      <button class="primary" onclick="confirmTokenAssignment()">Confirm Patient No.</button>
     </div>
-
   </div>
-
 </div>
 
-
 <!-- EDIT PROFILE MODAL -->
-
-<div
-  id="editProfileModal"
-  class="modalOverlay hidden"
-  onclick="closeEditProfileModal(event)"
->
-
-  <div
-    class="modal"
-    style="max-width:520px"
-    onclick="event.stopPropagation()"
-  >
-
+<div id="editProfileModal" class="modalOverlay hidden" onclick="closeEditProfileModal(event)">
+  <div class="modal" style="max-width:520px" onclick="event.stopPropagation()">
     <div class="modalHeader">
       <div class="modalTitle">Edit Doctor Profile</div>
       <button class="closeBtn" onclick="closeEditProfileModal()">✕</button>
     </div>
 
     <div class="modalBody">
-
       <div class="profileGrid">
-
         <div class="full" style="text-align:center">
           <label>Profile Photo</label>
           <img id="epPhotoPreview" class="hidden" style="width:88px;height:88px;border-radius:50%;object-fit:cover;margin:0 auto 10px;display:block">
@@ -1538,273 +1255,164 @@ select:focus{
           <label>Consultation Fee (₹)</label>
           <input id="epFee" type="number" placeholder="500">
         </div>
-
       </div>
 
       <div id="editProfileErr" class="loginErr"></div>
-
     </div>
 
     <div class="modalFooter">
       <button class="outline" onclick="closeEditProfileModal()">Cancel</button>
       <button class="primary" onclick="saveEditProfile()">Save Changes</button>
     </div>
-
   </div>
-
 </div>
 
-
-<!-- FIREBASE -->
-
+<!-- FIREBASE SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 
-
 <script>
-
 /* =========================================================
    FIREBASE CONFIG
 ========================================================= */
-
 const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyBL9PzyO4B86JUcKsskF3xnvxwwecuoN8U",
-
-  authDomain:
-    "meribari.firebaseapp.com",
-
-  projectId:
-    "meribari",
-
-  storageBucket:
-    "meribari.firebasestorage.app",
-
-  messagingSenderId:
-    "624386528748",
-
-  appId:
-    "1:624386528748:web:702f9daf1c5ea1199b5cc9",
-
-  measurementId:
-    "G-QRV0D6Q847"
+  apiKey: "AIzaSyBL9PzyO4B86JUcKsskF3xnvxwwecuoN8U",
+  authDomain: "meribari.firebaseapp.com",
+  projectId: "meribari",
+  storageBucket: "meribari.firebasestorage.app",
+  messagingSenderId: "624386528748",
+  appId: "1:624386528748:web:702f9daf1c5ea1199b5cc9",
+  measurementId: "G-QRV0D6Q847"
 };
 
-
-let fb = {
-  ready:false
-};
-
+let fb = { ready: false };
 
 try{
-
-  if(
-    firebaseConfig.apiKey &&
-    firebaseConfig.apiKey !== "REPLACE_ME"
-  ){
-
+  if(firebaseConfig.apiKey && firebaseConfig.apiKey !== "REPLACE_ME"){
     firebase.initializeApp(firebaseConfig);
-
-    fb.db =
-      firebase.firestore();
-
-    fb.auth =
-      firebase.auth();
-
+    fb.db = firebase.firestore();
+    fb.auth = firebase.auth();
     fb.ready = true;
-
-  }else{
-
-    document
-      .getElementById("connbar")
-      .classList
-      .remove("hidden");
-
+  } else {
+    document.getElementById("connbar").classList.remove("hidden");
   }
-
 }catch(e){
-
   console.error(e);
-
-  document
-    .getElementById("connbar")
-    .classList
-    .remove("hidden");
-
+  document.getElementById("connbar").classList.remove("hidden");
 }
 
+/* =========================================================
+   GLOBAL STATE & NAVIGATION
+========================================================= */
+let currentPage = 'dashboard'; // 'dashboard' | 'patients'
+let myDoctorId = null;
+let queueLive = { currentToken:0, status:"OPEN" };
+let pending = [];
+let active = [];
+let refundResults = [];
+let allPatients = [];
+let doctorData = null;
+let tokenAppointmentId = null;
+let breakTimer = null;
+
+function switchPage(page){
+  currentPage = page;
+  document.getElementById("tabDashboard").classList.toggle("active", page === 'dashboard');
+  document.getElementById("tabPatients").classList.toggle("active", page === 'patients');
+  render();
+}
 
 /* =========================================================
-   AUTH
+   DOCTOR BREAK SYSTEM
 ========================================================= */
+async function toggleBreak(){
+  if(!fb.ready || !myDoctorId) return;
 
+  if(queueLive.status === "BREAK"){
+    // Resume Queue
+    try{
+      await fb.db.collection("queue").doc(myDoctorId).update({
+        status: "OPEN",
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      if(breakTimer) clearTimeout(breakTimer);
+    }catch(e){
+      console.error(e);
+      alert("Could not update queue status: " + e.message);
+    }
+  } else {
+    // Take 5 Min Break
+    try{
+      await fb.db.collection("queue").doc(myDoctorId).update({
+        status: "BREAK",
+        breakUntil: Date.now() + (5 * 60 * 1000),
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // Auto resume after 5 minutes
+      if(breakTimer) clearTimeout(breakTimer);
+      breakTimer = setTimeout(async () => {
+        await fb.db.collection("queue").doc(myDoctorId).update({
+          status: "OPEN"
+        });
+      }, 5 * 60 * 1000);
+
+    }catch(e){
+      console.error(e);
+      alert("Could not set break: " + e.message);
+    }
+  }
+}
+
+/* =========================================================
+   AUTH LOGIC
+========================================================= */
 let authMode = "login";
 
-
 function toggleAuthMode(){
-
-  authMode =
-    authMode === "login"
-      ? "signup"
-      : "login";
-
-
-  document
-    .getElementById("loginTitle")
-    .textContent =
-      authMode === "login"
-        ? "Doctor / Operator Login"
-        : "Create Your Account";
-
-
-  document
-    .getElementById("loginBtn")
-    .textContent =
-      authMode === "login"
-        ? "Login"
-        : "Create Account";
-
-
-  document
-    .getElementById("modeLoginText")
-    .textContent =
-      authMode === "login"
-        ? "New here? "
-        : "Already have an account? ";
-
-
-  document
-    .getElementById("modeToggle")
-    .textContent =
-      authMode === "login"
-        ? "Create Account"
-        : "Login";
-
-
-  document
-    .getElementById("loginErr")
-    .textContent = "";
-
+  authMode = authMode === "login" ? "signup" : "login";
+  document.getElementById("loginTitle").textContent = authMode === "login" ? "Doctor / Operator Login" : "Create Your Account";
+  document.getElementById("loginBtn").textContent = authMode === "login" ? "Login" : "Create Account";
+  document.getElementById("modeLoginText").textContent = authMode === "login" ? "New here? " : "Already have an account? ";
+  document.getElementById("modeToggle").textContent = authMode === "login" ? "Create Account" : "Login";
+  document.getElementById("loginErr").textContent = "";
 }
-
 
 async function doLogin(){
-
-  const email =
-    document
-      .getElementById("loginEmail")
-      .value
-      .trim();
-
-  const pass =
-    document
-      .getElementById("loginPass")
-      .value;
-
-  const errBox =
-    document.getElementById("loginErr");
-
-
+  const email = document.getElementById("loginEmail").value.trim();
+  const pass = document.getElementById("loginPass").value;
+  const errBox = document.getElementById("loginErr");
   errBox.textContent = "";
 
-
   if(!email || !pass){
-
-    errBox.textContent =
-      "Please enter email and password.";
-
+    errBox.textContent = "Please enter email and password.";
     return;
   }
-
-
   if(!fb.ready){
-
-    errBox.textContent =
-      "Firebase not connected.";
-
+    errBox.textContent = "Firebase not connected.";
     return;
   }
-
 
   try{
-
     if(authMode === "login"){
-
-      await fb.auth
-        .signInWithEmailAndPassword(
-          email,
-          pass
-        );
-
+      await fb.auth.signInWithEmailAndPassword(email, pass);
     }else{
-
-      await fb.auth
-        .createUserWithEmailAndPassword(
-          email,
-          pass
-        );
-
+      await fb.auth.createUserWithEmailAndPassword(email, pass);
     }
-
   }catch(e){
-
     console.error(e);
-
-    errBox.textContent =
-      (
-        authMode === "login"
-          ? "Login failed: "
-          : "Sign up failed: "
-      ) + e.message;
-
+    errBox.textContent = (authMode === "login" ? "Login failed: " : "Sign up failed: ") + e.message;
   }
-
 }
-
 
 function doLogout(){
-
-  if(fb.ready){
-
-    fb.auth.signOut();
-
-  }
-
+  if(fb.ready) fb.auth.signOut();
 }
-
-
-/* =========================================================
-   GLOBAL STATE
-========================================================= */
-
-let myDoctorId = null;
-
-let queueLive = {
-  currentToken:0,
-  status:"OPEN"
-};
-
-let pending = [];
-
-let active = [];
-
-let refundResults = [];
-
-let allPatients = [];
-
-let doctorData = null;
-
-let tokenAppointmentId = null;
-
 
 /* =========================================================
    PHOTO HELPERS
 ========================================================= */
-
 function previewPhoto(inputId, imgId){
   const file = document.getElementById(inputId).files[0];
   if(!file) return;
@@ -1838,360 +1446,104 @@ function resizeImageToDataUrl(file, maxSize){
   });
 }
 
-
 /* =========================================================
-   PROFILE
+   PROFILE SETUP & EDIT
 ========================================================= */
-
 async function createDoctorProfile(){
-
-  const errBox =
-    document.getElementById("profileErr");
-
+  const errBox = document.getElementById("profileErr");
   errBox.textContent = "";
-
-
-  const name =
-    document
-      .getElementById("pfName")
-      .value
-      .trim();
-
-
-  const fee =
-    Number(
-      document
-        .getElementById("pfFee")
-        .value
-    );
-
+  const name = document.getElementById("pfName").value.trim();
+  const fee = Number(document.getElementById("pfFee").value);
 
   if(!name || !fee){
-
-    errBox.textContent =
-      "Doctor name and consultation fee are required.";
-
+    errBox.textContent = "Doctor name and consultation fee are required.";
     return;
   }
 
-
-  let defaults = {
-
-    platformFee:100,
-
-    serviceFee:20,
-
-    avgConsultationMinutes:5
-
-  };
-
-
+  let defaults = { platformFee:100, serviceFee:20, avgConsultationMinutes:5 };
   try{
-
-    const cfg =
-      await fb.db
-        .collection("config")
-        .doc("fees")
-        .get();
-
-
-    if(cfg.exists){
-
-      defaults = {
-        ...defaults,
-        ...cfg.data()
-      };
-
-    }
-
-  }catch(e){
-
-    console.warn(
-      "Could not load fee config.",
-      e
-    );
-
-  }
-
+    const cfg = await fb.db.collection("config").doc("fees").get();
+    if(cfg.exists) defaults = { ...defaults, ...cfg.data() };
+  }catch(e){ console.warn("Could not load fee config.", e); }
 
   doctorData = {
-
     name,
-
-    specialty:
-      document
-        .getElementById("pfSpecialty")
-        .value
-        .trim(),
-
-    qualifications:
-      document
-        .getElementById("pfQual")
-        .value
-        .split(",")
-        .map(
-          s => s.trim()
-        )
-        .filter(Boolean),
-
-    experience:
-      document
-        .getElementById("pfExp")
-        .value
-        .trim(),
-
-    clinicName:
-      document
-        .getElementById("pfClinic")
-        .value
-        .trim(),
-
-    clinicAddress:
-      document
-        .getElementById("pfAddress")
-        .value
-        .trim(),
-
-    workingHours:
-      document
-        .getElementById("pfHours")
-        .value
-        .trim(),
-
-    consultationFee:fee,
-
-    platformFee:
-      defaults.platformFee,
-
-    serviceFee:
-      defaults.serviceFee,
-
-    avgConsultationMinutes:
-      defaults.avgConsultationMinutes,
-
-    upiId:"",
-
-    emergencyNumber:
-      "To be configured by Admin",
-
-    photoUrl:
-      document.getElementById("pfPhotoPreview").dataset.pendingPhoto || "",
-
-    isActive:true,
-
-    updatedAt:
-      firebase.firestore.FieldValue
-        .serverTimestamp()
-
+    specialty: document.getElementById("pfSpecialty").value.trim(),
+    qualifications: document.getElementById("pfQual").value.split(",").map(s => s.trim()).filter(Boolean),
+    experience: document.getElementById("pfExp").value.trim(),
+    clinicName: document.getElementById("pfClinic").value.trim(),
+    clinicAddress: document.getElementById("pfAddress").value.trim(),
+    workingHours: document.getElementById("pfHours").value.trim(),
+    consultationFee: fee,
+    platformFee: defaults.platformFee,
+    serviceFee: defaults.serviceFee,
+    avgConsultationMinutes: defaults.avgConsultationMinutes,
+    upiId: "",
+    emergencyNumber: "To be configured by Admin",
+    photoUrl: document.getElementById("pfPhotoPreview").dataset.pendingPhoto || "",
+    isActive: true,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
 
-
   try{
+    await fb.db.collection("doctors").doc(myDoctorId).set(doctorData);
+    await fb.db.collection("queue").doc(myDoctorId).set({
+      currentToken: 0,
+      status: "OPEN",
+      lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    });
 
-    await fb.db
-      .collection("doctors")
-      .doc(myDoctorId)
-      .set(doctorData);
-
-
-    await fb.db
-      .collection("queue")
-      .doc(myDoctorId)
-      .set({
-
-        currentToken:0,
-
-        status:"OPEN",
-
-        lastUpdated:
-          firebase.firestore.FieldValue
-            .serverTimestamp()
-
-      });
-
-
-    document
-      .getElementById("profileSetupScreen")
-      .classList
-      .add("hidden");
-
-
-    document
-      .getElementById("mainScreen")
-      .classList
-      .remove("hidden");
-
-
+    document.getElementById("profileSetupScreen").classList.add("hidden");
+    document.getElementById("mainScreen").classList.remove("hidden");
     updateDoctorHeader();
-
     listenAll();
-
-
   }catch(e){
-
     console.error(e);
-
-    errBox.textContent =
-      "Could not create profile: " +
-      e.message;
-
+    errBox.textContent = "Could not create profile: " + e.message;
   }
-
 }
 
-
 /* =========================================================
-   AUTH STATE
+   AUTH STATE WATCHER
 ========================================================= */
-
 if(fb.ready){
-
-  fb.auth.onAuthStateChanged(
-    async user => {
-
-      if(user){
-
-        document
-          .getElementById("loginScreen")
-          .classList
-          .add("hidden");
-
-
-        myDoctorId =
-          user.uid;
-
-
-        try{
-
-          const doc =
-            await fb.db
-              .collection("doctors")
-              .doc(myDoctorId)
-              .get();
-
-
-          if(!doc.exists){
-
-            document
-              .getElementById("profileSetupScreen")
-              .classList
-              .remove("hidden");
-
-
-          }else{
-
-            doctorData =
-              doc.data();
-
-
-            document
-              .getElementById("mainScreen")
-              .classList
-              .remove("hidden");
-
-
-            updateDoctorHeader();
-
-            listenAll();
-
-          }
-
-        }catch(e){
-
-          console.error(e);
-
-          document
-            .getElementById("loginErr")
-            .textContent =
-              "Unable to load doctor profile.";
-
+  fb.auth.onAuthStateChanged(async user => {
+    if(user){
+      document.getElementById("loginScreen").classList.add("hidden");
+      myDoctorId = user.uid;
+      try{
+        const doc = await fb.db.collection("doctors").doc(myDoctorId).get();
+        if(!doc.exists){
+          document.getElementById("profileSetupScreen").classList.remove("hidden");
+        }else{
+          doctorData = doc.data();
+          document.getElementById("mainScreen").classList.remove("hidden");
+          updateDoctorHeader();
+          listenAll();
         }
-
-
-      }else{
-
-        myDoctorId = null;
-
-        doctorData = null;
-
-        document
-          .getElementById("loginScreen")
-          .classList
-          .remove("hidden");
-
-
-        document
-          .getElementById("profileSetupScreen")
-          .classList
-          .add("hidden");
-
-
-        document
-          .getElementById("mainScreen")
-          .classList
-          .add("hidden");
-
-
-        document
-          .getElementById("mobileAction")
-          .classList
-          .add("hidden");
-
+      }catch(e){
+        console.error(e);
+        document.getElementById("loginErr").textContent = "Unable to load doctor profile.";
       }
-
+    }else{
+      myDoctorId = null;
+      doctorData = null;
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("profileSetupScreen").classList.add("hidden");
+      document.getElementById("mainScreen").classList.add("hidden");
+      document.getElementById("mobileAction").classList.add("hidden");
     }
-  );
-
+  });
 }
-
-
-/* =========================================================
-   DOCTOR HEADER
-========================================================= */
 
 function updateDoctorHeader(){
+  if(!doctorData) return;
+  const name = doctorData.name || "Doctor";
+  document.getElementById("doctorMiniName").textContent = name;
+  document.getElementById("doctorMiniSub").textContent = doctorData.specialty || "Doctor Panel";
 
-  if(!doctorData){
-    return;
-  }
-
-
-  const name =
-    doctorData.name ||
-    "Doctor";
-
-
-  document
-    .getElementById("doctorMiniName")
-    .textContent =
-      name;
-
-
-  document
-    .getElementById("doctorMiniSub")
-    .textContent =
-      doctorData.specialty ||
-      "Doctor Panel";
-
-
-  const initials =
-    name
-      .replace("Dr.","")
-      .trim()
-      .split(/\s+/)
-      .slice(0,2)
-      .map(
-        x => x[0]
-      )
-      .join("")
-      .toUpperCase();
-
-
-  document
-    .getElementById("doctorAvatar")
-    .textContent =
-      initials || "DR";
-
+  const initials = name.replace("Dr.","").trim().split(/\s+/).slice(0,2).map(x => x[0]).join("").toUpperCase();
+  document.getElementById("doctorAvatar").textContent = initials || "DR";
 
   const imgEl = document.getElementById("doctorAvatarImg");
   const initialsEl = document.getElementById("doctorAvatar");
@@ -2203,13 +1555,7 @@ function updateDoctorHeader(){
     imgEl.classList.add("hidden");
     initialsEl.classList.remove("hidden");
   }
-
 }
-
-
-/* =========================================================
-   EDIT PROFILE MODAL
-========================================================= */
 
 function openEditProfileModal(){
   if(!doctorData) return;
@@ -2273,164 +1619,65 @@ async function saveEditProfile(){
   }
 }
 
-
 /* =========================================================
    FIRESTORE LISTENERS
 ========================================================= */
-
 function listenAll(){
+  if(!fb.ready || !myDoctorId) return;
 
-  if(!fb.ready || !myDoctorId){
-    return;
-  }
+  fb.db.collection("queue").doc(myDoctorId).onSnapshot(doc => {
+    queueLive = doc.exists ? doc.data() : { currentToken:0, status:"OPEN" };
+    
+    // Update Break Button UI
+    const breakBtn = document.getElementById("breakBtn");
+    if(queueLive.status === "BREAK"){
+      breakBtn.innerHTML = "▶ Resume Queue";
+      breakBtn.style.background = "#dcfce7";
+      breakBtn.style.color = "#15803d";
+      breakBtn.style.borderColor = "#86efac";
+    } else {
+      breakBtn.innerHTML = "☕ 5 Min Break";
+      breakBtn.style.background = "var(--orange-soft)";
+      breakBtn.style.color = "var(--orange)";
+      breakBtn.style.borderColor = "#fed7aa";
+    }
 
+    updateMobileAction();
+    render();
+  });
 
-  /* Queue */
-
-  fb.db
-    .collection("queue")
-    .doc(myDoctorId)
-    .onSnapshot(doc => {
-
-      queueLive =
-        doc.exists
-          ? doc.data()
-          : {
-              currentToken:0,
-              status:"OPEN"
-            };
-
-
-      updateMobileAction();
-
-      render();
-
-    });
-
-
-  /* Pending online bookings */
-
-  fb.db
-    .collection("appointments")
-    .where(
-      "doctorId",
-      "==",
-      myDoctorId
-    )
-    .where(
-      "status",
-      "==",
-      "waiting_for_token"
-    )
+  fb.db.collection("appointments")
+    .where("doctorId", "==", myDoctorId)
+    .where("status", "==", "waiting_for_token")
     .onSnapshot(snap => {
-
-      pending =
-        snap.docs.map(
-          d => ({
-            id:d.id,
-            ...d.data()
-          })
-        );
-
-
+      pending = snap.docs.map(d => ({ id:d.id, ...d.data() }));
       render();
-
     });
 
-
-  /* All patients — full history, for the detailed list */
-
-  fb.db
-    .collection("appointments")
-    .where(
-      "doctorId",
-      "==",
-      myDoctorId
-    )
+  fb.db.collection("appointments")
+    .where("doctorId", "==", myDoctorId)
     .onSnapshot(snap => {
-
-      allPatients =
-        snap.docs
-          .map(
-            d => ({
-              id:d.id,
-              ...d.data()
-            })
-          )
-          .sort(
-            (a,b) =>
-              (b.createdAt?.seconds || 0) -
-              (a.createdAt?.seconds || 0)
-          );
-
-
+      allPatients = snap.docs.map(d => ({ id:d.id, ...d.data() }))
+        .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
       render();
-
     });
 
-
-  /* Active queue */
-
-  fb.db
-    .collection("appointments")
-    .where(
-      "doctorId",
-      "==",
-      myDoctorId
-    )
-    .where(
-      "status",
-      "in",
-      [
-        "waiting",
-        "current"
-      ]
-    )
+  fb.db.collection("appointments")
+    .where("doctorId", "==", myDoctorId)
+    .where("status", "in", ["waiting", "current"])
     .onSnapshot(snap => {
-
-      active =
-        snap.docs
-          .map(
-            d => ({
-              id:d.id,
-              ...d.data()
-            })
-          )
-          .sort(
-            (a,b) =>
-              (a.tokenNumber || 0) -
-              (b.tokenNumber || 0)
-          );
-
-
+      active = snap.docs.map(d => ({ id:d.id, ...d.data() }))
+        .sort((a,b) => (a.tokenNumber || 0) - (b.tokenNumber || 0));
       render();
-
     });
-
 }
-
 
 /* =========================================================
    HELPERS
 ========================================================= */
-
 function esc(x){
-
-  return String(x ?? "")
-    .replace(
-      /[&<>"']/g,
-      m =>
-        ({
-          "&":"&amp;",
-          "<":"&lt;",
-          ">":"&gt;",
-          "\"":"&quot;",
-          "'":"&#39;"
-        }[m])
-    );
-
+  return String(x ?? "").replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m]));
 }
-
 
 function fmtDate(ts){
   if(!ts || !ts.seconds) return "-";
@@ -2439,794 +1686,269 @@ function fmtDate(ts){
 }
 
 function nextTokenNumber(){
-
-  const highestActive =
-    active.reduce(
-      (m,a) =>
-        Math.max(
-          m,
-          Number(a.tokenNumber) || 0
-        ),
-      0
-    );
-
-
-  return Math.max(
-    Number(queueLive.currentToken || 0) + 1,
-    highestActive + 1
-  );
-
+  const highestActive = active.reduce((m,a) => Math.max(m, Number(a.tokenNumber) || 0), 0);
+  return Math.max(Number(queueLive.currentToken || 0) + 1, highestActive + 1);
 }
-
 
 /* =========================================================
    TOKEN / PATIENT NO MODAL
 ========================================================= */
-
-function openTokenModal(
-  appointmentId,
-  patientName,
-  patientAge
-){
-
-  tokenAppointmentId =
-    appointmentId;
-
-
-  document
-    .getElementById("modalPatientName")
-    .textContent =
-      patientName;
-
-
-  document
-    .getElementById("modalPatientMeta")
-    .textContent =
-      patientAge
-        ? `Online booking • ${patientAge} years`
-        : "Online booking";
-
-
-  const suggested =
-    nextTokenNumber();
-
-
-  document
-    .getElementById("modalSuggested")
-    .textContent =
-      "#" + suggested;
-
-
-  document
-    .getElementById("modalTokenInput")
-    .value =
-      suggested;
-
-
-  document
-    .getElementById("modalTokenError")
-    .textContent = "";
-
-
-  document
-    .getElementById("tokenModal")
-    .classList
-    .remove("hidden");
-
-
-  setTimeout(
-    () =>
-      document
-        .getElementById("modalTokenInput")
-        .focus(),
-    100
-  );
-
+function openTokenModal(appointmentId, patientName, patientAge){
+  tokenAppointmentId = appointmentId;
+  document.getElementById("modalPatientName").textContent = patientName;
+  document.getElementById("modalPatientMeta").textContent = patientAge ? `Online booking • ${patientAge} years` : "Online booking";
+  const suggested = nextTokenNumber();
+  document.getElementById("modalSuggested").textContent = "#" + suggested;
+  document.getElementById("modalTokenInput").value = suggested;
+  document.getElementById("modalTokenError").textContent = "";
+  document.getElementById("tokenModal").classList.remove("hidden");
+  setTimeout(() => document.getElementById("modalTokenInput").focus(), 100);
 }
-
 
 function closeTokenModal(event){
-
-  if(
-    event &&
-    event.target !== event.currentTarget
-  ){
-
-    return;
-
-  }
-
-
+  if(event && event.target !== event.currentTarget) return;
   tokenAppointmentId = null;
-
-
-  document
-    .getElementById("tokenModal")
-    .classList
-    .add("hidden");
-
+  document.getElementById("tokenModal").classList.add("hidden");
 }
-
 
 async function confirmTokenAssignment(){
-
-  if(!tokenAppointmentId){
-    return;
-  }
-
-
-  const input =
-    document
-      .getElementById("modalTokenInput")
-      .value;
-
-
-  const token =
-    parseInt(input,10);
-
-
-  const error =
-    document
-      .getElementById("modalTokenError");
-
-
+  if(!tokenAppointmentId) return;
+  const input = document.getElementById("modalTokenInput").value;
+  const token = parseInt(input,10);
+  const error = document.getElementById("modalTokenError");
   error.textContent = "";
 
-
   if(!token || token < 1){
-
-    error.textContent =
-      "Please enter a valid patient number.";
-
+    error.textContent = "Please enter a valid patient number.";
     return;
-
   }
 
-
-  const duplicate =
-    active.some(
-      a =>
-        Number(a.tokenNumber) === token
-    );
-
-
+  const duplicate = active.some(a => Number(a.tokenNumber) === token);
   if(duplicate){
-
-    error.textContent =
-      `Patient No. #${token} is already in the live queue.`;
-
+    error.textContent = `Patient No. #${token} is already in the live queue.`;
     return;
-
   }
-
 
   try{
-
-    await fb.db
-      .collection("appointments")
-      .doc(tokenAppointmentId)
-      .update({
-
-        tokenNumber:token,
-
-        status:"waiting",
-
-        updatedAt:
-          firebase.firestore.FieldValue
-            .serverTimestamp()
-
-      });
-
-
+    await fb.db.collection("appointments").doc(tokenAppointmentId).update({
+      tokenNumber: token,
+      status: "waiting",
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
     closeTokenModal();
-
   }catch(e){
-
     console.error(e);
-
-    error.textContent =
-      "Could not assign patient number: " +
-      e.message;
-
+    error.textContent = "Could not assign patient number: " + e.message;
   }
-
 }
-
 
 /* =========================================================
    CALL NEXT
 ========================================================= */
-
 async function callNext(){
-
   if(!fb.ready){
-
-    alert(
-      "Connect Firebase first."
-    );
-
+    alert("Connect Firebase first.");
     return;
-
   }
 
-
-  const next =
-    Number(queueLive.currentToken || 0) + 1;
-
+  const next = Number(queueLive.currentToken || 0) + 1;
 
   try{
+    await fb.db.collection("queue").doc(myDoctorId).set({
+      currentToken: next,
+      status: "OPEN",
+      lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    },{ merge: true });
 
-    await fb.db
-      .collection("queue")
-      .doc(myDoctorId)
-      .set({
-
-        currentToken:next,
-
-        status:"OPEN",
-
-        lastUpdated:
-          firebase.firestore.FieldValue
-            .serverTimestamp()
-
-      },{
-        merge:true
-      });
-
-
-    const updates =
-      [];
-
-
+    const updates = [];
     active.forEach(a => {
-
-      if(
-        Number(a.tokenNumber) === next
-      ){
-
-        updates.push(
-          fb.db
-            .collection("appointments")
-            .doc(a.id)
-            .update({
-
-              status:"current",
-
-              updatedAt:
-                firebase.firestore.FieldValue
-                  .serverTimestamp()
-
-            })
-        );
-
-      }else if(
-        Number(a.tokenNumber) < next
-      ){
-
-        updates.push(
-          fb.db
-            .collection("appointments")
-            .doc(a.id)
-            .update({
-
-              status:"completed",
-
-              updatedAt:
-                firebase.firestore.FieldValue
-                  .serverTimestamp()
-
-            })
-        );
-
+      if(Number(a.tokenNumber) === next){
+        updates.push(fb.db.collection("appointments").doc(a.id).update({
+          status: "current",
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }));
+      }else if(Number(a.tokenNumber) < next){
+        updates.push(fb.db.collection("appointments").doc(a.id).update({
+          status: "completed",
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }));
       }
-
     });
 
-
     await Promise.all(updates);
-
-
   }catch(e){
-
     console.error(e);
-
-    alert(
-      "Unable to call next patient number: " +
-      e.message
-    );
-
+    alert("Unable to call next patient number: " + e.message);
   }
-
 }
-
 
 /* =========================================================
    WALK-IN
 ========================================================= */
-
 async function addWalkIn(){
-
   if(!fb.ready){
-
-    alert(
-      "Firebase not connected."
-    );
-
+    alert("Firebase not connected.");
     return;
-
   }
 
-
-  const name =
-    document
-      .getElementById("wiName")
-      .value
-      .trim();
-
-
-  const age =
-    Number(
-      document
-        .getElementById("wiAge")
-        .value
-    ) || 0;
-
-
-  const mobile =
-    document
-      .getElementById("wiMobile")
-      .value
-      .trim();
-
-
-  const complaint =
-    document
-      .getElementById("wiComplaint")
-      .value
-      .trim();
-
-
-  const method =
-    document
-      .getElementById("wiMethod")
-      .value;
-
-
-  const amount =
-    Number(
-      document
-        .getElementById("wiAmount")
-        .value
-    ) || 0;
-
+  const name = document.getElementById("wiName").value.trim();
+  const age = Number(document.getElementById("wiAge").value) || 0;
+  const mobile = document.getElementById("wiMobile").value.trim();
+  const complaint = document.getElementById("wiComplaint").value.trim();
+  const method = document.getElementById("wiMethod").value;
+  const amount = Number(document.getElementById("wiAmount").value) || 0;
 
   if(!name){
-
-    alert(
-      "Please enter patient name."
-    );
-
-    return;
-
-  }
-
-
-  const suggested =
-    nextTokenNumber();
-
-
-  const token =
-    await askWalkInToken(
-      name,
-      suggested
-    );
-
-
-  if(token === null){
+    alert("Please enter patient name.");
     return;
   }
 
+  const suggested = nextTokenNumber();
+  const token = await askWalkInToken(name, suggested);
+  if(token === null) return;
 
   try{
+    await fb.db.collection("appointments").add({
+      userId: null,
+      patientId: null,
+      patientName: name,
+      patientAge: age,
+      patientGender: "Unspecified",
+      patientMobile: mobile,
+      complaint,
+      doctorId: myDoctorId,
+      paymentType: "cash_at_clinic",
+      paymentMethod: method,
+      amountPaid: amount,
+      paymentStatus: "verified",
+      tokenNumber: token,
+      status: "waiting",
+      source: "walk_in",
+      refunded: false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
 
-    await fb.db
-      .collection("appointments")
-      .add({
-
-        userId:null,
-
-        patientId:null,
-
-        patientName:name,
-
-        patientAge:age,
-
-        patientMobile:mobile,
-
-        complaint,
-
-        doctorId:myDoctorId,
-
-        paymentType:
-          "cash_at_clinic",
-
-        paymentMethod:method,
-
-        amountPaid:amount,
-
-        paymentStatus:"verified",
-
-        tokenNumber:token,
-
-        status:"waiting",
-
-        source:"walk_in",
-
-        refunded:false,
-
-        createdAt:
-          firebase.firestore.FieldValue
-            .serverTimestamp(),
-
-        updatedAt:
-          firebase.firestore.FieldValue
-            .serverTimestamp()
-
-      });
-
-
-    document
-      .getElementById("wiName")
-      .value = "";
-
-
-    document
-      .getElementById("wiAge")
-      .value = "";
-
-
-    document
-      .getElementById("wiMobile")
-      .value = "";
-
-
-    document
-      .getElementById("wiComplaint")
-      .value = "";
-
-
-    document
-      .getElementById("wiAmount")
-      .value = "";
-
-
-    document
-      .getElementById("wiMethod")
-      .value = "cash";
-
-
+    document.getElementById("wiName").value = "";
+    document.getElementById("wiAge").value = "";
+    document.getElementById("wiMobile").value = "";
+    document.getElementById("wiComplaint").value = "";
+    document.getElementById("wiAmount").value = "";
+    document.getElementById("wiMethod").value = "cash";
   }catch(e){
-
     console.error(e);
-
-    alert(
-      "Unable to add walk-in: " +
-      e.message
-    );
-
+    alert("Unable to add walk-in: " + e.message);
   }
-
 }
 
-
-function askWalkInToken(
-  name,
-  suggested
-){
-
+function askWalkInToken(name, suggested){
   return new Promise(resolve => {
+    const token = window.prompt(`Patient No. for ${name}\n\nSuggested: ${suggested}`, suggested);
+    if(token === null){ resolve(null); return; }
 
-    const token =
-      window.prompt(
-        `Patient No. for ${name}\n\nSuggested: ${suggested}`,
-        suggested
-      );
-
-
-    if(token === null){
-
+    const parsed = parseInt(token,10);
+    if(!parsed || parsed < 1){
+      alert("Enter a valid patient number.");
       resolve(null);
-
       return;
-
     }
 
-
-    const parsed =
-      parseInt(token,10);
-
-
-    if(
-      !parsed ||
-      parsed < 1
-    ){
-
-      alert(
-        "Enter a valid patient number."
-      );
-
-      resolve(null);
-
-      return;
-
-    }
-
-
-    const duplicate =
-      active.some(
-        a =>
-          Number(a.tokenNumber) === parsed
-      );
-
-
+    const duplicate = active.some(a => Number(a.tokenNumber) === parsed);
     if(duplicate){
-
-      alert(
-        `Patient No. #${parsed} is already in use.`
-      );
-
+      alert(`Patient No. #${parsed} is already in use.`);
       resolve(null);
-
       return;
-
     }
-
-
     resolve(parsed);
-
   });
-
 }
-
 
 /* =========================================================
    REFUNDS
 ========================================================= */
-
 async function searchRefundPatient(){
-
-  const q =
-    document
-      .getElementById("refundQuery")
-      .value
-      .trim()
-      .toLowerCase();
-
-
+  const q = document.getElementById("refundQuery").value.trim().toLowerCase();
   if(!q){
-
     refundResults = [];
-
     render();
-
     return;
-
   }
-
 
   try{
-
-    const snap =
-      await fb.db
-        .collection("appointments")
-        .where(
-          "doctorId",
-          "==",
-          myDoctorId
-        )
-        .get();
-
-
-    refundResults =
-      snap.docs
-        .map(
-          d => ({
-            id:d.id,
-            ...d.data()
-          })
-        )
-        .filter(a => {
-
-          return (
-
-            (a.patientName || "")
-              .toLowerCase()
-              .includes(q)
-
-            ||
-
-            (a.patientMobile || "")
-              .includes(q)
-
-          );
-
-        });
-
-
+    const snap = await fb.db.collection("appointments").where("doctorId", "==", myDoctorId).get();
+    refundResults = snap.docs.map(d => ({ id:d.id, ...d.data() })).filter(a => {
+      return (a.patientName || "").toLowerCase().includes(q) || (a.patientMobile || "").includes(q);
+    });
     render();
-
-
   }catch(e){
-
     console.error(e);
-
-    alert(
-      "Could not search patients: " +
-      e.message
-    );
-
+    alert("Could not search patients: " + e.message);
   }
-
 }
 
+async function refundPatient(id, patientName, amountPaid){
+  const input = prompt(`Refund amount for ${patientName}\n\nAmount paid: ₹${amountPaid}`, amountPaid);
+  if(input === null) return;
 
-async function refundPatient(
-  id,
-  patientName,
-  amountPaid
-){
-
-  const input =
-    prompt(
-      `Refund amount for ${patientName}\n\nAmount paid: ₹${amountPaid}`,
-      amountPaid
-    );
-
-
-  if(input === null){
+  const amt = Number(input);
+  if(!amt || amt <= 0){
+    alert("Enter a valid refund amount.");
     return;
   }
-
-
-  const amt =
-    Number(input);
-
-
-  if(
-    !amt ||
-    amt <= 0
-  ){
-
-    alert(
-      "Enter a valid refund amount."
-    );
-
-    return;
-
-  }
-
 
   try{
+    await fb.db.collection("appointments").doc(id).update({
+      refunded: true,
+      refundAmount: amt,
+      refundedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
 
-    await fb.db
-      .collection("appointments")
-      .doc(id)
-      .update({
-
-        refunded:true,
-
-        refundAmount:amt,
-
-        refundedAt:
-          firebase.firestore.FieldValue
-            .serverTimestamp(),
-
-        updatedAt:
-          firebase.firestore.FieldValue
-            .serverTimestamp()
-
-      });
-
-
-    const r =
-      refundResults.find(
-        x => x.id === id
-      );
-
-
-    if(r){
-
-      r.refunded = true;
-
-      r.refundAmount = amt;
-
-    }
-
-
+    const r = refundResults.find(x => x.id === id);
+    if(r){ r.refunded = true; r.refundAmount = amt; }
     render();
-
-
   }catch(e){
-
     console.error(e);
-
-    alert(
-      "Refund failed: " +
-      e.message
-    );
-
+    alert("Refund failed: " + e.message);
   }
-
 }
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
 
 function updateMobileAction(){
-
-  const bar =
-    document.getElementById(
-      "mobileAction"
-    );
-
-
-  if(
-    !myDoctorId ||
-    document
-      .getElementById("mainScreen")
-      .classList
-      .contains("hidden")
-  ){
-
+  const bar = document.getElementById("mobileAction");
+  if(!myDoctorId || document.getElementById("mainScreen").classList.contains("hidden")){
     bar.classList.add("hidden");
-
     return;
-
   }
-
-
   bar.classList.remove("hidden");
-
-
-  document
-    .getElementById("mobileToken")
-    .textContent =
-      "#" +
-      (queueLive.currentToken || 0);
-
+  document.getElementById("mobileToken").textContent = "#" + (queueLive.currentToken || 0);
 }
 
-
 /* =========================================================
-   RENDER
+   RENDER ENGINE
 ========================================================= */
-
 function render(){
+  const app = document.getElementById("app");
+  
+  if(currentPage === 'patients'){
+    // PAGE 2: ALL PATIENTS PAGE
+    app.innerHTML = renderAllPatientsPage();
+  } else {
+    // PAGE 1: MAIN DASHBOARD & LIVE QUEUE PAGE
+    app.innerHTML = renderDashboardPage();
+  }
+}
 
-  const waitingCount =
-    active.filter(
-      a => a.status === "waiting"
-    ).length;
+/* DASHBOARD PAGE HTML */
+function renderDashboardPage(){
+  const waitingCount = active.filter(a => a.status === "waiting").length;
+  const currentPatient = active.find(a => a.status === "current");
+  const isBreak = queueLive.status === "BREAK";
 
-
-  const currentPatient =
-    active.find(
-      a => a.status === "current"
-    );
-
-
-  document
-    .getElementById("app")
-    .innerHTML = `
-
-    <!-- DOCTOR PROFILE -->
-
+  return `
     <div class="card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
       ${doctorData?.photoUrl
-        ? `<img src="${doctorData.photoUrl}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex:none">`
-        : `<div class="avatar" style="width:64px;height:64px;font-size:22px">${esc((doctorData?.name||"Dr").replace("Dr.","").trim().split(/\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"DR")}</div>`
+        ? `<img src="${doctorData.photoUrl}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;flex:none">`
+        : `<div class="avatar" style="width:60px;height:60px;font-size:22px">${esc((doctorData?.name||"Dr").replace("Dr.","").trim().split(/\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"DR")}</div>`
       }
       <div style="flex:1;min-width:180px">
         <div style="font-weight:900;font-size:16px">${esc(doctorData?.name||"Doctor")}</div>
@@ -3236,344 +1958,135 @@ function render(){
       <button class="outline" onclick="openEditProfileModal()">Edit Profile</button>
     </div>
 
-
     <!-- QUEUE HERO -->
-
     <div class="card queueHero">
-
       <div class="heroMain">
-
         <div class="heroEyebrow">
-
-          <span class="liveBadge">
-            <span class="liveDot"></span>
-            LIVE QUEUE
-          </span>
-
-          <span>
-            Doctor's consultation queue
-          </span>
-
+          ${isBreak 
+            ? `<span class="breakBadge">☕ ON BREAK (5 MIN)</span>`
+            : `<span class="liveBadge"><span class="liveDot"></span> LIVE QUEUE</span>`
+          }
+          <span>Doctor's consultation queue</span>
         </div>
-
 
         <h1 class="heroTitle">
           Patient No. #${queueLive.currentToken || 0}
         </h1>
 
-
         <p class="heroSub">
-
-          ${
-            currentPatient
-
-              ? `
-                Currently consulting
-                <b>
-                  ${esc(
-                    currentPatient.patientName
-                  )}
-                </b>
-              `
-
-              : `
-                No patient is currently being consulted
-              `
+          ${isBreak
+            ? `<b>Doctor is currently on a 5-minute break.</b>`
+            : currentPatient
+              ? `Currently consulting <b>${esc(currentPatient.patientName)}</b>`
+              : `No patient is currently being consulted`
           }
-
         </p>
 
-
         <div class="currentTokenBox">
-
           <div>
-
-            <div class="tokenLabel">
-              NOW SERVING
-            </div>
-
-            <div class="bignum">
-              #${queueLive.currentToken || 0}
-            </div>
-
+            <div class="tokenLabel">NOW SERVING</div>
+            <div class="bignum">#${queueLive.currentToken || 0}</div>
           </div>
 
-
-          <button
-            class="primary nextBtn"
-            onclick="callNext()"
-          >
+          <button class="primary nextBtn" onclick="callNext()">
             Call Next →
           </button>
-
         </div>
-
       </div>
-
 
       <div class="queueSide">
-
         <div class="queueSideBox">
-
-          <div class="queueSideLabel">
-            Queue Status
+          <div class="queueSideLabel">Queue Status</div>
+          <div class="queueSideValue" style="color: ${isBreak ? 'var(--orange)' : 'inherit'}">
+            ${isBreak ? '☕ ON BREAK' : esc(queueLive.status || 'OPEN')}
           </div>
-
-          <div class="queueSideValue">
-            ${esc(
-              queueLive.status || "OPEN"
-            )}
-          </div>
-
         </div>
 
-
         <div class="queueSideBox">
-
-          <div class="queueSideLabel">
-            Next Suggested Patient No.
-          </div>
-
-          <div class="queueSideValue">
-            #${nextTokenNumber()}
-          </div>
-
+          <div class="queueSideLabel">Next Suggested Patient No.</div>
+          <div class="queueSideValue">#${nextTokenNumber()}</div>
         </div>
-
       </div>
-
     </div>
-
 
     <!-- KPI -->
-
     <div class="kpiGrid">
-
       <div class="kpiCard">
-
-        <div class="kpiTop">
-
-          Waiting
-
-          <span class="kpiIcon">
-            👥
-          </span>
-
-        </div>
-
-        <div class="kpiValue">
-          ${waitingCount}
-        </div>
-
+        <div class="kpiTop">Waiting <span class="kpiIcon">👥</span></div>
+        <div class="kpiValue">${waitingCount}</div>
       </div>
 
-
       <div class="kpiCard">
-
-        <div class="kpiTop">
-
-          Current
-
-          <span class="kpiIcon">
-            🩺
-          </span>
-
-        </div>
-
-        <div class="kpiValue">
-          #${queueLive.currentToken || 0}
-        </div>
-
+        <div class="kpiTop">Current <span class="kpiIcon">🩺</span></div>
+        <div class="kpiValue">#${queueLive.currentToken || 0}</div>
       </div>
 
-
       <div class="kpiCard">
-
-        <div class="kpiTop">
-
-          Requests
-
-          <span class="kpiIcon">
-            📋
-          </span>
-
-        </div>
-
-        <div class="kpiValue">
-          ${pending.length}
-        </div>
-
+        <div class="kpiTop">Requests <span class="kpiIcon">📋</span></div>
+        <div class="kpiValue">${pending.length}</div>
       </div>
-
     </div>
-
 
     <!-- WALK-IN -->
-
     <div class="card">
-
       <div class="sectionHead">
-
         <div class="sectionHeadLeft">
-
-          <h3>
-            ➕ Add Walk-in Patient
-          </h3>
-
-          <span class="tag warning">
-            OFFLINE
-          </span>
-
+          <h3>➕ Add Walk-in Patient</h3>
+          <span class="tag warning">OFFLINE</span>
         </div>
-
       </div>
-
 
       <div class="formGrid">
-
         <div>
-
-          <label class="formLabel">
-            Patient Name
-          </label>
-
-          <input
-            id="wiName"
-            placeholder="Enter patient name"
-          >
-
+          <label class="formLabel">Patient Name</label>
+          <input id="wiName" placeholder="Enter patient name">
         </div>
 
-
         <div>
-
-          <label class="formLabel">
-            Age
-          </label>
-
-          <input
-            id="wiAge"
-            type="number"
-            placeholder="Age"
-          >
-
+          <label class="formLabel">Age</label>
+          <input id="wiAge" type="number" placeholder="Age">
         </div>
 
-
         <div>
-
-          <label class="formLabel">
-            Mobile Number
-          </label>
-
-          <input
-            id="wiMobile"
-            placeholder="10-digit mobile number"
-          >
-
+          <label class="formLabel">Mobile Number</label>
+          <input id="wiMobile" placeholder="10-digit mobile number">
         </div>
 
-
         <div>
-
-          <label class="formLabel">
-            Payment Method
-          </label>
-
+          <label class="formLabel">Payment Method</label>
           <select id="wiMethod">
-
-            <option value="cash">
-              Cash
-            </option>
-
-            <option value="upi">
-              UPI
-            </option>
-
+            <option value="cash">Cash</option>
+            <option value="upi">UPI</option>
           </select>
-
         </div>
-
 
         <div class="full">
-
-          <label class="formLabel">
-            Complaint / Reason for Visit
-          </label>
-
-          <input
-            id="wiComplaint"
-            placeholder="e.g. Fever, headache, follow-up..."
-          >
-
+          <label class="formLabel">Complaint / Reason for Visit</label>
+          <input id="wiComplaint" placeholder="e.g. Fever, headache, follow-up...">
         </div>
-
 
         <div>
-
-          <label class="formLabel">
-            Amount Paid
-          </label>
-
-          <input
-            id="wiAmount"
-            type="number"
-            placeholder="₹ Amount"
-          >
-
+          <label class="formLabel">Amount Paid</label>
+          <input id="wiAmount" type="number" placeholder="₹ Amount">
         </div>
-
 
         <div class="formBottom">
-
-          <span class="small">
-            Suggested Patient No.:
-            <b>
-              #${nextTokenNumber()}
-            </b>
-          </span>
-
-          <button
-            class="primary"
-            onclick="addWalkIn()"
-          >
-            Add Patient →
-          </button>
-
+          <span class="small">Suggested Patient No.: <b>#${nextTokenNumber()}</b></span>
+          <button class="primary" onclick="addWalkIn()">Add Patient →</button>
         </div>
-
       </div>
-
     </div>
 
-
     <!-- ONLINE REQUESTS -->
-
     <div class="card">
-
       <div class="sectionHead">
-
         <div class="sectionHeadLeft">
-
-          <h3>
-            Online Booking Requests
-          </h3>
-
-          <span class="countBadge">
-            ${pending.length}
-          </span>
-
+          <h3>Online Booking Requests</h3>
+          <span class="countBadge">${pending.length}</span>
         </div>
-
       </div>
 
-
-      ${
-        pending.length
-
-        ?
-
-        `
+      ${pending.length ? `
         <div class="cleanTableWrapper">
           <table class="cleanTable">
             <thead>
@@ -3597,21 +2110,10 @@ function render(){
                     </div>
                   </td>
                   <td>
-                    <div class="patientComplaint">
-                      ${p.complaint ? esc(p.complaint) : "No complaint provided"}
-                    </div>
+                    <div class="patientComplaint">${p.complaint ? esc(p.complaint) : "No complaint provided"}</div>
                   </td>
                   <td style="text-align:right">
-                    <button
-                      class="primary"
-                      onclick="
-                        openTokenModal(
-                          '${p.id}',
-                          '${esc(p.patientName)}',
-                          '${p.patientAge || ""}'
-                        )
-                      "
-                    >
+                    <button class="primary" onclick="openTokenModal('${p.id}', '${esc(p.patientName)}', '${p.patientAge || ""}')">
                       Assign #${nextTokenNumber()}
                     </button>
                   </td>
@@ -3620,68 +2122,26 @@ function render(){
             </tbody>
           </table>
         </div>
-        `
-
-        :
-
-        `
+      ` : `
         <div class="emptyState">
-
-          <div class="emptyIcon">
-            📋
-          </div>
-
-          <div>
-            No online booking requests
-          </div>
-
-          <div class="small">
-            New bookings will appear here automatically.
-          </div>
-
+          <div class="emptyIcon">📋</div>
+          <div>No online booking requests</div>
+          <div class="small">New bookings will appear here automatically.</div>
         </div>
-        `
-      }
-
+      `}
     </div>
 
-
     <!-- LIVE QUEUE -->
-
     <div class="card">
-
       <div class="sectionHead">
-
         <div class="sectionHeadLeft">
-
-          <h3>
-            Live Queue
-          </h3>
-
-          <span class="countBadge">
-            ${active.length}
-          </span>
-
+          <h3>Live Queue</h3>
+          <span class="countBadge">${active.length}</span>
         </div>
-
-
-        <span class="liveBadge">
-
-          <span class="liveDot"></span>
-
-          LIVE
-
-        </span>
-
+        <span class="liveBadge"><span class="liveDot"></span> LIVE</span>
       </div>
 
-
-      ${
-        active.length
-
-        ?
-
-        `
+      ${active.length ? `
         <div class="cleanTableWrapper">
           <table class="cleanTable">
             <thead>
@@ -3709,8 +2169,7 @@ function render(){
                     </span>
                   </td>
                   <td style="text-align:right" class="paymentText">
-                    ${
-                      a.refunded
+                    ${a.refunded
                         ? `<span class="tag redTag">Refunded ₹${a.refundAmount}</span>`
                         : a.amountPaid
                         ? `₹${a.amountPaid}${a.paymentMethod ? " (" + esc(a.paymentMethod.toUpperCase()) + ")" : ""}`
@@ -3722,147 +2181,28 @@ function render(){
             </tbody>
           </table>
         </div>
-        `
-
-        :
-
-        `
+      ` : `
         <div class="emptyState">
-
-          <div class="emptyIcon">
-            🎫
-          </div>
-
-          <div>
-            Queue is empty
-          </div>
-
-          <div class="small">
-            Add a walk-in or assign a patient number to an online booking.
-          </div>
-
+          <div class="emptyIcon">🎫</div>
+          <div>Queue is empty</div>
+          <div class="small">Add a walk-in or assign a patient number to an online booking.</div>
         </div>
-        `
-      }
-
+      `}
     </div>
 
-
-    <!-- ALL PATIENTS — DETAILED TABLE -->
-
+    <!-- REFUND SECTION -->
     <div class="card">
-
       <div class="sectionHead">
-        <div class="sectionHeadLeft">
-          <h3>All Patients</h3>
-          <span class="countBadge">${allPatients.length}</span>
-        </div>
+        <h3>💰 Refund Patient</h3>
       </div>
-
-      ${
-        allPatients.length
-        ?
-        `
-        <div class="cleanTableWrapper">
-          <table class="cleanTable">
-            <thead>
-              <tr>
-                <th>Patient Name & No.</th>
-                <th>Status & Source</th>
-                <th>Complaint & Contact</th>
-                <th style="text-align:right">Date & Fee</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${allPatients.map(a => `
-                <tr>
-                  <td>
-                    <div class="patientName">
-                      ${esc(a.patientName)}
-                      ${a.tokenNumber ? ` <span class="small">• Patient No. #${a.tokenNumber}</span>` : ""}
-                    </div>
-                    <div class="small">${a.patientAge ? a.patientAge + " yrs" : "Age N/A"}</div>
-                  </td>
-                  <td>
-                    <div class="patientMeta">
-                      <span class="tag ${a.source==='walk_in'?'warning':'blueTag'}">${a.source==='walk_in'?'OFFLINE':'ONLINE'}</span>
-                      <span class="tag ${a.status==='completed'?'':a.status==='cancelled'||a.status==='no_show'?'redTag':'warning'}">${esc(a.status)}</span>
-                      ${a.refunded ? `<span class="tag redTag">Refunded ₹${a.refundAmount}</span>` : ""}
-                    </div>
-                  </td>
-                  <td>
-                    <div class="patientComplaint">${a.complaint ? esc(a.complaint) : "No complaint provided"}</div>
-                    <div class="small">${a.patientMobile ? esc(a.patientMobile) : ""}</div>
-                  </td>
-                  <td style="text-align:right" class="small">
-                    <div>${fmtDate(a.createdAt)}</div>
-                    <div>${a.amountPaid ? `₹${a.amountPaid}${a.paymentMethod?" ("+esc(a.paymentMethod.toUpperCase())+")":""}` : ""}</div>
-                  </td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
-        `
-        :
-        `
-        <div class="emptyState">
-          <div class="emptyIcon">🗂️</div>
-          <div>No patients yet</div>
-          <div class="small">Every booking — online or walk-in — will show up here.</div>
-        </div>
-        `
-      }
-
-    </div>
-
-
-    <!-- REFUND -->
-
-    <div class="card">
-
-      <div class="sectionHead">
-
-        <h3>
-          💰 Refund Patient
-        </h3>
-
-      </div>
-
-
-      <p class="small">
-        Search a patient by name or mobile number.
-      </p>
-
+      <p class="small">Search a patient by name or mobile number.</p>
 
       <div class="searchRow">
-
-        <input
-          id="refundQuery"
-          placeholder="Search patient..."
-          onkeydown="
-            if(event.key === 'Enter')
-              searchRefundPatient()
-          "
-        >
-
-
-        <button
-          class="outline"
-          onclick="searchRefundPatient()"
-        >
-          Search
-        </button>
-
+        <input id="refundQuery" placeholder="Search patient..." onkeydown="if(event.key === 'Enter') searchRefundPatient()">
+        <button class="outline" onclick="searchRefundPatient()">Search</button>
       </div>
 
-
-      ${
-        refundResults.length
-
-        ?
-
-        `
+      ${refundResults.length ? `
         <div class="cleanTableWrapper" style="margin-top:15px;">
           <table class="cleanTable">
             <thead>
@@ -3884,24 +2224,10 @@ function render(){
                   </td>
                   <td>₹${a.amountPaid || 0}</td>
                   <td style="text-align:right">
-                    ${
-                      a.refunded
+                    ${a.refunded
                         ? `<span class="tag redTag">Refunded ₹${a.refundAmount}</span>`
                         : a.amountPaid > 0
-                        ? `
-                          <button
-                            class="danger"
-                            onclick="
-                              refundPatient(
-                                '${a.id}',
-                                '${esc(a.patientName)}',
-                                ${a.amountPaid}
-                              )
-                            "
-                          >
-                            Refund
-                          </button>
-                        `
+                        ? `<button class="danger" onclick="refundPatient('${a.id}', '${esc(a.patientName)}', ${a.amountPaid})">Refund</button>`
                         : `<span class="small">No payment</span>`
                     }
                   </td>
@@ -3910,29 +2236,82 @@ function render(){
             </tbody>
           </table>
         </div>
-        `
-
-        :
-
-        ""
-      }
-
+      ` : ""}
     </div>
-
   `;
-
-
-  updateMobileAction();
-
 }
 
+/* ALL PATIENTS PAGE HTML (10-COLUMN BORDERLESS TABLE) */
+function renderAllPatientsPage(){
+  return `
+    <div class="card">
+      <div class="sectionHead">
+        <div class="sectionHeadLeft">
+          <h3>All Patients List</h3>
+          <span class="countBadge">${allPatients.length}</span>
+        </div>
+      </div>
+
+      ${allPatients.length ? `
+        <div class="cleanTableWrapper">
+          <table class="cleanTable">
+            <thead>
+              <tr>
+                <th>S.No. / Patient No.</th>
+                <th>Patient Name</th>
+                <th>Age & Gender</th>
+                <th>Complaint</th>
+                <th>Booking Time</th>
+                <th>Booking Source</th>
+                <th>Payment</th>
+                <th>Amount Paid</th>
+                <th>Refund Status</th>
+                <th>Mobile No.</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${allPatients.map((a, index) => {
+                const ageGender = (a.patientAge ? a.patientAge + " Yrs" : "N/A") + " / " + (a.patientGender || "Unspecified");
+                const bookingTime = fmtDate(a.createdAt);
+                const source = a.source === 'walk_in' ? 'Walk-in' : 'Online';
+                const payment = a.paymentMethod ? esc(a.paymentMethod.toUpperCase()) : (a.paymentType === 'cash_at_clinic' ? 'Cash' : 'N/A');
+                const amount = a.amountPaid ? `₹${a.amountPaid}` : "₹0";
+                const refund = a.refunded ? `Refunded (₹${a.refundAmount})` : "N/A";
+                const mobile = a.patientMobile ? esc(a.patientMobile) : "-";
+
+                return `
+                  <tr>
+                    <td style="font-weight:800;color:var(--blue)">#${a.tokenNumber || (index + 1)}</td>
+                    <td style="font-weight:750">${esc(a.patientName)}</td>
+                    <td>${esc(ageGender)}</td>
+                    <td><div class="patientComplaint">${a.complaint ? esc(a.complaint) : "No complaint"}</div></td>
+                    <td class="small">${bookingTime}</td>
+                    <td><span class="tag ${a.source==='walk_in'?'warning':'blueTag'}">${source}</span></td>
+                    <td>${payment}</td>
+                    <td style="font-weight:700">${amount}</td>
+                    <td>${a.refunded ? `<span class="tag redTag">${refund}</span>` : refund}</td>
+                    <td>${mobile}</td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      ` : `
+        <div class="emptyState">
+          <div class="emptyIcon">🗂️</div>
+          <div>No patients found</div>
+          <div class="small">Every patient record will be listed here in table format.</div>
+        </div>
+      `}
+    </div>
+  `;
+}
 
 /* =========================================================
-   INITIAL
+   INITIALIZATION
 ========================================================= */
-
 render();
-
 </script>
 
 </body>
