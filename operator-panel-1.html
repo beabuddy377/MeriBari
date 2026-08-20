@@ -2,107 +2,416 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MeriBari — Doctor Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeriBari — Operator Panel</title>
 
 <style>
+/* ==========================================
+   GLOBAL VARIABLES & STYLES
+   ========================================== */
 :root {
-  --blue:#2563eb; --blue-dark:#1d4ed8; --blue-soft:#eff6ff;
-  --green:#15803d; --green-soft:#ecfdf3;
-  --orange:#b45309; --orange-soft:#fff7ed;
-  --red:#dc2626; --red-soft:#fef2f2;
-  --text:#172033; --muted:#667085; --bg:#f6f7f9;
-  --card:#ffffff; --line:#eaecf0;
+  --blue-primary: #2563eb;
+  --blue-hover: #1d4ed8;
+  --blue-light: #eff6ff;
+  --green-primary: #16a34a;
+  --green-light: #dc2626;
+  --green-bg: #dcfce7;
+  --orange-primary: #d97706;
+  --orange-light: #fff7ed;
+  --red-primary: #dc2626;
+  --red-light: #fef2f2;
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+  --bg-main: #f8fafc;
+  --card-bg: #ffffff;
+  --border-color: #e2e8f0;
 }
 
-* { box-sizing:border-box; margin:0; padding:0; }
-body { font-family: Inter, system-ui, sans-serif; background:var(--bg); color:var(--text); }
-button, input, select { font:inherit; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-dark);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
 
 button {
-  border:0; border-radius:10px; padding:10px 16px; font-weight:700; cursor:pointer;
-  transition: all .15s ease;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
-button:hover { transform:translateY(-1px); }
-.primary { background:var(--blue); color:#fff; }
-.outline { background:#fff; color:var(--text); border:1px solid var(--line); }
-.break-btn { background:var(--orange-soft); color:var(--orange); border:1px solid #fed7aa; }
-.danger { background:var(--red-soft); color:var(--red); }
-.hidden { display:none !important; }
 
-.wrap { max-width:1280px; margin:auto; padding:0 20px 60px; }
+button:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
 
-/* HEADER & NAV TABS */
+.btn-primary {
+  background-color: var(--blue-primary);
+  color: #ffffff;
+}
+
+.btn-outline {
+  background-color: #ffffff;
+  color: var(--text-dark);
+  border: 1px solid var(--border-color);
+}
+
+.btn-resume {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.btn-break {
+  background-color: var(--orange-light);
+  color: var(--orange-primary);
+  border: 1px solid #fed7aa;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 60px 24px;
+}
+
+/* ==========================================
+   HEADER & NAVIGATION TABS
+   ========================================== */
 header {
-  position:sticky; top:0; z-index:50; height:70px; display:flex;
-  justify-space:space-between; align-items:center; background:rgba(255,255,255,.95);
-  backdrop-filter:blur(10px); border-bottom:1px solid var(--line); margin-bottom:20px; padding:0 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 28px;
+  padding: 0 24px;
 }
-.logo { font-size:24px; font-weight:900; }
-.logo span { color:var(--blue); }
 
-.navTabs { display:flex; gap:6px; background:#f1f5f9; padding:4px; border-radius:12px; }
-.navTab { padding:8px 18px; border-radius:8px; font-size:13px; font-weight:700; color:var(--muted); background:transparent; }
-.navTab.active { background:#fff; color:var(--blue); box-shadow:0 2px 6px rgba(0,0,0,.06); }
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
 
-/* CARDS & TABLES */
-.card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px; margin-bottom:16px; }
-.kpiGrid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px; }
-.kpiCard { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; }
+.logo {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: #000000;
+}
 
-/* BORDERLESS CLEAN TABLE */
-.cleanTableWrapper { width:100%; overflow-x:auto; }
-.cleanTable { width:100%; border-collapse:collapse; border:none !important; white-space:nowrap; }
-.cleanTable th, .cleanTable td { border:none !important; padding:14px 16px; text-align:left; font-size:13px; }
-.cleanTable th { font-size:11px; font-weight:800; color:var(--muted); text-transform:uppercase; background:#fafafa; }
-.cleanTable tr:hover { background:#f8fafc; }
+.logo span {
+  color: var(--blue-primary);
+}
 
-/* TAGS & BADGES */
-.tag { display:inline-block; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:700; }
-.tag-online { background:var(--blue-soft); color:var(--blue-dark); }
-.tag-walkin { background:var(--orange-soft); color:var(--orange); }
-.tag-refund { background:var(--red-soft); color:var(--red); }
-.tag-break { background:var(--orange-soft); color:var(--orange); font-size:12px; padding:6px 12px; }
+.nav-tabs {
+  display: flex;
+  gap: 4px;
+  background-color: #f1f5f9;
+  padding: 4px;
+  border-radius: 10px;
+}
 
-/* FORMS & CONTROLS */
-.formGrid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-.formGrid .full { grid-column:1/-1; }
-input, select { width:100%; border:1px solid #d0d5dd; border-radius:8px; padding:8px 12px; }
+.nav-tab {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
 
-.loginWrap { max-width:400px; margin:80px auto; background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px; }
-.tableControls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:16px; }
-.filterGroup { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.nav-tab.active {
+  background-color: #ffffff;
+  color: var(--blue-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ==========================================
+   CARDS & KPI STATS
+   ========================================== */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.hero-card {
+  background-color: #fff7ed;
+  border: 1px solid #fed7aa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.hero-card.open-mode {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.status-badge.break {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.status-badge.live {
+  background-color: var(--blue-light);
+  color: var(--blue-primary);
+}
+
+.hero-title {
+  font-size: 34px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.kpi-card {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kpi-value {
+  font-weight: 900;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.kpi-value.blue {
+  color: var(--blue-primary);
+}
+
+/* ==========================================
+   FORM & INPUTS
+   ========================================== */
+.form-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-grid .full-width {
+  grid-column: 1 / -1;
+}
+
+input, select {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14px;
+  outline: none;
+  background-color: #ffffff;
+  color: var(--text-dark);
+  transition: border-color 0.15s ease;
+}
+
+input:focus, select:focus {
+  border-color: var(--blue-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+input::placeholder {
+  color: #94a3b8;
+}
+
+/* ==========================================
+   TABLE & FILTERS
+   ========================================== */
+.table-header-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.filters-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.clean-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.clean-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.clean-table th {
+  background-color: #f8fafc;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.clean-table td {
+  padding: 16px;
+  font-size: 13px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.clean-table tr:hover {
+  background-color: #f8fafc;
+}
+
+.tag-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tag-walkin { background-color: var(--orange-light); color: var(--orange-primary); }
+.tag-online { background-color: var(--blue-light); color: var(--blue-primary); }
+.tag-refund { background-color: var(--red-light); color: var(--red-primary); }
+
+.login-card {
+  max-width: 400px;
+  margin: 100px auto;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
 </style>
 </head>
 
 <body>
-<div class="wrap">
 
-  <!-- LOGIN -->
-  <div id="loginScreen" class="loginWrap">
-    <div class="logo" style="text-align:center;margin-bottom:12px">Meri<span>Bari</span></div>
-    <label style="font-size:12px;font-weight:700">Email</label>
-    <input id="loginEmail" type="email" placeholder="doctor@example.com">
-    <label style="font-size:12px;font-weight:700;margin-top:10px;display:block">Password</label>
-    <input id="loginPass" type="password" placeholder="••••••••">
-    <button class="primary" style="width:100%;margin-top:16px" onclick="doLogin()">Login Panel</button>
+<div class="container">
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen" class="login-card">
+    <div class="logo" style="text-align: center; margin-bottom: 20px;">Meri<span>Bari</span></div>
+    <div style="margin-bottom: 14px;">
+      <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px;">Email</label>
+      <input id="loginEmail" type="email" placeholder="doctor@example.com">
+    </div>
+    <div style="margin-bottom: 20px;">
+      <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px;">Password</label>
+      <input id="loginPass" type="password" placeholder="••••••••">
+    </div>
+    <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="doLogin()">Login Panel</button>
   </div>
 
-  <!-- MAIN APP -->
+  <!-- MAIN APPLICATION -->
   <div id="mainScreen" class="hidden">
     <header>
-      <div style="display:flex;align-items:center;gap:20px">
+      <div class="header-left">
         <div class="logo">Meri<span>Bari</span></div>
-        <nav class="navTabs">
-          <button class="navTab active" id="tabDashboard" onclick="switchPage('dashboard')">Dashboard</button>
-          <button class="navTab" id="tabPatients" onclick="switchPage('patients')">All Patients</button>
+        <nav class="nav-tabs">
+          <button class="nav-tab active" id="tabDashboard" onclick="switchPage('dashboard')">Dashboard</button>
+          <button class="nav-tab" id="tabPatients" onclick="switchPage('patients')">All Patients</button>
         </nav>
       </div>
 
-      <!-- HEADER RIGHT: 5 MIN BREAK & LOGOUT AT CORNER -->
-      <div style="display:flex;gap:10px;align-items:center">
-        <button id="breakBtn" class="break-btn" onclick="toggleBreak()">☕ 5 Min Break</button>
-        <button class="outline" onclick="doLogout()">Logout</button>
+      <!-- RIGHT HEADER: RESUME/BREAK BUTTON & LOGOUT AT CORNER -->
+      <div class="header-right">
+        <button id="breakBtn" class="btn-resume" onclick="toggleBreak()">► Resume Queue</button>
+        <button class="btn-outline" onclick="doLogout()">Logout</button>
       </div>
     </header>
 
@@ -117,6 +426,9 @@ input, select { width:100%; border:1px solid #d0d5dd; border-radius:8px; padding
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 
 <script>
+/* ==========================================
+   FIREBASE INITIALIZATION
+   ========================================== */
 const firebaseConfig = {
   apiKey: "AIzaSyBL9PzyO4B86JUcKsskF3xnvxwwecuoN8U",
   authDomain: "meribari.firebaseapp.com",
@@ -132,9 +444,21 @@ try {
   fb.db = firebase.firestore();
   fb.auth = firebase.auth();
   fb.ready = true;
-} catch(e) { console.error(e); }
+} catch(e) { 
+  console.error("Firebase init error: ", e); 
+}
 
-function getTodayStr() {
+/* ==========================================
+   STATE VARIABLES
+   ========================================== */
+let currentPage = 'dashboard';
+let myDoctorId = null;
+let queueLive = { currentToken: 0, status: "BREAK" };
+let allPatients = [];
+let activePatients = [];
+
+// Helper function for dynamic today date string (YYYY-MM-DD)
+function getTodayISO() {
   const d = new Date();
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -142,17 +466,14 @@ function getTodayStr() {
   return `${year}-${month}-${day}`;
 }
 
-let currentPage = 'dashboard';
-let myDoctorId = null;
-let queueLive = { currentToken: 0, status: "OPEN" };
-let allPatients = [];
-let active = [];
-
-/* FILTER & SORT STATES */
-let filterDate = getTodayStr();
+// Filter and Sort states
+let filterDate = getTodayISO(); // Default to TODAY
 let searchQuery = "";
-let sortOrder = "asc"; // Default: #1 at top
+let sortOrder = "asc"; // Default Ascending (#1 at top)
 
+/* ==========================================
+   NAVIGATION & AUTH HANDLERS
+   ========================================== */
 function switchPage(page) {
   currentPage = page;
   document.getElementById("tabDashboard").classList.toggle("active", page === 'dashboard');
@@ -160,22 +481,17 @@ function switchPage(page) {
   render();
 }
 
-async function toggleBreak() {
-  if(!fb.ready || !myDoctorId) return;
-  const newStatus = queueLive.status === "BREAK" ? "OPEN" : "BREAK";
-  await fb.db.collection("queue").doc(myDoctorId).update({
-    status: newStatus,
-    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-  });
-}
-
 function doLogin() {
-  const e = document.getElementById("loginEmail").value;
-  const p = document.getElementById("loginPass").value;
-  if(fb.ready) fb.auth.signInWithEmailAndPassword(e, p);
+  const email = document.getElementById("loginEmail").value;
+  const pass = document.getElementById("loginPass").value;
+  if(fb.ready && email && pass) {
+    fb.auth.signInWithEmailAndPassword(email, pass).catch(err => alert("Login failed: " + err.message));
+  }
 }
 
-function doLogout() { if(fb.ready) fb.auth.signOut(); }
+function doLogout() {
+  if(fb.ready) fb.auth.signOut();
+}
 
 if(fb.ready) {
   fb.auth.onAuthStateChanged(user => {
@@ -191,63 +507,100 @@ if(fb.ready) {
   });
 }
 
+/* ==========================================
+   REALTIME DATA LISTENERS
+   ========================================== */
 function listenData() {
+  // Listen Queue document
   fb.db.collection("queue").doc(myDoctorId).onSnapshot(doc => {
-    queueLive = doc.exists ? doc.data() : { currentToken: 0, status: "OPEN" };
-    const btn = document.getElementById("breakBtn");
-    if(queueLive.status === "BREAK") {
-      btn.innerHTML = "▶ Resume Queue";
-      btn.style.background = "#dcfce7"; btn.style.color = "#15803d";
-    } else {
-      btn.innerHTML = "☕ 5 Min Break";
-      btn.style.background = "var(--orange-soft)"; btn.style.color = "var(--orange)";
-    }
+    queueLive = doc.exists ? doc.data() : { currentToken: 0, status: "BREAK" };
+    updateBreakButtonUI();
     render();
   });
 
+  // Listen Appointments collection
   fb.db.collection("appointments").where("doctorId", "==", myDoctorId).onSnapshot(snap => {
     allPatients = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    active = allPatients.filter(a => a.status === 'waiting' || a.status === 'current');
+    activePatients = allPatients.filter(a => a.status === 'waiting' || a.status === 'current');
     render();
   });
+}
+
+function updateBreakButtonUI() {
+  const btn = document.getElementById("breakBtn");
+  if(!btn) return;
+  if(queueLive.status === "BREAK") {
+    btn.className = "btn-resume";
+    btn.innerHTML = "► Resume Queue";
+  } else {
+    btn.className = "btn-break";
+    btn.innerHTML = "☕ 5 Min Break";
+  }
+}
+
+async function toggleBreak() {
+  if(!fb.ready || !myDoctorId) return;
+  const newStatus = queueLive.status === "BREAK" ? "OPEN" : "BREAK";
+  await fb.db.collection("queue").doc(myDoctorId).set({
+    status: newStatus,
+    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
 }
 
 async function callNext() {
-  const next = Number(queueLive.currentToken || 0) + 1;
-  await fb.db.collection("queue").doc(myDoctorId).set({ currentToken: next, status: "OPEN" }, { merge: true });
+  const nextToken = Number(queueLive.currentToken || 0) + 1;
+  await fb.db.collection("queue").doc(myDoctorId).set({
+    currentToken: nextToken,
+    status: "OPEN"
+  }, { merge: true });
 }
 
 async function addWalkIn() {
-  const name = document.getElementById("wiName").value;
-  const age = document.getElementById("wiAge").value;
-  const mobile = document.getElementById("wiMobile").value;
-  const complaint = document.getElementById("wiComplaint").value;
-  const amount = document.getElementById("wiAmount").value;
-  const payment = document.getElementById("wiPayment").value;
+  const name = document.getElementById("wiName")?.value;
+  const age = document.getElementById("wiAge")?.value;
+  const mobile = document.getElementById("wiMobile")?.value;
+  const complaint = document.getElementById("wiComplaint")?.value;
+  const amount = document.getElementById("wiAmount")?.value;
+  const payment = document.getElementById("wiPayment")?.value;
 
-  if(!name) return alert("Enter Patient Name");
+  if(!name) return alert("Please enter Patient Name");
 
-  const token = (queueLive.currentToken || 0) + active.length + 1;
+  const nextToken = (queueLive.currentToken || 0) + activePatients.length + 1;
 
   await fb.db.collection("appointments").add({
-    patientName: name, patientAge: age, patientGender: "Male/Female",
-    patientMobile: mobile, complaint: complaint, doctorId: myDoctorId,
-    paymentMethod: payment, amountPaid: Number(amount) || 0,
-    tokenNumber: token, status: "waiting", source: "walk_in", refunded: false,
+    patientName: name,
+    patientAge: age,
+    patientGender: "Male/Female",
+    patientMobile: mobile,
+    complaint: complaint,
+    doctorId: myDoctorId,
+    paymentMethod: payment || "cash",
+    amountPaid: Number(amount) || 0,
+    tokenNumber: nextToken,
+    status: "waiting",
+    source: "walk_in",
+    refunded: false,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 
+  // Reset form fields
   document.getElementById("wiName").value = "";
-  document.getElementById("wiComplaint").value = "";
+  if(document.getElementById("wiAge")) document.getElementById("wiAge").value = "";
+  if(document.getElementById("wiMobile")) document.getElementById("wiMobile").value = "";
+  if(document.getElementById("wiComplaint")) document.getElementById("wiComplaint").value = "";
+  if(document.getElementById("wiAmount")) document.getElementById("wiAmount").value = "";
 }
 
+/* ==========================================
+   DATE & FORMATTING HELPERS
+   ========================================== */
 function fmtDate(ts) {
   if(!ts) return "-";
   const d = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
   return d.toLocaleDateString("en-IN", {day:'2-digit', month:'short', year:'numeric'}) + " • " + d.toLocaleTimeString("en-IN", {hour:'2-digit', minute:'2-digit'});
 }
 
-function getPatientISODate(ts) {
+function getISOFromTimestamp(ts) {
   if(!ts) return "";
   const d = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
   const year = d.getFullYear();
@@ -256,65 +609,95 @@ function getPatientISODate(ts) {
   return `${year}-${month}-${day}`;
 }
 
+/* ==========================================
+   RENDER SWITCHER
+   ========================================== */
 function render() {
-  const app = document.getElementById("app");
+  const appContainer = document.getElementById("app");
+  if(!appContainer) return;
+
   if(currentPage === 'patients') {
-    app.innerHTML = renderPatientsPage();
+    appContainer.innerHTML = renderPatientsPage();
   } else {
-    app.innerHTML = renderDashboardPage();
+    appContainer.innerHTML = renderDashboardPage();
   }
 }
 
+/* ==========================================
+   PAGE 1: DASHBOARD (EXACT SCREENSHOT LAYOUT)
+   ========================================== */
 function renderDashboardPage() {
   const isBreak = queueLive.status === "BREAK";
+  const todayCount = allPatients.filter(p => getISOFromTimestamp(p.createdAt) === getTodayISO()).length;
+
   return `
-    <div class="card" style="background:${isBreak ? '#fff7ed' : '#fff'}">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          ${isBreak ? `<span class="tag tag-break">☕ DOCTOR ON BREAK (5 MIN)</span>` : `<span class="tag tag-online">LIVE QUEUE</span>`}
-          <h1 style="font-size:36px;margin-top:8px">Patient No. #${queueLive.currentToken || 0}</h1>
-        </div>
-        <button class="primary" style="font-size:16px;padding:12px 24px" onclick="callNext()">Call Next →</button>
+    <!-- HERO CARD -->
+    <div class="hero-card ${isBreak ? '' : 'open-mode'}">
+      <div>
+        ${isBreak ? `<span class="status-badge break">☕ DOCTOR ON BREAK (5 MIN)</span>` : `<span class="status-badge live">LIVE QUEUE</span>`}
+        <h1 class="hero-title">Patient No. #${queueLive.currentToken || 0}</h1>
+      </div>
+      <div>
+        <button class="btn-primary" style="padding: 12px 28px; font-size: 15px;" onclick="callNext()">Call Next →</button>
       </div>
     </div>
 
-    <div class="kpiGrid">
-      <div class="kpiCard"><b>Waiting in Queue:</b> <span style="font-size:20px;font-weight:900;color:var(--blue)">${active.length}</span></div>
-      <div class="kpiCard"><b>Now Serving:</b> <span style="font-size:20px;font-weight:900">#${queueLive.currentToken || 0}</span></div>
-      <div class="kpiCard"><b>Total Patients Today:</b> <span style="font-size:20px;font-weight:900">${allPatients.filter(p => getPatientISODate(p.createdAt) === getTodayStr()).length}</span></div>
+    <!-- KPI STATS ROW -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        Waiting in Queue: <span class="kpi-value blue">${activePatients.length}</span>
+      </div>
+      <div class="kpi-card">
+        Now Serving: <span class="kpi-value">#${queueLive.currentToken || 0}</span>
+      </div>
+      <div class="kpi-card">
+        Total Patients Today: <span class="kpi-value">${todayCount}</span>
+      </div>
     </div>
 
+    <!-- ADD WALK-IN FORM -->
     <div class="card">
-      <h3 style="margin-bottom:12px">➕ Add Walk-in Patient</h3>
-      <div class="formGrid">
+      <h3 class="form-title">
+        <span style="font-size: 20px;">+</span> Add Walk-in Patient
+      </h3>
+      <div class="form-grid">
         <input id="wiName" placeholder="Patient Name">
         <input id="wiAge" type="number" placeholder="Age">
         <input id="wiMobile" placeholder="Mobile Number">
-        <select id="wiPayment"><option value="cash">Cash</option><option value="upi">UPI</option></select>
-        <input id="wiComplaint" class="full" placeholder="Complaint / Reason for Visit">
+        <select id="wiPayment">
+          <option value="cash">Cash</option>
+          <option value="upi">UPI</option>
+        </select>
+        <input id="wiComplaint" class="full-width" placeholder="Complaint / Reason for Visit">
         <input id="wiAmount" type="number" placeholder="Amount Paid (₹)">
-        <div class="full" style="text-align:right">
-          <button class="primary" onclick="addWalkIn()">Add to Queue</button>
+        <div style="display: flex; justify-content: flex-end; align-items: center;">
+          <button class="btn-primary" style="padding: 12px 28px;" onclick="addWalkIn()">Add to Queue</button>
         </div>
       </div>
     </div>
   `;
 }
 
+/* ==========================================
+   PAGE 2: ALL PATIENTS (SEARCH, DATE & SORTING)
+   ========================================== */
 function renderPatientsPage() {
-  /* FILTERING BY DATE & SEARCH */
-  let list = allPatients.filter(p => {
-    const matchesDate = !filterDate || getPatientISODate(p.createdAt) === filterDate;
+  // 1. Filter by Selected Date & Search Query
+  let filteredList = allPatients.filter(p => {
+    const pDate = getISOFromTimestamp(p.createdAt);
+    const matchesDate = !filterDate || pDate === filterDate;
+    
     const q = searchQuery.toLowerCase().trim();
     const matchesSearch = !q || 
       (p.patientName && p.patientName.toLowerCase().includes(q)) ||
       (p.patientMobile && p.patientMobile.includes(q)) ||
       (p.tokenNumber && String(p.tokenNumber).includes(q));
+
     return matchesDate && matchesSearch;
   });
 
-  /* SORTING (#1 TOP DEFAULT) */
-  list.sort((a, b) => {
+  // 2. Sort Patients (#1 top default)
+  filteredList.sort((a, b) => {
     const tA = Number(a.tokenNumber || 0);
     const tB = Number(b.tokenNumber || 0);
     return sortOrder === "asc" ? tA - tB : tB - tA;
@@ -322,35 +705,41 @@ function renderPatientsPage() {
 
   return `
     <div class="card">
-      <div class="tableControls">
-        <h3 style="margin:0">All Patients List (${list.length})</h3>
+      <div class="table-header-controls">
+        <h3 style="font-size: 18px; font-weight: 800;">
+          All Patients List 
+          <span style="background-color: var(--blue-light); color: var(--blue-primary); padding: 2px 10px; border-radius: 12px; font-size: 12px; margin-left: 6px;">
+            ${filteredList.length}
+          </span>
+        </h3>
         
-        <div class="filterGroup">
+        <div class="filters-wrapper">
           <!-- DATE PICKER (DEFAULT TODAY) -->
-          <div>
-            <label style="font-size:10px;font-weight:800;color:var(--muted);display:block">DATE</label>
-            <input type="date" value="${filterDate}" onchange="filterDate=this.value; render();" style="width:140px">
+          <div class="filter-box">
+            <span class="filter-label">DATE</span>
+            <input type="date" value="${filterDate}" onchange="filterDate=this.value; render();" style="width: 140px; padding: 8px 10px;">
           </div>
 
-          <!-- SEARCH BAR -->
-          <div>
-            <label style="font-size:10px;font-weight:800;color:var(--muted);display:block">SEARCH</label>
-            <input type="text" placeholder="Name, Token, Mobile..." value="${searchQuery}" oninput="searchQuery=this.value; render();" style="width:180px">
+          <!-- SEARCH INPUT -->
+          <div class="filter-box">
+            <span class="filter-label">SEARCH</span>
+            <input type="text" placeholder="Name, Token, Mobile..." value="${searchQuery}" oninput="searchQuery=this.value; render();" style="width: 180px; padding: 8px 10px;">
           </div>
 
           <!-- SORT DROPDOWN -->
-          <div>
-            <label style="font-size:10px;font-weight:800;color:var(--muted);display:block">SORT ORDER</label>
-            <select onchange="sortOrder=this.value; render();" style="width:160px">
-              <option value="asc" ${sortOrder==='asc'?'selected':''}>Token #1 → #N (Oldest)</option>
-              <option value="desc" ${sortOrder==='desc'?'selected':''}>Token #N → #1 (Newest)</option>
+          <div class="filter-box">
+            <span class="filter-label">SORT ORDER</span>
+            <select onchange="sortOrder=this.value; render();" style="width: 170px; padding: 8px 10px;">
+              <option value="asc" ${sortOrder === 'asc' ? 'selected' : ''}>Token #1 → #N (Oldest)</option>
+              <option value="desc" ${sortOrder === 'desc' ? 'selected' : ''}>Token #N → #1 (Newest)</option>
             </select>
           </div>
         </div>
       </div>
 
-      <div class="cleanTableWrapper">
-        <table class="cleanTable">
+      <!-- PATIENTS CLEAN TABLE -->
+      <div class="clean-table-container">
+        <table class="clean-table">
           <thead>
             <tr>
               <th>S.No. / Patient No.</th>
@@ -366,18 +755,31 @@ function renderPatientsPage() {
             </tr>
           </thead>
           <tbody>
-            ${list.length === 0 ? `<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:30px">No patients found for selected filters</td></tr>` : ''}
-            ${list.map((p, i) => `
+            ${filteredList.length === 0 ? `
               <tr>
-                <td style="font-weight:800;color:var(--blue)">#${p.tokenNumber || (i + 1)}</td>
-                <td style="font-weight:700">${p.patientName || '-'}</td>
+                <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+                  No patients found for the selected date/search.
+                </td>
+              </tr>
+            ` : ''}
+
+            ${filteredList.map((p, index) => `
+              <tr>
+                <td style="font-weight: 900; color: var(--blue-primary);">#${p.tokenNumber || (index + 1)}</td>
+                <td style="font-weight: 700; color: var(--text-dark);">${p.patientName || '-'}</td>
                 <td>${p.patientAge ? p.patientAge + ' Yrs' : 'N/A'} / ${p.patientGender || 'Unspecified'}</td>
                 <td>${p.complaint || 'No complaint'}</td>
-                <td style="color:var(--muted);font-size:12px">${fmtDate(p.createdAt)}</td>
-                <td><span class="tag ${p.source==='walk_in'?'tag-walkin':'tag-online'}">${p.source==='walk_in'?'Walk-in':'Online'}</span></td>
+                <td style="color: var(--text-muted); font-size: 12px;">${fmtDate(p.createdAt)}</td>
+                <td>
+                  <span class="tag-badge ${p.source === 'walk_in' ? 'tag-walkin' : 'tag-online'}">
+                    ${p.source === 'walk_in' ? 'Walk-in' : 'Online'}
+                  </span>
+                </td>
                 <td>${(p.paymentMethod || 'Cash').toUpperCase()}</td>
-                <td style="font-weight:700">₹${p.amountPaid || 0}</td>
-                <td>${p.refunded ? `<span class="tag tag-refund">Refunded (₹${p.refundAmount})</span>` : 'N/A'}</td>
+                <td style="font-weight: 800;">₹${p.amountPaid || 0}</td>
+                <td>
+                  ${p.refunded ? `<span class="tag-badge tag-refund">Refunded (₹${p.refundAmount || p.amountPaid})</span>` : 'N/A'}
+                </td>
                 <td>${p.patientMobile || '-'}</td>
               </tr>
             `).join("")}
@@ -388,6 +790,7 @@ function renderPatientsPage() {
   `;
 }
 
+// Initial App Render
 render();
 </script>
 </body>
