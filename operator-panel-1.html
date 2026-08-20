@@ -1443,7 +1443,7 @@ select:focus{
     <div class="modalHeader">
 
       <div class="modalTitle">
-        Assign Token
+        Assign Patient
       </div>
 
       <button
@@ -1494,7 +1494,7 @@ select:focus{
         class="formLabel"
         style="margin-top:15px"
       >
-        Token Number
+        Patient Number
       </label>
 
       <input
@@ -1525,7 +1525,7 @@ select:focus{
         class="primary"
         onclick="confirmTokenAssignment()"
       >
-        Confirm Token
+        Confirm Patient
       </button>
 
     </div>
@@ -2660,7 +2660,7 @@ async function confirmTokenAssignment(){
   if(duplicate){
 
     error.textContent =
-      `Token #${token} is already in the live queue.`;
+      `Patient ${token} is already in the live queue.`;
 
     return;
 
@@ -3000,7 +3000,7 @@ function askWalkInToken(
 
     const token =
       window.prompt(
-        `Token number for ${name}\n\nSuggested: ${suggested}`,
+        `Patient number for ${name}\n\nSuggested: ${suggested}`,
         suggested
       );
 
@@ -3044,7 +3044,7 @@ function askWalkInToken(
     if(duplicate){
 
       alert(
-        `Token #${parsed} is already in use.`
+        `Patient ${parsed} is already in use.`
       );
 
       resolve(null);
@@ -3330,7 +3330,7 @@ function render(){
 
 
         <h1 class="heroTitle">
-          Token #${queueLive.currentToken || 0}
+          Patient ${queueLive.currentToken || 0}
         </h1>
 
 
@@ -3403,7 +3403,7 @@ function render(){
         <div class="queueSideBox">
 
           <div class="queueSideLabel">
-            Next Suggested Token
+            Next Suggested Patient
           </div>
 
           <div class="queueSideValue">
@@ -3947,7 +3947,7 @@ function render(){
               <div>
                 <div class="patientName">
                   ${esc(a.patientName)}
-                  ${a.tokenNumber ? ` <span class="small">• Token #${a.tokenNumber}</span>` : ""}
+                  ${a.tokenNumber ? ` <span class="small">• Patient ${a.tokenNumber}</span>` : ""}
                 </div>
                 <div class="patientMeta">
                   <span>${a.patientAge ? a.patientAge+" yrs" : "Age N/A"}</span>
@@ -4051,7 +4051,7 @@ function render(){
 
                   ${
                     a.tokenNumber
-                      ? ` • Token #${a.tokenNumber}`
+                      ? ` • Patient ${a.tokenNumber}`
                       : ""
                   }
 
