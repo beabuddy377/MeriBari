@@ -526,39 +526,54 @@ select:focus{
   margin-top:2px;
 }
 
-/* PATIENT CARDS */
+/* BORDERLESS TABLES FOR PATIENT DATA */
 
-.patientList{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+.cleanTableWrapper{
+  width:100%;
+  overflow-x:auto;
 }
 
-.patientCard{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:15px;
-  align-items:center;
-
-  padding:15px;
-
-  border:1px solid var(--line);
-  border-radius:13px;
-
-  transition:
-    box-shadow .15s,
-    border-color .15s;
+.cleanTable{
+  width:100%;
+  border-collapse:collapse;
+  border:none!important;
+  margin-top:5px;
 }
 
-.patientCard:hover{
-  border-color:#d7e2f0;
-  box-shadow:0 4px 16px rgba(16,24,40,.06);
+.cleanTable th,
+.cleanTable td{
+  border:none!important;
+  padding:12px 10px;
+  text-align:left;
+  vertical-align:middle;
+}
+
+.cleanTable th{
+  font-size:11px;
+  font-weight:750;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  padding-bottom:8px;
+}
+
+.cleanTable tr{
+  border:none!important;
+  transition:background .15s;
+}
+
+.cleanTable tbody tr:hover{
+  background:#f8fafc;
+}
+
+.cleanTable tr.current{
+  background:var(--blue-soft);
 }
 
 .patientName{
   font-size:14px;
   font-weight:850;
-  margin-bottom:5px;
+  margin-bottom:3px;
 }
 
 .patientMeta{
@@ -574,11 +589,6 @@ select:focus{
 .patientComplaint{
   color:#475467;
   font-size:12px;
-  margin-top:8px;
-}
-
-.patientAction{
-  text-align:right;
 }
 
 /* TAGS */
@@ -613,31 +623,6 @@ select:focus{
   color:var(--red);
 }
 
-/* QUEUE */
-
-.queueList{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.queueRow{
-  display:grid;
-  grid-template-columns:70px 1fr auto auto;
-  align-items:center;
-  gap:14px;
-
-  padding:12px 13px;
-
-  border:1px solid var(--line);
-  border-radius:12px;
-}
-
-.queueRow.current{
-  background:var(--blue-soft);
-  border-color:#bfdbfe;
-}
-
 .queueToken{
   font-size:16px;
   font-weight:900;
@@ -670,27 +655,6 @@ select:focus{
 
 .searchRow input{
   flex:1;
-}
-
-/* REFUND */
-
-.refundList{
-  margin-top:15px;
-}
-
-.refundRow{
-  display:grid;
-  grid-template-columns:1fr auto auto;
-  gap:12px;
-  align-items:center;
-
-  padding:12px 0;
-
-  border-bottom:1px solid var(--line);
-}
-
-.refundRow:last-child{
-  border-bottom:0;
 }
 
 .refundName{
@@ -1014,41 +978,12 @@ select:focus{
     width:100%;
   }
 
-  .patientCard{
-    grid-template-columns:1fr;
-  }
-
-  .patientAction{
-    text-align:left;
-  }
-
-  .patientAction button{
-    width:100%;
-  }
-
-  .queueRow{
-    grid-template-columns:55px 1fr auto;
-    gap:9px;
-  }
-
-  .queueRow .paymentText{
-    display:none;
-  }
-
   .searchRow{
     flex-direction:column;
   }
 
   .searchRow button{
     width:100%;
-  }
-
-  .refundRow{
-    grid-template-columns:1fr auto;
-  }
-
-  .refundRow > div:nth-child(2){
-    grid-column:1/-1;
   }
 
   .mobileAction{
@@ -1427,7 +1362,7 @@ select:focus{
 </div>
 
 
-<!-- TOKEN MODAL -->
+<!-- TOKEN / PATIENT NO MODAL -->
 
 <div
   id="tokenModal"
@@ -1443,7 +1378,7 @@ select:focus{
     <div class="modalHeader">
 
       <div class="modalTitle">
-        Assign Token
+        Assign Patient No.
       </div>
 
       <button
@@ -1480,7 +1415,7 @@ select:focus{
       <div class="suggestedToken">
 
         <span>
-          Suggested next token
+          Suggested next Patient No.
         </span>
 
         <b id="modalSuggested">
@@ -1494,14 +1429,14 @@ select:focus{
         class="formLabel"
         style="margin-top:15px"
       >
-        Token Number
+        Patient No.
       </label>
 
       <input
         id="modalTokenInput"
         type="number"
         min="1"
-        placeholder="Enter token number"
+        placeholder="Enter patient number"
       >
 
       <div
@@ -1525,7 +1460,7 @@ select:focus{
         class="primary"
         onclick="confirmTokenAssignment()"
       >
-        Confirm Token
+        Confirm Patient No.
       </button>
 
     </div>
@@ -1868,8 +1803,6 @@ let tokenAppointmentId = null;
 
 /* =========================================================
    PHOTO HELPERS
-   Photos are resized client-side and stored as a small base64
-   string directly on the doctor doc (no Firebase Storage needed).
 ========================================================= */
 
 function previewPhoto(inputId, imgId){
@@ -2527,7 +2460,7 @@ function nextTokenNumber(){
 
 
 /* =========================================================
-   TOKEN MODAL
+   TOKEN / PATIENT NO MODAL
 ========================================================= */
 
 function openTokenModal(
@@ -2643,7 +2576,7 @@ async function confirmTokenAssignment(){
   if(!token || token < 1){
 
     error.textContent =
-      "Please enter a valid token number.";
+      "Please enter a valid patient number.";
 
     return;
 
@@ -2660,7 +2593,7 @@ async function confirmTokenAssignment(){
   if(duplicate){
 
     error.textContent =
-      `Token #${token} is already in the live queue.`;
+      `Patient No. #${token} is already in the live queue.`;
 
     return;
 
@@ -2692,7 +2625,7 @@ async function confirmTokenAssignment(){
     console.error(e);
 
     error.textContent =
-      "Could not assign token: " +
+      "Could not assign patient number: " +
       e.message;
 
   }
@@ -2798,7 +2731,7 @@ async function callNext(){
     console.error(e);
 
     alert(
-      "Unable to call next token: " +
+      "Unable to call next patient number: " +
       e.message
     );
 
@@ -2986,11 +2919,6 @@ async function addWalkIn(){
 }
 
 
-/*
-  Simple fallback modal-style prompt for walk-ins.
-  Online appointments use the proper token modal above.
-*/
-
 function askWalkInToken(
   name,
   suggested
@@ -3000,7 +2928,7 @@ function askWalkInToken(
 
     const token =
       window.prompt(
-        `Token number for ${name}\n\nSuggested: ${suggested}`,
+        `Patient No. for ${name}\n\nSuggested: ${suggested}`,
         suggested
       );
 
@@ -3024,7 +2952,7 @@ function askWalkInToken(
     ){
 
       alert(
-        "Enter a valid token number."
+        "Enter a valid patient number."
       );
 
       resolve(null);
@@ -3044,7 +2972,7 @@ function askWalkInToken(
     if(duplicate){
 
       alert(
-        `Token #${parsed} is already in use.`
+        `Patient No. #${parsed} is already in use.`
       );
 
       resolve(null);
@@ -3330,7 +3258,7 @@ function render(){
 
 
         <h1 class="heroTitle">
-          Token #${queueLive.currentToken || 0}
+          Patient No. #${queueLive.currentToken || 0}
         </h1>
 
 
@@ -3403,7 +3331,7 @@ function render(){
         <div class="queueSideBox">
 
           <div class="queueSideLabel">
-            Next Suggested Token
+            Next Suggested Patient No.
           </div>
 
           <div class="queueSideValue">
@@ -3599,7 +3527,7 @@ function render(){
         <div class="formBottom">
 
           <span class="small">
-            Suggested token:
+            Suggested Patient No.:
             <b>
               #${nextTokenNumber()}
             </b>
@@ -3646,78 +3574,51 @@ function render(){
         ?
 
         `
-        <div class="patientList">
-
-          ${pending.map(p => `
-
-            <div class="patientCard">
-
-              <div>
-
-                <div class="patientName">
-                  ${esc(p.patientName)}
-                </div>
-
-
-                <div class="patientMeta">
-
-                  <span>
-                    ${
-                      p.patientAge
-                        ? p.patientAge + " yrs"
-                        : "Age N/A"
-                    }
-                  </span>
-
-                  <span>•</span>
-
-                  <span class="tag blueTag">
-                    ONLINE
-                  </span>
-
-                  <span>•</span>
-
-                  <span>
-                    ₹${p.amountPaid || 0}
-                  </span>
-
-                </div>
-
-
-                <div class="patientComplaint">
-
-                  ${
-                    p.complaint
-                      ? esc(p.complaint)
-                      : "No complaint provided"
-                  }
-
-                </div>
-
-              </div>
-
-
-              <div class="patientAction">
-
-                <button
-                  class="primary"
-                  onclick="
-                    openTokenModal(
-                      '${p.id}',
-                      '${esc(p.patientName)}',
-                      '${p.patientAge || ""}'
-                    )
-                  "
-                >
-                  Assign #${nextTokenNumber()}
-                </button>
-
-              </div>
-
-            </div>
-
-          `).join("")}
-
+        <div class="cleanTableWrapper">
+          <table class="cleanTable">
+            <thead>
+              <tr>
+                <th>Patient Details</th>
+                <th>Complaint</th>
+                <th style="text-align:right">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pending.map(p => `
+                <tr>
+                  <td>
+                    <div class="patientName">${esc(p.patientName)}</div>
+                    <div class="patientMeta">
+                      <span>${p.patientAge ? p.patientAge + " yrs" : "Age N/A"}</span>
+                      <span>•</span>
+                      <span class="tag blueTag">ONLINE</span>
+                      <span>•</span>
+                      <span>₹${p.amountPaid || 0}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="patientComplaint">
+                      ${p.complaint ? esc(p.complaint) : "No complaint provided"}
+                    </div>
+                  </td>
+                  <td style="text-align:right">
+                    <button
+                      class="primary"
+                      onclick="
+                        openTokenModal(
+                          '${p.id}',
+                          '${esc(p.patientName)}',
+                          '${p.patientAge || ""}'
+                        )
+                      "
+                    >
+                      Assign #${nextTokenNumber()}
+                    </button>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
         </div>
         `
 
@@ -3781,124 +3682,45 @@ function render(){
         ?
 
         `
-        <div class="queueList">
-
-          ${active.map(a => `
-
-            <div
-              class="queueRow ${
-                a.status === "current"
-                  ? "current"
-                  : ""
-              }"
-            >
-
-              <div class="queueToken">
-                #${a.tokenNumber}
-              </div>
-
-
-              <div>
-
-                <div class="queuePatient">
-
-                  ${esc(a.patientName)}
-
-                  ${
-                    a.status === "current"
-                      ? `
-                        <span
-                          class="tag"
-                          style="margin-left:5px"
-                        >
-                          NOW
-                        </span>
-                      `
-                      : ""
-                  }
-
-                </div>
-
-
-                <small>
-
-                  ${
-                    a.patientAge
-                      ? a.patientAge + " years"
-                      : "Age not provided"
-                  }
-
-                </small>
-
-              </div>
-
-
-              <div>
-
-                <span
-                  class="tag ${
-                    a.source === "walk_in"
-                      ? "warning"
-                      : "blueTag"
-                  }"
-                >
-
-                  ${
-                    a.source === "walk_in"
-                      ? "WALK-IN"
-                      : "ONLINE"
-                  }
-
-                </span>
-
-              </div>
-
-
-              <div class="paymentText">
-
-                ${
-                  a.refunded
-
-                    ?
-
-                    `
-                    <span class="tag redTag">
-                      Refunded ₹${a.refundAmount}
+        <div class="cleanTableWrapper">
+          <table class="cleanTable">
+            <thead>
+              <tr>
+                <th>Patient No.</th>
+                <th>Patient Details</th>
+                <th>Source</th>
+                <th style="text-align:right">Payment</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${active.map(a => `
+                <tr class="${a.status === "current" ? "current" : ""}">
+                  <td class="queueToken">#${a.tokenNumber}</td>
+                  <td>
+                    <div class="queuePatient">
+                      ${esc(a.patientName)}
+                      ${a.status === "current" ? `<span class="tag" style="margin-left:5px">NOW</span>` : ""}
+                    </div>
+                    <small>${a.patientAge ? a.patientAge + " years" : "Age not provided"}</small>
+                  </td>
+                  <td>
+                    <span class="tag ${a.source === "walk_in" ? "warning" : "blueTag"}">
+                      ${a.source === "walk_in" ? "WALK-IN" : "ONLINE"}
                     </span>
-                    `
-
-                    :
-
-                    a.amountPaid
-
-                    ?
-
-                    `
-                    ₹${a.amountPaid}
-
+                  </td>
+                  <td style="text-align:right" class="paymentText">
                     ${
-                      a.paymentMethod
-                        ? `
-                          (${esc(
-                            a.paymentMethod
-                              .toUpperCase()
-                          )})
-                        `
-                        : ""
+                      a.refunded
+                        ? `<span class="tag redTag">Refunded ₹${a.refundAmount}</span>`
+                        : a.amountPaid
+                        ? `₹${a.amountPaid}${a.paymentMethod ? " (" + esc(a.paymentMethod.toUpperCase()) + ")" : ""}`
+                        : "-"
                     }
-                    `
-
-                    :
-
-                    "-"
-                }
-
-              </div>
-
-            </div>
-
-          `).join("")}
-
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
         </div>
         `
 
@@ -3916,7 +3738,7 @@ function render(){
           </div>
 
           <div class="small">
-            Add a walk-in or assign a token to an online booking.
+            Add a walk-in or assign a patient number to an online booking.
           </div>
 
         </div>
@@ -3926,7 +3748,7 @@ function render(){
     </div>
 
 
-    <!-- ALL PATIENTS — DETAILED LIST -->
+    <!-- ALL PATIENTS — DETAILED TABLE -->
 
     <div class="card">
 
@@ -3941,33 +3763,45 @@ function render(){
         allPatients.length
         ?
         `
-        <div class="patientList">
-          ${allPatients.map(a => `
-            <div class="patientCard">
-              <div>
-                <div class="patientName">
-                  ${esc(a.patientName)}
-                  ${a.tokenNumber ? ` <span class="small">• Token #${a.tokenNumber}</span>` : ""}
-                </div>
-                <div class="patientMeta">
-                  <span>${a.patientAge ? a.patientAge+" yrs" : "Age N/A"}</span>
-                  <span>•</span>
-                  <span class="tag ${a.source==='walk_in'?'warning':'blueTag'}">${a.source==='walk_in'?'OFFLINE':'ONLINE'}</span>
-                  <span>•</span>
-                  <span class="tag ${a.status==='completed'?'':a.status==='cancelled'||a.status==='no_show'?'redTag':'warning'}">${esc(a.status)}</span>
-                  ${a.refunded ? `<span class="tag redTag">Refunded ₹${a.refundAmount}</span>` : ""}
-                </div>
-                <div class="patientComplaint">
-                  ${a.complaint ? esc(a.complaint) : "No complaint provided"}
-                  ${a.patientMobile ? ` • ${esc(a.patientMobile)}` : ""}
-                </div>
-                <div class="small" style="margin-top:6px">
-                  ${fmtDate(a.createdAt)}
-                  ${a.amountPaid ? ` • ₹${a.amountPaid}${a.paymentMethod?" ("+esc(a.paymentMethod.toUpperCase())+")":""}` : ""}
-                </div>
-              </div>
-            </div>
-          `).join("")}
+        <div class="cleanTableWrapper">
+          <table class="cleanTable">
+            <thead>
+              <tr>
+                <th>Patient Name & No.</th>
+                <th>Status & Source</th>
+                <th>Complaint & Contact</th>
+                <th style="text-align:right">Date & Fee</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${allPatients.map(a => `
+                <tr>
+                  <td>
+                    <div class="patientName">
+                      ${esc(a.patientName)}
+                      ${a.tokenNumber ? ` <span class="small">• Patient No. #${a.tokenNumber}</span>` : ""}
+                    </div>
+                    <div class="small">${a.patientAge ? a.patientAge + " yrs" : "Age N/A"}</div>
+                  </td>
+                  <td>
+                    <div class="patientMeta">
+                      <span class="tag ${a.source==='walk_in'?'warning':'blueTag'}">${a.source==='walk_in'?'OFFLINE':'ONLINE'}</span>
+                      <span class="tag ${a.status==='completed'?'':a.status==='cancelled'||a.status==='no_show'?'redTag':'warning'}">${esc(a.status)}</span>
+                      ${a.refunded ? `<span class="tag redTag">Refunded ₹${a.refundAmount}</span>` : ""}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="patientComplaint">${a.complaint ? esc(a.complaint) : "No complaint provided"}</div>
+                    <div class="small">${a.patientMobile ? esc(a.patientMobile) : ""}</div>
+                  </td>
+                  <td style="text-align:right" class="small">
+                    <div>${fmtDate(a.createdAt)}</div>
+                    <div>${a.amountPaid ? `₹${a.amountPaid}${a.paymentMethod?" ("+esc(a.paymentMethod.toUpperCase())+")":""}` : ""}</div>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
         </div>
         `
         :
@@ -4029,91 +3863,52 @@ function render(){
         ?
 
         `
-        <div class="refundList">
-
-          ${refundResults.map(a => `
-
-            <div class="refundRow">
-
-              <div>
-
-                <div class="refundName">
-                  ${esc(a.patientName)}
-                </div>
-
-                <div class="small">
-
-                  ${
-                    a.patientMobile
-                      ? esc(a.patientMobile)
-                      : "No mobile"
-                  }
-
-                  ${
-                    a.tokenNumber
-                      ? ` • Token #${a.tokenNumber}`
-                      : ""
-                  }
-
-                </div>
-
-              </div>
-
-
-              <div>
-                ₹${a.amountPaid || 0}
-              </div>
-
-
-              <div>
-
-                ${
-                  a.refunded
-
-                    ?
-
-                    `
-                    <span class="tag redTag">
-                      Refunded ₹${a.refundAmount}
-                    </span>
-                    `
-
-                    :
-
-                    a.amountPaid > 0
-
-                    ?
-
-                    `
-                    <button
-                      class="danger"
-                      onclick="
-                        refundPatient(
-                          '${a.id}',
-                          '${esc(a.patientName)}',
-                          ${a.amountPaid}
-                        )
-                      "
-                    >
-                      Refund
-                    </button>
-                    `
-
-                    :
-
-                    `
-                    <span class="small">
-                      No payment
-                    </span>
-                    `
-                }
-
-              </div>
-
-            </div>
-
-          `).join("")}
-
+        <div class="cleanTableWrapper" style="margin-top:15px;">
+          <table class="cleanTable">
+            <thead>
+              <tr>
+                <th>Patient Info</th>
+                <th>Amount Paid</th>
+                <th style="text-align:right">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${refundResults.map(a => `
+                <tr>
+                  <td>
+                    <div class="refundName">${esc(a.patientName)}</div>
+                    <div class="small">
+                      ${a.patientMobile ? esc(a.patientMobile) : "No mobile"}
+                      ${a.tokenNumber ? ` • Patient No. #${a.tokenNumber}` : ""}
+                    </div>
+                  </td>
+                  <td>₹${a.amountPaid || 0}</td>
+                  <td style="text-align:right">
+                    ${
+                      a.refunded
+                        ? `<span class="tag redTag">Refunded ₹${a.refundAmount}</span>`
+                        : a.amountPaid > 0
+                        ? `
+                          <button
+                            class="danger"
+                            onclick="
+                              refundPatient(
+                                '${a.id}',
+                                '${esc(a.patientName)}',
+                                ${a.amountPaid}
+                              )
+                            "
+                          >
+                            Refund
+                          </button>
+                        `
+                        : `<span class="small">No payment</span>`
+                    }
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
         </div>
         `
 
@@ -4141,4 +3936,4 @@ render();
 </script>
 
 </body>
-                              </html>
+</html>
