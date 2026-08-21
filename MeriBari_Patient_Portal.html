@@ -450,6 +450,232 @@ tailwind.config = {
 })();
 </script>
 
+
+<style>
+/* =========================================================
+   MERIBARI MODERN PATTERN — VISUAL ONLY
+   New composition: layered blue atmosphere, floating cards,
+   stronger hierarchy, segmented navigation, soft mesh.
+   Existing app/data logic remains untouched.
+   ========================================================= */
+
+:root{
+  --pattern-blue:#2563EB;
+  --pattern-blue-2:#3B82F6;
+  --pattern-blue-dark:#1E3A8A;
+  --pattern-ink:#0B1220;
+  --pattern-muted:#64748B;
+  --pattern-bg:#F3F6FB;
+}
+
+/* Soft mesh background instead of flat background */
+body{
+  background:
+    radial-gradient(650px 360px at 8% -8%,rgba(37,99,235,.16),transparent 65%),
+    radial-gradient(520px 330px at 100% 8%,rgba(59,130,246,.12),transparent 68%),
+    linear-gradient(180deg,#F8FAFF 0%,#F2F5FA 100%)!important;
+}
+
+/* More editorial app width and spacing */
+.mb-shell{
+  max-width:760px!important;
+  background:transparent!important;
+}
+
+/* Header becomes floating glass bar */
+.mb-header{
+  height:72px!important;
+  margin:12px 14px 0!important;
+  padding:0 18px!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+  border-radius:22px!important;
+  background:rgba(255,255,255,.62)!important;
+  box-shadow:0 12px 34px rgba(15,23,42,.07)!important;
+}
+
+/* Logo has a stronger modern identity */
+.mb-logo{
+  font-size:24px!important;
+  letter-spacing:-1.6px!important;
+}
+.mb-logo span{
+  color:var(--pattern-blue)!important;
+}
+
+/* Screen spacing */
+.mb-screen{
+  padding:24px 22px 132px!important;
+}
+
+/* Cards: asymmetric/layered feel */
+.mb-card,.card{
+  border-radius:26px!important;
+  background:rgba(255,255,255,.76)!important;
+  border:1px solid rgba(255,255,255,.88)!important;
+  box-shadow:
+    0 18px 50px rgba(15,23,42,.065),
+    inset 0 1px 0 rgba(255,255,255,.9)!important;
+  backdrop-filter:blur(18px) saturate(145%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(145%)!important;
+}
+
+/* Add subtle top highlight to cards */
+.mb-card,.card{
+  position:relative;
+  overflow:hidden;
+}
+.mb-card::before,.card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:18px;
+  right:18px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(59,130,246,.28),transparent);
+  pointer-events:none;
+}
+
+/* Inputs get a cleaner inset pattern */
+.mb-input{
+  background:rgba(248,250,252,.82)!important;
+  border:1px solid rgba(203,213,225,.72)!important;
+  border-radius:18px!important;
+}
+.mb-input:focus{
+  border-color:#60A5FA!important;
+  background:#fff!important;
+  box-shadow:0 0 0 4px rgba(37,99,235,.10),0 8px 24px rgba(37,99,235,.06)!important;
+}
+
+/* Hero/live appointment gets a premium layered treatment */
+.mb-ticket,
+.mb-primary{
+  position:relative;
+  overflow:hidden;
+}
+.mb-ticket::after,
+.mb-primary::after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  right:-80px;
+  top:-100px;
+  background:rgba(255,255,255,.12);
+  pointer-events:none;
+}
+
+/* Live ticket pattern */
+.mb-ticket-top{
+  background:
+    radial-gradient(circle at 90% 10%,rgba(255,255,255,.22),transparent 28%),
+    linear-gradient(135deg,#2563EB 0%,#1D4ED8 58%,#1E40AF 100%)!important;
+}
+
+/* Home live appointment inline green → blue */
+.mb-shell [style*="var(--swift-green)"]{
+  /* Preserve inline layout while visually overriding the old accent. */
+  --swift-green:#2563EB!important;
+}
+.mb-shell [style*="rgba(6,193,103"]{
+  /* Existing shadow declarations remain structurally intact. */
+  box-shadow:0 18px 45px rgba(37,99,235,.20)!important;
+}
+
+/* Quick actions: floating tile pattern */
+.mb-screen > div[style*="grid-template-columns:repeat(4,1fr)"] button{
+  min-height:92px!important;
+  border-radius:23px!important;
+  background:rgba(255,255,255,.78)!important;
+  border:1px solid rgba(226,232,240,.85)!important;
+  box-shadow:0 10px 28px rgba(15,23,42,.055)!important;
+  backdrop-filter:blur(12px)!important;
+}
+.mb-screen > div[style*="grid-template-columns:repeat(4,1fr)"] button:hover{
+  transform:translateY(-3px)!important;
+  box-shadow:0 16px 32px rgba(37,99,235,.12)!important;
+}
+.mb-screen > div[style*="grid-template-columns:repeat(4,1fr)"] button div{
+  color:#2563EB!important;
+}
+
+/* Bottom navigation redesigned as segmented floating dock */
+.mb-nav{
+  bottom:12px!important;
+  width:calc(100% - 28px)!important;
+  max-width:732px!important;
+  padding:8px!important;
+  border:1px solid rgba(255,255,255,.85)!important;
+  border-radius:25px!important;
+  background:rgba(255,255,255,.72)!important;
+  box-shadow:0 20px 55px rgba(15,23,42,.13)!important;
+}
+.mb-nav button{
+  min-height:48px!important;
+  border-radius:17px!important;
+  transition:all .22s cubic-bezier(.2,.8,.2,1)!important;
+}
+.mb-nav button.active{
+  background:linear-gradient(135deg,#EFF6FF,#DBEAFE)!important;
+  color:#1D4ED8!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 6px 18px rgba(37,99,235,.09)!important;
+}
+.mb-nav button.active svg{
+  filter:drop-shadow(0 4px 7px rgba(37,99,235,.18));
+}
+
+/* Status pills */
+.mb-live{
+  border:1px solid rgba(147,197,253,.45)!important;
+  box-shadow:0 5px 16px rgba(37,99,235,.08)!important;
+}
+
+/* Doctor cards get a left accent rail */
+.doctor.card::after{
+  content:"";
+  position:absolute;
+  left:0;
+  top:18px;
+  bottom:18px;
+  width:4px;
+  border-radius:0 8px 8px 0;
+  background:linear-gradient(180deg,#60A5FA,#2563EB);
+}
+
+/* More polished typography */
+h1{
+  color:var(--pattern-ink)!important;
+}
+.small{
+  color:var(--pattern-muted)!important;
+}
+
+/* Mobile refinement */
+@media(max-width:700px){
+  .mb-header{
+    margin:8px 10px 0!important;
+    border-radius:20px!important;
+  }
+  .mb-screen{
+    padding-left:16px!important;
+    padding-right:16px!important;
+  }
+  .mb-nav{
+    width:calc(100% - 20px)!important;
+    bottom:8px!important;
+  }
+}
+
+/* Accessibility */
+@media(prefers-reduced-motion:reduce){
+  .mb-nav button,
+  .mb-screen > div[style*="grid-template-columns:repeat(4,1fr)"] button{
+    transition:none!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div id="connbar" class="connbar hidden">⚠ Firebase not configured yet — see FIREBASE_SETUP_NOTES.md</div>
