@@ -478,6 +478,33 @@ function appointmentCard(){
 }
 
 function initials(name){ return (name||"").replace(/^Dr\.?\s*/i,"").split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase(); }
+function parseConsultationHours(workingHours){
+  const s = String(workingHours||"").trim();
+  const m = s.match(/(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)\\s*(?:-|to|–|—)\\s*(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)/i);
+  if(!m) return null;
+  let sh=+m[1], sm=+(m[2]||0), eh=+m[4], em=+(m[5]||0);
+  const sap=m[3].toLowerCase(), eap=m[6].toLowerCase();
+  if(sap==="pm" && sh!==12) sh+=12;
+  if(sap==="am" && sh===12) sh=0;
+  if(eap==="pm" && eh!==12) eh+=12;
+  if(eap==="am" && eh===12) eh=0;
+  return {start:sh*60+sm,end:eh*60+em};
+}
+function consultationStatus(doctor){
+  const hours = parseConsultationHours(doctor?.workingHours);
+  if(!hours) return {known:false,active:true};
+  const now = new Date();
+  const minutes = now.getHours()*60 + now.getMinutes();
+  if(minutes < hours.start) return {known:true,active:false,before:true};
+  if(minutes >= hours.end) return {known:true,active:false,after:true};
+  return {known:true,active:true};
+}
+function formatConsultationMessage(doctor){
+  const status = consultationStatus(doctor);
+  if(status.after) return `Doctor consultation time is over. Consultation time: ${doctor.workingHours}. If you want an appointment, please book for the next available time.`;
+  if(status.before) return `Doctor consultation has not started yet. Consultation time: ${doctor.workingHours}. Please book during the consultation time.`;
+  return "";
+}
 function doctorsListView(){
   const q = (S.doctorSearch||"").toLowerCase();
   const filtered = S.doctorsList.filter(d=>!q || (d.name||"").toLowerCase().includes(q) || (d.specialty||"").toLowerCase().includes(q));
@@ -505,7 +532,7 @@ function doctorView(){
   <div class="kpi"><span>Total Amount</span><b>₹${(d.consultationFee+d.platformFee)}</b></div>
   <div class="kpi"><span>Current Token</span><span style="display:flex;align-items:center;gap:8px"><span class="mb-live"><span class="mb-live-dot"></span>LIVE</span><b>#${S.queueLive?.currentToken ?? "–"}</b></span></div>
   </div>
-  <button class="mb-primary" onclick="tryBookAppointment()">Book Appointment</button>
+  ${consultationStatus(d).active ? `<button class="mb-primary" onclick="tryBookAppointment()">Book Appointment</button>` : `<div class="alert" style="margin-top:14px">${esc(formatConsultationMessage(d))}</div><button class="mb-secondary" disabled style="opacity:.55;cursor:not-allowed">Book Appointment</button>`}
   <button class="mb-outline" onclick="emergency()">Emergency Help</button>
   <button class="mb-outline" onclick="window.open('?tv='+selectedDoctorId,'_blank')">📺 Launch TV Mode</button>
   </div>${nav('doctors')}`;
@@ -514,6 +541,11 @@ function hasActiveAppointment(){
   return S.appointment && S.appointment.doctorId===selectedDoctorId && !["completed","cancelled","no_show"].includes(S.appointment.status);
 }
 function tryBookAppointment(){
+  const consultation = consultationStatus(S.doctor);
+  if(consultation.known && !consultation.active){
+    alert(formatConsultationMessage(S.doctor));
+    return;
+  }
   if(hasActiveAppointment()){
     alert("You already have an active appointment with this doctor.\nStatus: "+S.appointment.status+(S.appointment.tokenNumber?"\nToken: #"+S.appointment.tokenNumber:"")+"\n\nGo to 'My Token' to track it.");
     setScreen('token');
