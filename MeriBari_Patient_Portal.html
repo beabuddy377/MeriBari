@@ -136,6 +136,183 @@ h3{font-weight:850!important}
   .mb-header{padding-left:20px!important;padding-right:20px!important}
 }
 
+
+/* =========================================================
+   MERIBARI BLUE / BLUR / LIVE MOTION UI OVERRIDE
+   Visual-only layer. Existing application logic is untouched.
+   ========================================================= */
+:root{
+  --ui-blue:#2563EB;
+  --ui-blue-dark:#1D4ED8;
+  --ui-blue-deep:#1E40AF;
+  --ui-blue-50:#EFF6FF;
+  --ui-blue-100:#DBEAFE;
+  --ui-blue-200:#BFDBFE;
+  --ui-ink:#0F172A;
+  --ui-muted:#64748B;
+  --ui-bg:#F4F7FB;
+  --ui-card:rgba(255,255,255,.82);
+  --ui-line:#E2E8F0;
+}
+
+/* Blue Tailwind aliases */
+.bg-meri-50{background-color:#EFF6FF!important}
+.bg-meri-100{background-color:#DBEAFE!important}
+.bg-meri-200{background-color:#BFDBFE!important}
+.bg-meri-300{background-color:#93C5FD!important}
+.bg-meri-400{background-color:#60A5FA!important}
+.bg-meri-500{background-color:#2563EB!important}
+.bg-meri-600{background-color:#1D4ED8!important}
+.bg-meri-700{background-color:#1E40AF!important}
+.bg-meri-800{background-color:#1E3A8A!important}
+.bg-meri-900{background-color:#172554!important}
+.text-meri-500{color:#2563EB!important}
+.text-meri-600{color:#1D4ED8!important}
+.text-meri-700{color:#1E40AF!important}
+.text-meri-800{color:#1E3A8A!important}
+.border-meri-100{border-color:#DBEAFE!important}
+.border-meri-200{border-color:#BFDBFE!important}
+
+/* Premium blue atmosphere */
+body{
+  background:
+    radial-gradient(circle at 15% -5%,rgba(37,99,235,.11),transparent 32%),
+    radial-gradient(circle at 90% 15%,rgba(59,130,246,.08),transparent 30%),
+    #F4F7FB!important;
+}
+
+/* Real blur / glass surfaces */
+.mb-header{
+  background:rgba(248,250,252,.68)!important;
+  backdrop-filter:blur(22px) saturate(155%)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(155%)!important;
+  border-bottom:1px solid rgba(148,163,184,.18)!important;
+}
+.mb-nav{
+  background:rgba(255,255,255,.72)!important;
+  backdrop-filter:blur(24px) saturate(160%)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(160%)!important;
+  border:1px solid rgba(148,163,184,.16)!important;
+}
+.mb-card,.card{
+  background:rgba(255,255,255,.84)!important;
+  backdrop-filter:blur(14px) saturate(135%)!important;
+  -webkit-backdrop-filter:blur(14px) saturate(135%)!important;
+  border-color:rgba(226,232,240,.85)!important;
+}
+.mb-live{
+  background:rgba(219,234,254,.72)!important;
+  color:#1D4ED8!important;
+  backdrop-filter:blur(10px)!important;
+}
+.mb-live-dot{
+  background:#2563EB!important;
+  box-shadow:0 0 0 0 rgba(37,99,235,.6);
+  animation:livePulse 1.65s cubic-bezier(.4,0,.6,1) infinite;
+}
+
+/* Blue primary surfaces */
+.mb-primary{
+  background:linear-gradient(135deg,#2563EB 0%,#1D4ED8 52%,#1E40AF 100%)!important;
+  box-shadow:0 14px 34px rgba(37,99,235,.27)!important;
+}
+.mb-primary:hover{
+  transform:translateY(-1px);
+  box-shadow:0 18px 42px rgba(37,99,235,.34)!important;
+}
+
+/* Existing green inline gradients → blue visually */
+.avatarG,.mb-icon{
+  background:linear-gradient(145deg,#2563EB,#1D4ED8)!important;
+  box-shadow:0 18px 44px rgba(37,99,235,.24)!important;
+}
+.mb-ticket-top{
+  background:linear-gradient(145deg,#2563EB,#1D4ED8,#1E40AF)!important;
+}
+.mb-splash{
+  background:
+    radial-gradient(circle at 50% 4%,rgba(219,234,254,.95) 0%,rgba(239,246,255,.7) 34%,#F4F7FB 72%)!important;
+}
+
+/* Active live status ring */
+@keyframes livePulse{
+  0%{box-shadow:0 0 0 0 rgba(37,99,235,.62),0 0 0 0 rgba(37,99,235,.16)}
+  55%{box-shadow:0 0 0 8px rgba(37,99,235,0),0 0 0 16px rgba(37,99,235,0)}
+  100%{box-shadow:0 0 0 0 rgba(37,99,235,0),0 0 0 0 rgba(37,99,235,0)}
+}
+
+/* =========================================================
+   ADVANCED BUTTON MICRO-INTERACTIONS
+   ========================================================= */
+.mb-primary,.mb-secondary,.mb-outline,.mb-danger,
+button,[role="button"]{
+  -webkit-tap-highlight-color:transparent;
+  transition:
+    transform .18s cubic-bezier(.2,.8,.2,1),
+    box-shadow .22s ease,
+    filter .22s ease,
+    background-color .22s ease;
+}
+button:not(:disabled):hover,[role="button"]:not([aria-disabled="true"]):hover{
+  filter:brightness(1.015);
+}
+button:not(:disabled):active,[role="button"]:active{
+  transform:scale(.965)!important;
+}
+
+/* React click ripple */
+.mb-ripple{
+  position:absolute;
+  border-radius:9999px;
+  pointer-events:none;
+  transform:scale(0);
+  background:rgba(255,255,255,.52);
+  animation:mbRipple .58s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes mbRipple{
+  to{transform:scale(4);opacity:0}
+}
+
+/* Click confirmation pulse */
+.mb-clicked{
+  animation:mbClickPulse .46s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes mbClickPulse{
+  0%{box-shadow:0 0 0 0 rgba(37,99,235,.28)}
+  50%{box-shadow:0 0 0 7px rgba(37,99,235,.10)}
+  100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}
+}
+
+/* Floating live shimmer */
+.mb-live-shimmer{
+  position:relative;
+  overflow:hidden;
+}
+.mb-live-shimmer::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  width:35%;
+  transform:translateX(-150%) skewX(-18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+  animation:mbShimmer 2.8s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes mbShimmer{
+  0%,42%{transform:translateX(-150%) skewX(-18deg)}
+  72%,100%{transform:translateX(360%) skewX(-18deg)}
+}
+
+/* Reduce motion when requested by OS */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
+}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -164,6 +341,113 @@ tailwind.config = {
     }
   }
 };
+</script>
+
+
+<script>
+/* =========================================================
+   REACT MOTION CONTROLLER
+   Visual interactions only — no app/business logic changes.
+   ========================================================= */
+(function(){
+  const React = window.React;
+  const ReactDOM = window.ReactDOM;
+  if(!React || !ReactDOM) return;
+
+  const e = React.createElement;
+
+  function RippleButtonController(){
+    React.useEffect(function(){
+      function onPointerDown(ev){
+        const target = ev.target.closest("button,[role='button'],a");
+        if(!target || target.disabled) return;
+
+        // Keep existing click handlers untouched; only add visual feedback.
+        const rect = target.getBoundingClientRect();
+        const ripple = document.createElement("span");
+        const size = Math.max(rect.width,rect.height) * 1.15;
+
+        if(getComputedStyle(target).position === "static"){
+          target.style.position = "relative";
+        }
+        target.style.overflow = "hidden";
+
+        ripple.className = "mb-ripple";
+        ripple.style.width = size + "px";
+        ripple.style.height = size + "px";
+        ripple.style.left = (ev.clientX - rect.left - size/2) + "px";
+        ripple.style.top = (ev.clientY - rect.top - size/2) + "px";
+
+        target.appendChild(ripple);
+        target.classList.remove("mb-clicked");
+        void target.offsetWidth;
+        target.classList.add("mb-clicked");
+
+        window.setTimeout(function(){
+          ripple.remove();
+          target.classList.remove("mb-clicked");
+        },620);
+      }
+
+      document.addEventListener("pointerdown",onPointerDown,{passive:true});
+      return function(){
+        document.removeEventListener("pointerdown",onPointerDown);
+      };
+    },[]);
+
+    return null;
+  }
+
+  function LiveUIController(){
+    React.useEffect(function(){
+      function decorate(){
+        document.querySelectorAll(".mb-live").forEach(function(el){
+          el.classList.add("mb-live-shimmer");
+        });
+
+        // Visually upgrade primary actions without changing their handlers.
+        document.querySelectorAll(".mb-primary").forEach(function(el){
+          el.style.position = "relative";
+          el.style.overflow = "hidden";
+        });
+      }
+
+      decorate();
+      const observer = new MutationObserver(decorate);
+      const app = document.getElementById("app");
+      if(app) observer.observe(app,{childList:true,subtree:true});
+      return function(){observer.disconnect();};
+    },[]);
+    return null;
+  }
+
+  function MotionRoot(){
+    return e(React.Fragment,null,
+      e(RippleButtonController),
+      e(LiveUIController)
+    );
+  }
+
+  function mountMotion(){
+    let host=document.getElementById("meribari-react-motion");
+    if(!host){
+      host=document.createElement("div");
+      host.id="meribari-react-motion";
+      host.style.display="none";
+      document.body.appendChild(host);
+    }
+    if(!host.__mounted){
+      ReactDOM.createRoot(host).render(e(MotionRoot));
+      host.__mounted=true;
+    }
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",mountMotion,{once:true});
+  }else{
+    mountMotion();
+  }
+})();
 </script>
 
 </head>
