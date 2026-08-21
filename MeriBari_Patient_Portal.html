@@ -801,6 +801,99 @@ async function loadDoctor(){
   S.doctor = doc.exists ? doc.data() : null;
 }
 
+// Doctor availability is determined only from the configured consultation days/hours.
+function timeToMinutes(v){
+  if(!v) return null;
+  const m=String(v).trim().match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
+  if(!m) return null;
+  let h=+m[1], min=+(m[2]||0), ap=(m[3]||"").toLowerCase();
+  if(ap==="pm" && h<12) h+=12;
+  if(ap==="am" && h===12) h=0;
+  return h*60+min;
+}
+
+function dayMatches(scheduleDay, jsDay){
+  if(typeof scheduleDay === "number") return scheduleDay === ((jsDay+6)%7);
+  const v=String(scheduleDay||"").trim().toLowerCase();
+  const names=["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
+  return v===names[jsDay] || v.startsWith(names[jsDay].slice(0,3));
+}
+
+function getDoctorSchedule(){
+  const d=S.doctor||{};
+  let start=d.consultationStart||"", end=d.consultationEnd||"";
+  if((!start || !end) && d.workingHours){
+    const parts=String(d.workingHours).split(/\s*(?:-|–|—|to)\s*/i);
+    start=start||parts[0]||"";
+    end=end||parts[1]||"";
+  }
+  let days=Array.isArray(d.consultationDays)?d.consultationDays:(Array.isArray(d.workingDays)?d.workingDays:[]);
+  return {start,end,days};
+}
+
+function getDoctorAvailability(){
+  const sch=getDoctorSchedule(), now=new Date();
+  const jsDay=now.getDay(), current=timeToMinutes(`${now.getHours()}:${String(now.getMinutes()).padStart(2,"0")}`);
+  const start=timeToMinutes(sch.start), end=timeToMinutes(sch.end);
+  const hasDayConfig=sch.days.length>0;
+  const dayOpen=!hasDayConfig || sch.days.some(x=>dayMatches(x,jsDay));
+  const live=dayOpen && (start===null || end===null || (current>=start && current<end));
+  return {live,jsDay,current,start,end,days:sch.days};
+}
+
+function nextAvailableDay(){
+  const a=getDoctorAvailability(), sch=getDoctorSchedule(), names=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const hasDayConfig=sch.days.length>0;
+  if(!hasDayConfig) return {name:"Tomorrow", date:null};
+  for(let offset=1; offset<=7; offset++){
+    const candidate=(a.jsDay+offset)%7;
+    if(sch.days.some(x=>dayMatches(x,candidate))) return {name:names[candidate], date:candidate};
+  }
+  return {name:"next available day", date:null};
+}
+
+function getBookingDate(){
+  const now=new Date(), a=getDoctorAvailability();
+  if(a.live || (a.start!==null && a.current<a.start && (!a.days.length || a.days.some(x=>dayMatches(x,a.jsDay))))) return new Date(now);
+  const next=nextAvailableDay();
+  for(let offset=1; offset<=7; offset++){
+    const d=new Date(now); d.setDate(now.getDate()+offset);
+    if(!a.days.length || a.days.some(x=>dayMatches(x,d.getDay()))) return d;
+  }
+  return next.date===null ? new Date(now.getTime()+86400000) : new Date(now);
+}
+
+function formatBookingDate(d){
+  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+function doctorAvailabilityView(){
+  const a=getDoctorAvailability(), sch=getDoctorSchedule();
+  if(a.live){
+    return `<div class="mb-card" style="margin-top:12px;border:1px solid rgba(22,163,74,.22);background:rgba(22,163,74,.05)">
+      <div class="kpi"><span>Doctor Status / डॉक्टर स्थिति</span><span style="display:flex;align-items:center;gap:8px"><span class="mb-live"><span class="mb-live-dot"></span>LIVE</span><b style="color:#15803d">LIVE</b></span></div>
+      <div class="kpi"><span>Booking Status / बुकिंग स्थिति</span><b style="color:#15803d">OPEN — You can proceed for booking / बुकिंग के लिए आगे बढ़ सकते हैं</b></div>
+      <div class="small">Consultation: ${esc(sch.start||"—")} – ${esc(sch.end||"—")}</div>
+    </div>`;
+  }
+  const next=nextAvailableDay();
+  return `<div class="mb-card" style="margin-top:12px;border:1px solid rgba(180,35,24,.18);background:rgba(180,35,24,.04)">
+    <div class="kpi"><span>Doctor Status / डॉक्टर स्थिति</span><b style="color:#b42318">OFFLINE</b></div>
+    <div class="small" style="color:#b42318;font-weight:700;margin-top:-2px">(Consultation hours are over / Doctor uthh gaya hai)</div>
+    <div class="kpi" style="margin-top:10px"><span>Booking Status / बुकिंग स्थिति</span><b>${esc(`Book the appointment for the next available day / अगले उपलब्ध दिन के लिए अपॉइंटमेंट बुक करें`)}</b></div>
+    <div class="small" style="margin-top:6px">Next available: ${esc(next.name)}${sch.start?` • ${esc(sch.start)}`:""}</div>
+  </div>`;
+}
+
+// Keep the profile status synchronized when consultation hours cross the current time.
+let doctorAvailabilityTimer=null;
+function startDoctorAvailabilityTimer(){
+  if(doctorAvailabilityTimer) clearInterval(doctorAvailabilityTimer);
+  doctorAvailabilityTimer=setInterval(()=>{
+    if(S.screen==="doctor") render();
+  },30000);
+}
+
 // Fetch the list of doctors patients can choose from
 async function loadDoctorsList(){
   if(!fb.ready) return;
@@ -876,11 +969,12 @@ async function addPatientToFirestore(p){
 }
 
 // Creates the appointment doc. tokenNumber is intentionally null — operator assigns it later.
-async function createAppointment({patient, paymentType, amountPaid}){
+async function createAppointment({patient, paymentType, amountPaid, appointmentDate}){
   const data = {
     userId:uid(), patientId:patient.id, patientName:patient.fullName, patientAge:patient.age,
     complaint:patient.complaint||"", doctorId:selectedDoctorId, patientMobile:patient.mobile||"",
     paymentType, amountPaid, paymentStatus:"verified", paymentRef:"DEMO-"+Date.now(),
+    appointmentDate:appointmentDate||"",
     tokenNumber:null, status:"waiting_for_token", source:"online",
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -927,6 +1021,7 @@ async function chooseDoctor(id){
   await loadDoctor();
   listenQueue();
   setScreen("doctor");
+  startDoctorAvailabilityTimer();
 }
 
 // Browser notification (reminder) — works only while this browser/tab has permission granted.
@@ -1200,20 +1295,21 @@ function doctorsListView(){
 
 function doctorView(){
   if(!S.doctor) return `${header("Find Doctor")}<div class="mb-screen"><p>Loading…</p></div>${nav('doctors')}`;
-  const d = S.doctor;
+  const d = S.doctor, availability=getDoctorAvailability();
   return `${header("Doctor")}<div class="mb-screen">
   <div class="card doctor">
   <div class="avatarG">${initials(d.name)}</div>
   <div><h3>${esc(d.name)}</h3><span class="tag">${esc(d.specialty)}</span>
   ${(d.qualifications||[]).map(q=>`<div class="small" style="margin-top:4px">${esc(q)}</div>`).join("")}
   <p class="small">${esc(d.experience)}</p></div></div>
+  ${doctorAvailabilityView()}
   <div class="mb-card">
   <div class="kpi"><span>Clinic</span><b>${esc(d.clinicName)}</b></div>
   <div class="kpi"><span>Hours</span><b>${esc(d.workingHours)}</b></div>
   <div class="kpi"><span>Total Amount</span><b>₹${(d.consultationFee+d.platformFee)}</b></div>
   <div class="kpi"><span>Current Token</span><span style="display:flex;align-items:center;gap:8px"><span class="mb-live"><span class="mb-live-dot"></span>LIVE</span><b>#${S.queueLive?.currentToken ?? "–"}</b></span></div>
   </div>
-  <button class="mb-primary" onclick="tryBookAppointment()">Book Appointment</button>
+  <button class="mb-primary" onclick="tryBookAppointment()">${availability.live ? "Book Appointment" : "Book Next Available Day / अगले उपलब्ध दिन के लिए बुक करें"}</button>
   <button class="mb-outline" onclick="emergency()">Emergency Help</button>
   <button class="mb-outline" onclick="window.open('?tv='+selectedDoctorId,'_blank')">📺 Launch TV Mode</button>
   </div>${nav('doctors')}`;
@@ -1227,6 +1323,7 @@ function tryBookAppointment(){
     setScreen('token');
     return;
   }
+  // Outside consultation hours, the appointment flow remains available only for the next available day.
   setScreen('book');
 }
 function emergency(){ alert("Emergency contact is admin-configured. For real emergencies, contact appropriate emergency medical services."); }
@@ -1242,6 +1339,7 @@ function bookView(){
   <div class="mb-card">
   <div class="kpi"><span>Patient</span><b>${esc(p.fullName)}</b></div>
   <div class="kpi"><span>Doctor</span><b>${esc(S.doctor.name)}</b></div>
+  <div class="kpi"><span>Appointment Date / अपॉइंटमेंट तारीख</span><b>${esc(formatBookingDate(getBookingDate()))}</b></div>
   <div class="kpi"><span>Complaint</span><b>${esc(p.complaint||"-")}</b></div>
   </div>
   <h3>Payment Options</h3>
@@ -1266,7 +1364,7 @@ function paymentView(){
 async function doPayment(paymentType, amount){
   if(!fb.ready){ alert("Firebase not connected yet — connect it first to save real appointments."); return; }
   const p = selectedPatient();
-  const id = await createAppointment({patient:p, paymentType, amountPaid:amount});
+  const id = await createAppointment({patient:p, paymentType, amountPaid:amount, appointmentDate:getBookingDate().toISOString().slice(0,10)});
   listenAppointment(id);
   setScreen("waiting");
 }
