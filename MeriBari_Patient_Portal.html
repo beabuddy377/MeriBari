@@ -801,99 +801,6 @@ async function loadDoctor(){
   S.doctor = doc.exists ? doc.data() : null;
 }
 
-// Doctor availability is determined only from the configured consultation days/hours.
-function timeToMinutes(v){
-  if(!v) return null;
-  const m=String(v).trim().match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
-  if(!m) return null;
-  let h=+m[1], min=+(m[2]||0), ap=(m[3]||"").toLowerCase();
-  if(ap==="pm" && h<12) h+=12;
-  if(ap==="am" && h===12) h=0;
-  return h*60+min;
-}
-
-function dayMatches(scheduleDay, jsDay){
-  if(typeof scheduleDay === "number") return scheduleDay === ((jsDay+6)%7);
-  const v=String(scheduleDay||"").trim().toLowerCase();
-  const names=["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
-  return v===names[jsDay] || v.startsWith(names[jsDay].slice(0,3));
-}
-
-function getDoctorSchedule(){
-  const d=S.doctor||{};
-  let start=d.consultationStart||"", end=d.consultationEnd||"";
-  if((!start || !end) && d.workingHours){
-    const parts=String(d.workingHours).split(/\s*(?:-|–|—|to)\s*/i);
-    start=start||parts[0]||"";
-    end=end||parts[1]||"";
-  }
-  let days=Array.isArray(d.consultationDays)?d.consultationDays:(Array.isArray(d.workingDays)?d.workingDays:[]);
-  return {start,end,days};
-}
-
-function getDoctorAvailability(){
-  const sch=getDoctorSchedule(), now=new Date();
-  const jsDay=now.getDay(), current=timeToMinutes(`${now.getHours()}:${String(now.getMinutes()).padStart(2,"0")}`);
-  const start=timeToMinutes(sch.start), end=timeToMinutes(sch.end);
-  const hasDayConfig=sch.days.length>0;
-  const dayOpen=!hasDayConfig || sch.days.some(x=>dayMatches(x,jsDay));
-  const live=dayOpen && (start===null || end===null || (current>=start && current<end));
-  return {live,jsDay,current,start,end,days:sch.days};
-}
-
-function nextAvailableDay(){
-  const a=getDoctorAvailability(), sch=getDoctorSchedule(), names=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  const hasDayConfig=sch.days.length>0;
-  if(!hasDayConfig) return {name:"Tomorrow", date:null};
-  for(let offset=1; offset<=7; offset++){
-    const candidate=(a.jsDay+offset)%7;
-    if(sch.days.some(x=>dayMatches(x,candidate))) return {name:names[candidate], date:candidate};
-  }
-  return {name:"next available day", date:null};
-}
-
-function getBookingDate(){
-  const now=new Date(), a=getDoctorAvailability();
-  if(a.live || (a.start!==null && a.current<a.start && (!a.days.length || a.days.some(x=>dayMatches(x,a.jsDay))))) return new Date(now);
-  const next=nextAvailableDay();
-  for(let offset=1; offset<=7; offset++){
-    const d=new Date(now); d.setDate(now.getDate()+offset);
-    if(!a.days.length || a.days.some(x=>dayMatches(x,d.getDay()))) return d;
-  }
-  return next.date===null ? new Date(now.getTime()+86400000) : new Date(now);
-}
-
-function formatBookingDate(d){
-  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-}
-
-function doctorAvailabilityView(){
-  const a=getDoctorAvailability(), sch=getDoctorSchedule();
-  if(a.live){
-    return `<div class="mb-card" style="margin-top:12px;border:1px solid rgba(22,163,74,.22);background:rgba(22,163,74,.05)">
-      <div class="kpi"><span>Doctor Status / डॉक्टर स्थिति</span><span style="display:flex;align-items:center;gap:8px"><span class="mb-live"><span class="mb-live-dot"></span>LIVE</span><b style="color:#15803d">LIVE</b></span></div>
-      <div class="kpi"><span>Booking Status / बुकिंग स्थिति</span><b style="color:#15803d">OPEN — You can proceed for booking / बुकिंग के लिए आगे बढ़ सकते हैं</b></div>
-      <div class="small">Consultation: ${esc(sch.start||"—")} – ${esc(sch.end||"—")}</div>
-    </div>`;
-  }
-  const next=nextAvailableDay();
-  return `<div class="mb-card" style="margin-top:12px;border:1px solid rgba(180,35,24,.18);background:rgba(180,35,24,.04)">
-    <div class="kpi"><span>Doctor Status / डॉक्टर स्थिति</span><b style="color:#b42318">OFFLINE</b></div>
-    <div class="small" style="color:#b42318;font-weight:700;margin-top:-2px">(Consultation hours are over / Doctor uthh gaya hai)</div>
-    <div class="kpi" style="margin-top:10px"><span>Booking Status / बुकिंग स्थिति</span><b>${esc(`Book the appointment for the next available day / अगले उपलब्ध दिन के लिए अपॉइंटमेंट बुक करें`)}</b></div>
-    <div class="small" style="margin-top:6px">Next available: ${esc(next.name)}${sch.start?` • ${esc(sch.start)}`:""}</div>
-  </div>`;
-}
-
-// Keep the profile status synchronized when consultation hours cross the current time.
-let doctorAvailabilityTimer=null;
-function startDoctorAvailabilityTimer(){
-  if(doctorAvailabilityTimer) clearInterval(doctorAvailabilityTimer);
-  doctorAvailabilityTimer=setInterval(()=>{
-    if(S.screen==="doctor") render();
-  },30000);
-}
-
 // Fetch the list of doctors patients can choose from
 async function loadDoctorsList(){
   if(!fb.ready) return;
@@ -969,18 +876,87 @@ async function addPatientToFirestore(p){
 }
 
 // Creates the appointment doc. tokenNumber is intentionally null — operator assigns it later.
-async function createAppointment({patient, paymentType, amountPaid, appointmentDate}){
+async function createAppointment({patient, paymentType, amountPaid}){
   const data = {
     userId:uid(), patientId:patient.id, patientName:patient.fullName, patientAge:patient.age,
     complaint:patient.complaint||"", doctorId:selectedDoctorId, patientMobile:patient.mobile||"",
     paymentType, amountPaid, paymentStatus:"verified", paymentRef:"DEMO-"+Date.now(),
-    appointmentDate:appointmentDate||"",
     tokenNumber:null, status:"waiting_for_token", source:"online",
+    scheduledDate: S.scheduledDate || todayStr(),
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
   const ref = await fb.db.collection("appointments").add(data);
   return ref.id;
+}
+
+/* =========================================================
+   3b) DOCTOR SCHEDULE / AVAILABILITY HELPERS
+   Consultation-hours + daily-limit + leave-day logic.
+   Backward compatible: if a doctor doc doesn't have
+   workingHoursStart/End, maxPatientsPerDay or leaveDates set,
+   the doctor is simply always treated as open (old behaviour).
+   ========================================================= */
+function todayStr(d=new Date()){
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function addDaysStr(dateStr, n){
+  const [y,m,d] = dateStr.split("-").map(Number);
+  const dt = new Date(y, m-1, d);
+  dt.setDate(dt.getDate()+n);
+  return todayStr(dt);
+}
+function fmtDateHuman(dateStr){
+  const [y,m,d] = dateStr.split("-").map(Number);
+  const dt = new Date(y, m-1, d);
+  return dt.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric",weekday:"short"});
+}
+function nowHHMM(){
+  const d = new Date();
+  return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+}
+function isWithinWorkingHours(doctor){
+  if(!doctor.workingHoursStart || !doctor.workingHoursEnd) return true; // no structured hours set yet — never block
+  const hhmm = nowHHMM();
+  return hhmm >= doctor.workingHoursStart && hhmm <= doctor.workingHoursEnd;
+}
+function isLeaveDay(doctor, dateStr){
+  return (doctor.leaveDates||[]).includes(dateStr);
+}
+async function countBookingsForDate(doctorId, dateStr){
+  if(!fb.ready) return 0;
+  const snap = await fb.db.collection("appointments")
+    .where("doctorId","==",doctorId)
+    .where("scheduledDate","==",dateStr)
+    .get();
+  return snap.docs.filter(d=>!["cancelled","no_show"].includes(d.data().status)).length;
+}
+// Returns {status:'open'|'full'|'offline', reason, count, max}
+async function getDoctorAvailability(doctor){
+  const today = todayStr();
+  if(isLeaveDay(doctor, today)) return {status:"offline", reason:"leave"};
+  if(!isWithinWorkingHours(doctor)) return {status:"offline", reason:"hours"};
+  if(doctor.maxPatientsPerDay){
+    const count = await countBookingsForDate(selectedDoctorId, today);
+    if(count >= doctor.maxPatientsPerDay) return {status:"full", reason:"limit", count, max:doctor.maxPatientsPerDay};
+  }
+  return {status:"open"};
+}
+// Finds the next date (starting tomorrow) that isn't a leave day and isn't already at the daily limit
+async function findNextAvailableDate(doctor){
+  let dateStr = addDaysStr(todayStr(), 1);
+  for(let i=0;i<14;i++){
+    if(!isLeaveDay(doctor, dateStr)){
+      if(doctor.maxPatientsPerDay){
+        const count = await countBookingsForDate(selectedDoctorId, dateStr);
+        if(count < doctor.maxPatientsPerDay) return dateStr;
+      } else {
+        return dateStr;
+      }
+    }
+    dateStr = addDaysStr(dateStr, 1);
+  }
+  return null;
 }
 
 /* =========================================================
@@ -1020,8 +996,8 @@ async function chooseDoctor(id){
   selectedDoctorId = id;
   await loadDoctor();
   listenQueue();
+  S.doctorAvailability = S.doctor ? await getDoctorAvailability(S.doctor) : null;
   setScreen("doctor");
-  startDoctorAvailabilityTimer();
 }
 
 // Browser notification (reminder) — works only while this browser/tab has permission granted.
@@ -1058,6 +1034,7 @@ function render(){
   else if(S.screen==="book") html = bookView();
   else if(S.screen==="payment") html = paymentView();
   else if(S.screen==="waiting") html = waitingView();
+  else if(S.screen==="prebooked") html = prebookedView();
   else if(S.screen==="token") html = tokenView();
   else if(S.screen==="profile") html = profileView();
   a.innerHTML = `<div class="mb-shell">${html}</div>`;
@@ -1220,6 +1197,7 @@ function homeView(){
   const current = S.queueLive?.currentToken ?? 0;
   const ahead = assigned ? Math.max(0, ap.tokenNumber-current) : 0;
   const eta = assigned ? `${waitMinutes(ap.tokenNumber)} min` : "Waiting";
+  const isFuturePrebook = ap && ap.scheduledDate && ap.scheduledDate !== todayStr();
   return `${header()}<div class="mb-screen">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
       <div style="display:flex;gap:12px;align-items:center">
@@ -1229,7 +1207,13 @@ function homeView(){
       </div>
       <button onclick="setScreen('profile')" style="background:#fff;border:1px solid var(--swift-border);width:42px;height:42px;border-radius:50%;display:grid;place-items:center" aria-label="Profile">•••</button>
     </div>
-    ${ap ? `<div style="background:var(--swift-green);color:#fff;border-radius:28px;padding:22px;box-shadow:0 18px 45px rgba(6,193,103,.22);margin-bottom:22px">
+    ${isFuturePrebook ? `<div class="mb-card" style="margin-bottom:22px">
+      <div class="tag warning">PRE-BOOKED • ${esc(fmtDateHuman(ap.scheduledDate))}</div>
+      <h3 style="margin-top:10px">${esc(S.doctor?.name||"Doctor")}</h3>
+      <p class="small">आपकी बुकिंग कन्फर्म है। टोकन नंबर उस दिन जनरेट होगा। / Your booking is confirmed. Token number will be generated on that day.</p>
+      <button class="mb-secondary" onclick="setScreen('token')">View Details</button>
+    </div>` :
+    ap ? `<div style="background:var(--swift-green);color:#fff;border-radius:28px;padding:22px;box-shadow:0 18px 45px rgba(6,193,103,.22);margin-bottom:22px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
         <div><div style="font-size:13px;opacity:.82">LIVE APPOINTMENT</div><div style="font-size:24px;font-weight:900;letter-spacing:-.6px;margin-top:3px">${esc(S.doctor?.name||"Doctor")}</div></div>
         <span style="background:#fff;color:var(--swift-green-dark);padding:7px 11px;border-radius:999px;font-size:11px;font-weight:900">● Live</span>
@@ -1295,21 +1279,27 @@ function doctorsListView(){
 
 function doctorView(){
   if(!S.doctor) return `${header("Find Doctor")}<div class="mb-screen"><p>Loading…</p></div>${nav('doctors')}`;
-  const d = S.doctor, availability=getDoctorAvailability();
+  const d = S.doctor;
+  const avail = S.doctorAvailability || {status:"open"};
+  const statusTag = avail.status==="open"
+    ? `<span class="tag"><span class="mb-live-dot" style="display:inline-block;margin-right:5px"></span>Online Now / अभी उपलब्ध</span>`
+    : avail.status==="full"
+    ? `<span class="tag warning">Today's Booking Full / आज की बुकिंग फुल</span>`
+    : `<span class="tag dangerTag">Offline / अभी उपलब्ध नहीं</span>`;
   return `${header("Doctor")}<div class="mb-screen">
   <div class="card doctor">
   <div class="avatarG">${initials(d.name)}</div>
   <div><h3>${esc(d.name)}</h3><span class="tag">${esc(d.specialty)}</span>
   ${(d.qualifications||[]).map(q=>`<div class="small" style="margin-top:4px">${esc(q)}</div>`).join("")}
   <p class="small">${esc(d.experience)}</p></div></div>
-  ${doctorAvailabilityView()}
+  <div style="margin:10px 0">${statusTag}</div>
   <div class="mb-card">
   <div class="kpi"><span>Clinic</span><b>${esc(d.clinicName)}</b></div>
   <div class="kpi"><span>Hours</span><b>${esc(d.workingHours)}</b></div>
   <div class="kpi"><span>Total Amount</span><b>₹${(d.consultationFee+d.platformFee)}</b></div>
   <div class="kpi"><span>Current Token</span><span style="display:flex;align-items:center;gap:8px"><span class="mb-live"><span class="mb-live-dot"></span>LIVE</span><b>#${S.queueLive?.currentToken ?? "–"}</b></span></div>
   </div>
-  <button class="mb-primary" onclick="tryBookAppointment()">${availability.live ? "Book Appointment" : "Book Next Available Day / अगले उपलब्ध दिन के लिए बुक करें"}</button>
+  <button class="mb-primary" onclick="tryBookAppointment()">Book Appointment</button>
   <button class="mb-outline" onclick="emergency()">Emergency Help</button>
   <button class="mb-outline" onclick="window.open('?tv='+selectedDoctorId,'_blank')">📺 Launch TV Mode</button>
   </div>${nav('doctors')}`;
@@ -1317,14 +1307,38 @@ function doctorView(){
 function hasActiveAppointment(){
   return S.appointment && S.appointment.doctorId===selectedDoctorId && !["completed","cancelled","no_show"].includes(S.appointment.status);
 }
-function tryBookAppointment(){
+async function tryBookAppointment(){
   if(hasActiveAppointment()){
     alert("You already have an active appointment with this doctor.\nStatus: "+S.appointment.status+(S.appointment.tokenNumber?"\nToken: #"+S.appointment.tokenNumber:"")+"\n\nGo to 'My Token' to track it.");
     setScreen('token');
     return;
   }
-  // Outside consultation hours, the appointment flow remains available only for the next available day.
-  setScreen('book');
+  const avail = S.doctorAvailability || await getDoctorAvailability(S.doctor);
+  if(avail.status === "open"){
+    S.scheduledDate = todayStr();
+    setScreen('book');
+    return;
+  }
+  const nextDate = await findNextAvailableDate(S.doctor);
+  if(!nextDate){
+    alert("No available slots found in the next 14 days. Please try again later.\n\nअगले 14 दिनों में कोई खाली स्लॉट नहीं मिला। कृपया बाद में दोबारा कोशिश करें।");
+    return;
+  }
+  const label = fmtDateHuman(nextDate);
+  const reasonMsg = avail.status==="full"
+    ? "Today's bookings are full. / आज की बुकिंग फुल हो चुकी है।"
+    : "The doctor is currently unavailable. / डॉक्टर अभी उपलब्ध नहीं हैं।";
+  const ok = confirm(
+    `${reasonMsg}\n\n`+
+    `Next available date: ${label}\nअगली उपलब्ध तारीख: ${label}\n\n`+
+    `Your booking will be confirmed now, but your token number will only be generated on that day once the doctor is online — just like a movie ticket.\n`+
+    `आपकी बुकिंग अभी कन्फर्म हो जाएगी, लेकिन टोकन नंबर उसी दिन जनरेट होगा जब डॉक्टर उपलब्ध होंगे।\n\n`+
+    `Book for ${label}?`
+  );
+  if(ok){
+    S.scheduledDate = nextDate;
+    setScreen('book');
+  }
 }
 function emergency(){ alert("Emergency contact is admin-configured. For real emergencies, contact appropriate emergency medical services."); }
 
@@ -1335,11 +1349,12 @@ function bookView(){
   }
   const p = selectedPatient();
   if(!p) return `${header()}<div class="mb-screen"><p>Select a patient first.</p><button class="mb-primary" onclick="setScreen('selectPatient')">Select Patient</button></div>`;
+  const isFuture = S.scheduledDate && S.scheduledDate !== todayStr();
   return `${header("Book Appointment")}<div class="mb-screen">
+  ${isFuture ? `<div class="alert">This booking is for <b>${esc(fmtDateHuman(S.scheduledDate))}</b>.<br>यह बुकिंग <b>${esc(fmtDateHuman(S.scheduledDate))}</b> के लिए है।</div>` : ""}
   <div class="mb-card">
   <div class="kpi"><span>Patient</span><b>${esc(p.fullName)}</b></div>
   <div class="kpi"><span>Doctor</span><b>${esc(S.doctor.name)}</b></div>
-  <div class="kpi"><span>Appointment Date / अपॉइंटमेंट तारीख</span><b>${esc(formatBookingDate(getBookingDate()))}</b></div>
   <div class="kpi"><span>Complaint</span><b>${esc(p.complaint||"-")}</b></div>
   </div>
   <h3>Payment Options</h3>
@@ -1364,9 +1379,10 @@ function paymentView(){
 async function doPayment(paymentType, amount){
   if(!fb.ready){ alert("Firebase not connected yet — connect it first to save real appointments."); return; }
   const p = selectedPatient();
-  const id = await createAppointment({patient:p, paymentType, amountPaid:amount, appointmentDate:getBookingDate().toISOString().slice(0,10)});
+  const id = await createAppointment({patient:p, paymentType, amountPaid:amount});
   listenAppointment(id);
-  setScreen("waiting");
+  const isFuture = S.scheduledDate && S.scheduledDate !== todayStr();
+  setScreen(isFuture ? "prebooked" : "waiting");
 }
 
 function waitingView(){
@@ -1379,6 +1395,29 @@ function waitingView(){
   </div>
   <button class="mb-primary" onclick="setScreen('token')">Go to My Token</button>
   </div>${nav('token')}`;
+}
+
+function prebookedView(){
+  const ap = S.appointment;
+  return `${header("Booking Confirmed")}<div class="mb-screen">
+  <div class="success">Payment Successful ✓</div>
+  <div class="mb-ticket">
+    <div class="mb-ticket-top">
+      <div class="tokenLabel">Pre-Booked For</div>
+      <div style="font-size:34px;font-weight:900">${esc(fmtDateHuman(ap?.scheduledDate))}</div>
+    </div>
+    <div class="mb-ticket-seam"></div>
+    <div class="mb-ticket-bottom">
+      <div class="kpi"><span>Doctor</span><b>${esc(S.doctor?.name||"")}</b></div>
+      <div class="kpi"><span>Token Number</span><b>Generates on ${esc(fmtDateHuman(ap?.scheduledDate))}</b></div>
+    </div>
+  </div>
+  <div class="alert">
+    Your booking is confirmed for this date. Your token number will be generated automatically on that day once the doctor is online — just like a movie ticket, your seat is confirmed but the number shows on the day.<br><br>
+    आपकी बुकिंग इस तारीख के लिए कन्फर्म हो चुकी है। टोकन नंबर उसी दिन अपने आप जनरेट होगा जब डॉक्टर उपलब्ध होंगे — जैसे मूवी टिकट में सीट पहले से कन्फर्म होती है, नंबर उस दिन आता है।
+  </div>
+  <button class="mb-primary" onclick="goHome()">Go to Home</button>
+  </div>${nav('home')}`;
 }
 
 async function trackByMobile(){
@@ -1407,6 +1446,23 @@ function tokenView(){
   </div></div>${nav('token')}`;
   const ap = S.appointment, q = S.queueLive;
   const assigned = !!ap.tokenNumber;
+  const isFuturePrebook = ap.scheduledDate && ap.scheduledDate !== todayStr();
+  if(isFuturePrebook){
+    return `${header("My Token")}<div class="mb-screen">
+    <div class="mb-ticket">
+      <div class="mb-ticket-top">
+        <div class="tokenLabel">Pre-Booked For</div>
+        <div style="font-size:34px;font-weight:900">${esc(fmtDateHuman(ap.scheduledDate))}</div>
+      </div>
+      <div class="mb-ticket-seam"></div>
+      <div class="mb-ticket-bottom">
+        <div class="kpi"><span>Doctor</span><b>${esc(S.doctor?.name||"")}</b></div>
+        <div class="kpi"><span>Token Number</span><b>Generates on ${esc(fmtDateHuman(ap.scheduledDate))}</b></div>
+      </div>
+    </div>
+    <div class="alert">आपकी बुकिंग कन्फर्म है, टोकन उस दिन जनरेट होगा। / Your booking is confirmed, the token will generate on that day.</div>
+    </div>${nav('token')}`;
+  }
   return `${header("My Token")}<div class="mb-screen">
   ${assigned ? `
   <div class="mb-ticket">
