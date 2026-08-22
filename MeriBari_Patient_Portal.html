@@ -922,26 +922,55 @@ function nowHHMM(){
 // Fallback: parse a display string like "13:00--19:00" / "1:00 PM - 7:00 PM" into {start,end} in 24h HH:MM.
 function parseWorkingHoursString(str){
   if(!str) return null;
-  const m = String(str).match(/(\d{1,2}):(\d{2})\s*(AM|PM|am|pm)?\s*[-–—]+\s*(\d{1,2}):(\d{2})\s*(AM|PM|am|pm)?/);
+  const m = String(str).match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM|am|pm)?\s*[-–—]+\s*(\d{1,2})(?::(\d{2}))?\s*(AM|PM|am|pm)?/);
   if(!m) return null;
   const to24 = (h,mm,ap)=>{
     h = +h;
+    mm = mm || "00";
     if(ap){ ap=ap.toUpperCase(); if(ap==="PM" && h!==12) h+=12; if(ap==="AM" && h===12) h=0; }
     return String(h).padStart(2,"0")+":"+mm;
   };
   return { start: to24(m[1],m[2],m[3]), end: to24(m[4],m[5],m[6]) };
 }
-function isWithinWorkingHours(doctor){
-  let start = doctor.workingHoursStart, end = doctor.workingHoursEnd;
+
+// Returns the doctor's effective consultation window, using structured fields
+// when available and falling back to the display string already shown in the UI.
+function getWorkingHoursBounds(doctor){
+  let start = doctor?.workingHoursStart || "";
+  let end = doctor?.workingHoursEnd || "";
   if(!start || !end){
-    // No structured hours set in Firestore — fall back to parsing the display string
-    // (e.g. "13:00--19:00") so status still reflects the hours shown to the patient.
-    const parsed = parseWorkingHoursString(doctor.workingHours);
+    const parsed = parseWorkingHoursString(doctor?.workingHours);
     if(parsed){ start = parsed.start; end = parsed.end; }
   }
-  if(!start || !end) return true; // truly no hours info anywhere — never block
+  return (start && end) ? {start, end} : null;
+}
+
+// Returns a richer availability state so OFFLINE can be correctly distinguished
+// between BEFORE consultation starts, AFTER consultation ends, and a LEAVE day.
+function getWorkingHoursState(doctor){
+  const bounds = getWorkingHoursBounds(doctor);
+  if(!bounds) return {state:"open"};
+
   const hhmm = nowHHMM();
-  return hhmm >= start && hhmm <= end;
+  if(hhmm < bounds.start){
+    return {state:"before_start", start:bounds.start, end:bounds.end};
+  }
+  if(hhmm > bounds.end){
+    return {state:"after_end", start:bounds.start, end:bounds.end};
+  }
+  return {state:"open", start:bounds.start, end:bounds.end};
+}
+
+function isWithinWorkingHours(doctor){
+  return getWorkingHoursState(doctor).state === "open";
+}
+
+function formatTimeForPatient(hhmm){
+  if(!hhmm) return "";
+  const [h,m] = hhmm.split(":").map(Number);
+  const suffix = h >= 12 ? "PM" : "AM";
+  const hour12 = (h % 12) || 12;
+  return m===0 ? `${hour12} ${suffix}` : `${hour12}:${String(m).padStart(2,"0")} ${suffix}`;
 }
 function isLeaveDay(doctor, dateStr){
   return (doctor.leaveDates||[]).includes(dateStr);
@@ -954,11 +983,31 @@ async function countBookingsForDate(doctorId, dateStr){
     .get();
   return snap.docs.filter(d=>!["cancelled","no_show"].includes(d.data().status)).length;
 }
-// Returns {status:'open'|'full'|'offline', reason, count, max}
+// Returns {status:'open'|'full'|'offline', reason, count, max, start, end}
+// reason is one of: leave | before_start | after_end | limit
 async function getDoctorAvailability(doctor){
   const today = todayStr();
   if(isLeaveDay(doctor, today)) return {status:"offline", reason:"leave"};
-  if(!isWithinWorkingHours(doctor)) return {status:"offline", reason:"hours"};
+
+  const hoursState = getWorkingHoursState(doctor);
+  if(hoursState.state === "before_start") {
+    return {
+      status:"offline",
+      reason:"before_start",
+      start:hoursState.start,
+      end:hoursState.end
+    };
+  }
+
+  if(hoursState.state === "after_end") {
+    return {
+      status:"offline",
+      reason:"after_end",
+      start:hoursState.start,
+      end:hoursState.end
+    };
+  }
+
   if(doctor.maxPatientsPerDay){
     const count = await countBookingsForDate(selectedDoctorId, today);
     if(count >= doctor.maxPatientsPerDay) return {status:"full", reason:"limit", count, max:doctor.maxPatientsPerDay};
@@ -1027,21 +1076,29 @@ function stopDoctorAvailabilityAutoRefresh(){
 function startDoctorAvailabilityAutoRefresh(){
   stopDoctorAvailabilityAutoRefresh();
   if(!S.doctor || !selectedDoctorId) return;
+
+  // Re-check frequently so the patient UI automatically changes when
+  // consultation starts/ends or when the daily limit is reached.
   doctorAvailabilityTimer = setInterval(async ()=>{
     if(S.screen !== "doctor" || !S.doctor || !selectedDoctorId){
       stopDoctorAvailabilityAutoRefresh();
       return;
     }
     try{
-      const previous = S.doctorAvailability?.status;
+      const previousStatus = S.doctorAvailability?.status;
+      const previousReason = S.doctorAvailability?.reason;
       S.doctorAvailability = await getDoctorAvailability(S.doctor);
-      if(previous !== S.doctorAvailability?.status){
+
+      if(
+        previousStatus !== S.doctorAvailability?.status ||
+        previousReason !== S.doctorAvailability?.reason
+      ){
         render();
       }
     }catch(e){
       console.warn("Doctor availability refresh failed:", e);
     }
-  }, 45000);
+  }, 15000);
 }
 
 async function chooseDoctor(id){
@@ -1347,8 +1404,12 @@ function doctorView(){
     : `<span class="tag dangerTag">Booking Closed</span>`;
   const availabilityAlert = avail.status==="full"
     ? `<div class="alert" style="margin:14px 0">आज की बुकिंग फुल हो चुकी है। आप अगली उपलब्ध तारीख के लिए पहले से बुकिंग कर सकते हैं।<br>Today's booking is full. You can pre-book for the next available day.</div>`
-    : avail.status==="offline"
-    ? `<div class="alert" style="margin:14px 0">डॉक्टर का परामर्श समय समाप्त हो चुका है।<br>Doctor's consultation time is over.</div>`
+    : avail.status==="offline" && avail.reason==="before_start"
+    ? `<div class="alert" style="margin:14px 0">डॉक्टर का परामर्श समय ${esc(formatTimeForPatient(avail.start))} बजे से शुरू होगा।<br>Doctor consultation time will start at ${esc(formatTimeForPatient(avail.start))}.</div>`
+    : avail.status==="offline" && avail.reason==="after_end"
+    ? `<div class="alert" style="margin:14px 0">डॉक्टर का परामर्श समय समाप्त हो चुका है।<br>Doctor consultation time is over.</div>`
+    : avail.status==="offline" && avail.reason==="leave"
+    ? `<div class="alert" style="margin:14px 0">डॉक्टर आज उपलब्ध नहीं हैं।<br>Doctor is unavailable today.</div>`
     : "";
   const bookBtnLabel = avail.status==="open" ? "Book Appointment" : "Pre Book for Next Available Day";
   return `${header("Doctor")}<div class="mb-screen">
@@ -1399,7 +1460,13 @@ async function tryBookAppointment(){
   const label = fmtDateHuman(nextDate);
   const reasonMsg = avail.status==="full"
     ? "Today's bookings are full. / आज की बुकिंग फुल हो चुकी है।"
-    : "The doctor is currently unavailable. / डॉक्टर अभी उपलब्ध नहीं हैं।";
+    : avail.reason==="before_start"
+    ? `Doctor consultation time will start at ${formatTimeForPatient(avail.start)}. / डॉक्टर का परामर्श समय ${formatTimeForPatient(avail.start)} बजे से शुरू होगा।`
+    : avail.reason==="after_end"
+    ? "Doctor consultation time is over. / डॉक्टर का परामर्श समय समाप्त हो चुका है।"
+    : avail.reason==="leave"
+    ? "Doctor is unavailable today. / डॉक्टर आज उपलब्ध नहीं हैं।"
+    : "Doctor is currently unavailable. / डॉक्टर अभी उपलब्ध नहीं हैं।";
   const ok = confirm(
     `${reasonMsg}\n\n`+
     `Next available date: ${label}\nअगली उपलब्ध तारीख: ${label}\n\n`+
