@@ -200,18 +200,8 @@ body{
   -webkit-backdrop-filter:blur(14px) saturate(135%)!important;
   border-color:rgba(226,232,240,.85)!important;
 }
-.mb-live{
-  background:rgba(219,234,254,.72)!important;
-  color:#1D4ED8!important;
-  backdrop-filter:blur(10px)!important;
-}
-.mb-live-dot{
-  background:#2563EB!important;
-  box-shadow:0 0 0 0 rgba(37,99,235,.6);
-  animation:livePulse 1.65s cubic-bezier(.4,0,.6,1) infinite;
-}
 
-/* Blue primary surfaces */
+/* BLUE PRIMARY BUTTONS */
 .mb-primary{
   background:linear-gradient(135deg,#2563EB 0%,#1D4ED8 52%,#1E40AF 100%)!important;
   box-shadow:0 14px 34px rgba(37,99,235,.27)!important;
@@ -221,24 +211,66 @@ body{
   box-shadow:0 18px 42px rgba(37,99,235,.34)!important;
 }
 
-/* Existing green inline gradients → blue visually */
+/* BLUE TICKET TOP */
+.mb-ticket-top{
+  background:
+    radial-gradient(circle at 90% 10%,rgba(255,255,255,.22),transparent 28%),
+    linear-gradient(135deg,#2563EB 0%,#1D4ED8 58%,#1E40AF 100%)!important;
+}
+
+/* BLUE NAV ACTIVE */
+.mb-nav button.active{
+  background:linear-gradient(135deg,#EFF6FF,#DBEAFE)!important;
+  color:#1D4ED8!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 6px 18px rgba(37,99,235,.09)!important;
+}
+.mb-nav button.active svg{
+  filter:drop-shadow(0 4px 7px rgba(37,99,235,.18));
+}
+
+/* BLUE LOGO SPAN */
+.mb-logo span{
+  color:#2563EB!important;
+}
+
+/* BLUE AVATAR / ICON */
 .avatarG,.mb-icon{
   background:linear-gradient(145deg,#2563EB,#1D4ED8)!important;
   box-shadow:0 18px 44px rgba(37,99,235,.24)!important;
 }
-.mb-ticket-top{
-  background:linear-gradient(145deg,#2563EB,#1D4ED8,#1E40AF)!important;
+
+/* BLUE QUICK ACTION BUTTONS */
+.mb-screen > div[style*="grid-template-columns:repeat(4,1fr)"] button div{
+  color:#2563EB!important;
 }
+.mb-screen > div[style*="grid-template-columns:repeat(4,1fr)"] button:hover{
+  box-shadow:0 16px 32px rgba(37,99,235,.12)!important;
+}
+
+/* BLUE DOCTOR CARD RAIL */
+.doctor.card::after{
+  background:linear-gradient(180deg,#60A5FA,#2563EB)!important;
+}
+
+/* BLUE SPLASH BACKGROUND */
 .mb-splash{
   background:
     radial-gradient(circle at 50% 4%,rgba(219,234,254,.95) 0%,rgba(239,246,255,.7) 34%,#F4F7FB 72%)!important;
 }
 
-/* Active live status ring */
-@keyframes livePulse{
-  0%{box-shadow:0 0 0 0 rgba(37,99,235,.62),0 0 0 0 rgba(37,99,235,.16)}
-  55%{box-shadow:0 0 0 8px rgba(37,99,235,0),0 0 0 16px rgba(37,99,235,0)}
-  100%{box-shadow:0 0 0 0 rgba(37,99,235,0),0 0 0 0 rgba(37,99,235,0)}
+/* =========================================================
+   GREEN LIVE DOT WITH PULSE (PRESERVED)
+   ========================================================= */
+.mb-live{
+  background:#EAF9F1!important;
+  color:var(--swift-green-dark)!important;
+  border:1px solid rgba(6,193,103,0.25)!important;
+  box-shadow:0 5px 16px rgba(6,193,103,.08)!important;
+}
+.mb-live-dot{
+  background:var(--swift-green)!important;
+  /* Removed box-shadow: none !important so pulse works */
+  animation:mbpulse 1.5s infinite!important;
 }
 
 /* =========================================================
@@ -260,28 +292,7 @@ button:not(:disabled):active,[role="button"]:active{
   transform:scale(.965)!important;
 }
 
-/* React click ripple */
-.mb-ripple{
-  position:absolute;
-  border-radius:9999px;
-  pointer-events:none;
-  transform:scale(0);
-  background:rgba(255,255,255,.52);
-  animation:mbRipple .58s cubic-bezier(.2,.8,.2,1) forwards;
-}
-@keyframes mbRipple{
-  to{transform:scale(4);opacity:0}
-}
-
-/* Click confirmation pulse */
-.mb-clicked{
-  animation:mbClickPulse .46s cubic-bezier(.2,.8,.2,1);
-}
-@keyframes mbClickPulse{
-  0%{box-shadow:0 0 0 0 rgba(37,99,235,.28)}
-  50%{box-shadow:0 0 0 7px rgba(37,99,235,.10)}
-  100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}
-}
+/* RIPPLE EFFECT COMPLETELY REMOVED - only scale on press remains */
 
 /* Floating live shimmer */
 .mb-live-shimmer{
@@ -356,45 +367,13 @@ tailwind.config = {
 
   const e = React.createElement;
 
+  // RIPPLE EFFECT COMPLETELY REMOVED - only scale on press remains (in CSS)
   function RippleButtonController(){
     React.useEffect(function(){
-      function onPointerDown(ev){
-        const target = ev.target.closest("button,[role='button'],a");
-        if(!target || target.disabled) return;
-
-        // Keep existing click handlers untouched; only add visual feedback.
-        const rect = target.getBoundingClientRect();
-        const ripple = document.createElement("span");
-        const size = Math.max(rect.width,rect.height) * 1.15;
-
-        if(getComputedStyle(target).position === "static"){
-          target.style.position = "relative";
-        }
-        target.style.overflow = "hidden";
-
-        ripple.className = "mb-ripple";
-        ripple.style.width = size + "px";
-        ripple.style.height = size + "px";
-        ripple.style.left = (ev.clientX - rect.left - size/2) + "px";
-        ripple.style.top = (ev.clientY - rect.top - size/2) + "px";
-
-        target.appendChild(ripple);
-        target.classList.remove("mb-clicked");
-        void target.offsetWidth;
-        target.classList.add("mb-clicked");
-
-        window.setTimeout(function(){
-          ripple.remove();
-          target.classList.remove("mb-clicked");
-        },620);
-      }
-
-      document.addEventListener("pointerdown",onPointerDown,{passive:true});
-      return function(){
-        document.removeEventListener("pointerdown",onPointerDown);
-      };
+      // Ripple effect removed for cleaner professional feel.
+      // Button press scale effect already exists in CSS (transform:scale(.985))
+      return function(){};
     },[]);
-
     return null;
   }
 
@@ -493,7 +472,7 @@ body{
   box-shadow:0 12px 34px rgba(15,23,42,.07)!important;
 }
 
-/* Logo has a stronger modern identity */
+/* Logo has a stronger modern identity - BLUE */
 .mb-logo{
   font-size:24px!important;
   letter-spacing:-1.6px!important;
@@ -566,24 +545,22 @@ body{
   pointer-events:none;
 }
 
-/* Live ticket pattern */
+/* Live ticket pattern - BLUE */
 .mb-ticket-top{
   background:
     radial-gradient(circle at 90% 10%,rgba(255,255,255,.22),transparent 28%),
     linear-gradient(135deg,#2563EB 0%,#1D4ED8 58%,#1E40AF 100%)!important;
 }
 
-/* Home live appointment inline green → blue */
+/* Home live appointment inline green → BLUE */
 .mb-shell [style*="var(--swift-green)"]{
-  /* Preserve inline layout while visually overriding the old accent. */
   --swift-green:#2563EB!important;
 }
 .mb-shell [style*="rgba(6,193,103"]{
-  /* Existing shadow declarations remain structurally intact. */
   box-shadow:0 18px 45px rgba(37,99,235,.20)!important;
 }
 
-/* Quick actions: floating tile pattern */
+/* Quick actions: floating tile pattern - BLUE */
 .mb-screen > div[style*="grid-template-columns:repeat(4,1fr)"] button{
   min-height:92px!important;
   border-radius:23px!important;
@@ -600,7 +577,7 @@ body{
   color:#2563EB!important;
 }
 
-/* Bottom navigation redesigned as segmented floating dock */
+/* Bottom navigation redesigned as segmented floating dock - BLUE */
 .mb-nav{
   bottom:12px!important;
   width:calc(100% - 28px)!important;
@@ -625,13 +602,13 @@ body{
   filter:drop-shadow(0 4px 7px rgba(37,99,235,.18));
 }
 
-/* Status pills */
+/* Status pills - keep green for live dot */
 .mb-live{
-  border:1px solid rgba(147,197,253,.45)!important;
-  box-shadow:0 5px 16px rgba(37,99,235,.08)!important;
+  border:1px solid rgba(6,193,103,.3)!important;
+  box-shadow:0 5px 16px rgba(6,193,103,.08)!important;
 }
 
-/* Doctor cards get a left accent rail */
+/* Doctor cards get a left accent rail - BLUE */
 .doctor.card::after{
   content:"";
   position:absolute;
@@ -640,7 +617,7 @@ body{
   bottom:18px;
   width:4px;
   border-radius:0 8px 8px 0;
-  background:linear-gradient(180deg,#60A5FA,#2563EB);
+  background:linear-gradient(180deg,#60A5FA,#2563EB)!important;
 }
 
 /* More polished typography */
@@ -715,6 +692,15 @@ h1{
   display: flex;
   align-items: center;
   gap: 14px;
+}
+
+/* =========================================================
+   GREEN LIVE DOT WITH PULSE (PRESERVED - FINAL OVERRIDE)
+   ========================================================= */
+.mb-live-dot {
+  background: var(--swift-green) !important;
+  animation: mbpulse 1.5s infinite !important;
+  /* Removed box-shadow: none !important to keep pulse */
 }
 </style>
 </head>
