@@ -1422,6 +1422,17 @@ select:focus{
         >
       </div>
 
+      <div>
+        <label>Maximum Patients per Day</label>
+        <input
+          id="pfMaxPatients"
+          type="number"
+          min="1"
+          step="1"
+          placeholder="e.g. 30"
+        >
+      </div>
+
     </div>
 
     <p class="small" style="margin:14px 0">
@@ -1752,6 +1763,11 @@ select:focus{
         <div>
           <label>Consultation Fee (₹)</label>
           <input id="epFee" type="number" placeholder="500">
+        </div>
+
+        <div>
+          <label>Maximum Patients per Day</label>
+          <input id="epMaxPatients" type="number" min="1" step="1" placeholder="e.g. 30">
         </div>
 
       </div>
@@ -2087,6 +2103,9 @@ async function createDoctorProfile(){
         .value
     );
 
+  const maxPatientsPerDay =
+    Number(document.getElementById("pfMaxPatients").value);
+
 
   if(!name || !fee){
 
@@ -2179,6 +2198,8 @@ async function createDoctorProfile(){
         .getElementById("pfHours")
         .value
         .trim(),
+
+    maxPatientsPerDay: maxPatientsPerDay > 0 ? maxPatientsPerDay : null,
 
     consultationFee:fee,
 
@@ -2443,6 +2464,7 @@ function openEditProfileModal(){
   document.getElementById("epAddress").value = doctorData.clinicAddress || "";
   document.getElementById("epHours").value = doctorData.workingHours || "";
   document.getElementById("epFee").value = doctorData.consultationFee || "";
+  document.getElementById("epMaxPatients").value = doctorData.maxPatientsPerDay || "";
   document.getElementById("epPhoto").value = "";
   const preview = document.getElementById("epPhotoPreview");
   if(doctorData.photoUrl){
@@ -2467,6 +2489,7 @@ async function saveEditProfile(){
   errBox.textContent = "";
   const name = document.getElementById("epName").value.trim();
   const fee = Number(document.getElementById("epFee").value);
+  const maxPatientsPerDay = Number(document.getElementById("epMaxPatients").value);
   if(!name || !fee){
     errBox.textContent = "Doctor name and consultation fee are required.";
     return;
@@ -2479,6 +2502,7 @@ async function saveEditProfile(){
     clinicName: document.getElementById("epClinic").value.trim(),
     clinicAddress: document.getElementById("epAddress").value.trim(),
     workingHours: document.getElementById("epHours").value.trim(),
+    maxPatientsPerDay: maxPatientsPerDay > 0 ? maxPatientsPerDay : null,
     consultationFee: fee,
     photoUrl: document.getElementById("epPhotoPreview").dataset.pendingPhoto || "",
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -2499,6 +2523,10 @@ async function saveEditProfile(){
 /* =========================================================
    FIRESTORE LISTENERS
 ========================================================= */
+
+function todayDateStr(d=new Date()){
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
 
 function listenAll(){
 
@@ -2544,6 +2572,11 @@ function listenAll(){
       "status",
       "==",
       "waiting_for_token"
+    )
+    .where(
+      "scheduledDate",
+      "==",
+      todayDateStr()
     )
     .onSnapshot(snap => {
 
