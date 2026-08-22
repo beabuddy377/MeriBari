@@ -201,38 +201,44 @@ body{
   border-color:rgba(226,232,240,.85)!important;
 }
 .mb-live{
-  background:#EAF9F1!important;
-  color:var(--swift-green-dark)!important;
+  background:rgba(219,234,254,.72)!important;
+  color:#1D4ED8!important;
   backdrop-filter:blur(10px)!important;
-  border:1px solid rgba(6,193,103,0.2)!important;
 }
 .mb-live-dot{
-  background:var(--swift-green)!important;
-  box-shadow:none!important;
-  animation:mbpulse 1.5s infinite!important;
+  background:#2563EB!important;
+  box-shadow:0 0 0 0 rgba(37,99,235,.6);
+  animation:livePulse 1.65s cubic-bezier(.4,0,.6,1) infinite;
 }
 
-/* Blue primary surfaces - but we keep green buttons since user prefers original green */
+/* Blue primary surfaces */
 .mb-primary{
-  background:linear-gradient(135deg,#06C167,#059B53)!important;
-  box-shadow:0 14px 30px rgba(6,193,103,.22)!important;
+  background:linear-gradient(135deg,#2563EB 0%,#1D4ED8 52%,#1E40AF 100%)!important;
+  box-shadow:0 14px 34px rgba(37,99,235,.27)!important;
 }
 .mb-primary:hover{
   transform:translateY(-1px);
-  box-shadow:0 18px 42px rgba(6,193,103,.34)!important;
+  box-shadow:0 18px 42px rgba(37,99,235,.34)!important;
 }
 
-/* Existing green inline gradients → keep green */
+/* Existing green inline gradients → blue visually */
 .avatarG,.mb-icon{
-  background:linear-gradient(145deg,#06C167,#059B53)!important;
-  box-shadow:0 18px 44px rgba(6,193,103,.24)!important;
+  background:linear-gradient(145deg,#2563EB,#1D4ED8)!important;
+  box-shadow:0 18px 44px rgba(37,99,235,.24)!important;
 }
 .mb-ticket-top{
-  background:linear-gradient(145deg,#06C167,#059B53)!important;
+  background:linear-gradient(145deg,#2563EB,#1D4ED8,#1E40AF)!important;
 }
 .mb-splash{
   background:
     radial-gradient(circle at 50% 4%,rgba(219,234,254,.95) 0%,rgba(239,246,255,.7) 34%,#F4F7FB 72%)!important;
+}
+
+/* Active live status ring */
+@keyframes livePulse{
+  0%{box-shadow:0 0 0 0 rgba(37,99,235,.62),0 0 0 0 rgba(37,99,235,.16)}
+  55%{box-shadow:0 0 0 8px rgba(37,99,235,0),0 0 0 16px rgba(37,99,235,0)}
+  100%{box-shadow:0 0 0 0 rgba(37,99,235,0),0 0 0 0 rgba(37,99,235,0)}
 }
 
 /* =========================================================
@@ -254,10 +260,28 @@ button:not(:disabled):active,[role="button"]:active{
   transform:scale(.965)!important;
 }
 
-/* Ripple effect completely removed - only scale on press remains */
+/* React click ripple */
+.mb-ripple{
+  position:absolute;
+  border-radius:9999px;
+  pointer-events:none;
+  transform:scale(0);
+  background:rgba(255,255,255,.52);
+  animation:mbRipple .58s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes mbRipple{
+  to{transform:scale(4);opacity:0}
+}
 
-/* Click confirmation pulse - also removed for cleaner feel */
-/* No mb-clicked animation */
+/* Click confirmation pulse */
+.mb-clicked{
+  animation:mbClickPulse .46s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes mbClickPulse{
+  0%{box-shadow:0 0 0 0 rgba(37,99,235,.28)}
+  50%{box-shadow:0 0 0 7px rgba(37,99,235,.10)}
+  100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}
+}
 
 /* Floating live shimmer */
 .mb-live-shimmer{
@@ -332,13 +356,45 @@ tailwind.config = {
 
   const e = React.createElement;
 
-  // RIPPLE EFFECT COMPLETELY REMOVED - only scale on press remains (in CSS)
   function RippleButtonController(){
     React.useEffect(function(){
-      // Ripple effect removed for cleaner professional feel.
-      // Button press scale effect already exists in CSS (transform:scale(.985))
-      return function(){};
+      function onPointerDown(ev){
+        const target = ev.target.closest("button,[role='button'],a");
+        if(!target || target.disabled) return;
+
+        // Keep existing click handlers untouched; only add visual feedback.
+        const rect = target.getBoundingClientRect();
+        const ripple = document.createElement("span");
+        const size = Math.max(rect.width,rect.height) * 1.15;
+
+        if(getComputedStyle(target).position === "static"){
+          target.style.position = "relative";
+        }
+        target.style.overflow = "hidden";
+
+        ripple.className = "mb-ripple";
+        ripple.style.width = size + "px";
+        ripple.style.height = size + "px";
+        ripple.style.left = (ev.clientX - rect.left - size/2) + "px";
+        ripple.style.top = (ev.clientY - rect.top - size/2) + "px";
+
+        target.appendChild(ripple);
+        target.classList.remove("mb-clicked");
+        void target.offsetWidth;
+        target.classList.add("mb-clicked");
+
+        window.setTimeout(function(){
+          ripple.remove();
+          target.classList.remove("mb-clicked");
+        },620);
+      }
+
+      document.addEventListener("pointerdown",onPointerDown,{passive:true});
+      return function(){
+        document.removeEventListener("pointerdown",onPointerDown);
+      };
     },[]);
+
     return null;
   }
 
@@ -514,15 +570,17 @@ body{
 .mb-ticket-top{
   background:
     radial-gradient(circle at 90% 10%,rgba(255,255,255,.22),transparent 28%),
-    linear-gradient(135deg,#06C167 0%,#059B53 100%)!important;
+    linear-gradient(135deg,#2563EB 0%,#1D4ED8 58%,#1E40AF 100%)!important;
 }
 
-/* Home live appointment inline green → keep green */
+/* Home live appointment inline green → blue */
 .mb-shell [style*="var(--swift-green)"]{
-  --swift-green:#06C167!important;
+  /* Preserve inline layout while visually overriding the old accent. */
+  --swift-green:#2563EB!important;
 }
 .mb-shell [style*="rgba(6,193,103"]{
-  box-shadow:0 18px 45px rgba(6,193,103,.20)!important;
+  /* Existing shadow declarations remain structurally intact. */
+  box-shadow:0 18px 45px rgba(37,99,235,.20)!important;
 }
 
 /* Quick actions: floating tile pattern */
@@ -536,10 +594,10 @@ body{
 }
 .mb-screen > div[style*="grid-template-columns:repeat(4,1fr)"] button:hover{
   transform:translateY(-3px)!important;
-  box-shadow:0 16px 32px rgba(6,193,103,.12)!important;
+  box-shadow:0 16px 32px rgba(37,99,235,.12)!important;
 }
 .mb-screen > div[style*="grid-template-columns:repeat(4,1fr)"] button div{
-  color:#06C167!important;
+  color:#2563EB!important;
 }
 
 /* Bottom navigation redesigned as segmented floating dock */
@@ -559,21 +617,21 @@ body{
   transition:all .22s cubic-bezier(.2,.8,.2,1)!important;
 }
 .mb-nav button.active{
-  background:linear-gradient(135deg,#E6F9EE,#b5f5d0)!important;
-  color:#059B53!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 6px 18px rgba(6,193,103,.09)!important;
+  background:linear-gradient(135deg,#EFF6FF,#DBEAFE)!important;
+  color:#1D4ED8!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 6px 18px rgba(37,99,235,.09)!important;
 }
 .mb-nav button.active svg{
-  filter:drop-shadow(0 4px 7px rgba(6,193,103,.18));
+  filter:drop-shadow(0 4px 7px rgba(37,99,235,.18));
 }
 
-/* Status pills - keep green */
+/* Status pills */
 .mb-live{
-  border:1px solid rgba(6,193,103,.3)!important;
-  box-shadow:0 5px 16px rgba(6,193,103,.08)!important;
+  border:1px solid rgba(147,197,253,.45)!important;
+  box-shadow:0 5px 16px rgba(37,99,235,.08)!important;
 }
 
-/* Doctor cards get a left accent rail - keep green */
+/* Doctor cards get a left accent rail */
 .doctor.card::after{
   content:"";
   position:absolute;
@@ -582,7 +640,7 @@ body{
   bottom:18px;
   width:4px;
   border-radius:0 8px 8px 0;
-  background:linear-gradient(180deg,#7ee9ad,#06C167);
+  background:linear-gradient(180deg,#60A5FA,#2563EB);
 }
 
 /* More polished typography */
@@ -657,13 +715,6 @@ h1{
   display: flex;
   align-items: center;
   gap: 14px;
-}
-
-/* Override: Live dot green - ensure it's green everywhere */
-.mb-live-dot {
-  background: var(--swift-green) !important;
-  animation: mbpulse 1.5s infinite !important;
-  box-shadow: none !important;
 }
 </style>
 </head>
