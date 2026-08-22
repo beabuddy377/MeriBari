@@ -786,7 +786,11 @@ let S = {
 function uid(){ return S.authUser ? S.authUser.uid : null; }
 
 function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
-function setScreen(x){ S.screen=x; render(); }
+function setScreen(x){
+  if(x !== "doctor") stopDoctorAvailabilityAutoRefresh();
+  S.screen=x;
+  render();
+}
 function selectedPatient(){ return S.patients.find(p=>p.id===S.selectedPatientId) || null; }
 function waitMinutes(token){ if(!S.queueLive) return null; return Math.max(0,(token-S.queueLive.currentToken))*(S.doctor?.avgConsultationMinutes||5); }
 
@@ -1011,12 +1015,43 @@ async function goDoctorsList(){
   await loadDoctorsList();
   setScreen("doctorsList");
 }
+let doctorAvailabilityTimer = null;
+
+function stopDoctorAvailabilityAutoRefresh(){
+  if(doctorAvailabilityTimer){
+    clearInterval(doctorAvailabilityTimer);
+    doctorAvailabilityTimer = null;
+  }
+}
+
+function startDoctorAvailabilityAutoRefresh(){
+  stopDoctorAvailabilityAutoRefresh();
+  if(!S.doctor || !selectedDoctorId) return;
+  doctorAvailabilityTimer = setInterval(async ()=>{
+    if(S.screen !== "doctor" || !S.doctor || !selectedDoctorId){
+      stopDoctorAvailabilityAutoRefresh();
+      return;
+    }
+    try{
+      const previous = S.doctorAvailability?.status;
+      S.doctorAvailability = await getDoctorAvailability(S.doctor);
+      if(previous !== S.doctorAvailability?.status){
+        render();
+      }
+    }catch(e){
+      console.warn("Doctor availability refresh failed:", e);
+    }
+  }, 45000);
+}
+
 async function chooseDoctor(id){
+  stopDoctorAvailabilityAutoRefresh();
   selectedDoctorId = id;
   await loadDoctor();
   listenQueue();
   S.doctorAvailability = S.doctor ? await getDoctorAvailability(S.doctor) : null;
   setScreen("doctor");
+  startDoctorAvailabilityAutoRefresh();
 }
 
 // Browser notification (reminder) — works only while this browser/tab has permission granted.
@@ -1310,7 +1345,12 @@ function doctorView(){
     : avail.status==="full"
     ? `<span class="tag warning">Booking is Full</span>`
     : `<span class="tag dangerTag">Booking Closed</span>`;
-  const bookBtnLabel = avail.status==="open" ? "Book Appointment" : "Book for Next Available Day";
+  const availabilityAlert = avail.status==="full"
+    ? `<div class="alert" style="margin:14px 0">आज की बुकिंग फुल हो चुकी है। आप अगली उपलब्ध तारीख के लिए पहले से बुकिंग कर सकते हैं।<br>Today's booking is full. You can pre-book for the next available day.</div>`
+    : avail.status==="offline"
+    ? `<div class="alert" style="margin:14px 0">डॉक्टर का परामर्श समय समाप्त हो चुका है।<br>Doctor's consultation time is over.</div>`
+    : "";
+  const bookBtnLabel = avail.status==="open" ? "Book Appointment" : "Pre Book for Next Available Day";
   return `${header("Doctor")}<div class="mb-screen">
   <div class="card doctor" style="align-items:center">
   <div class="avatarG" style="width:64px;height:64px;font-size:22px;border-radius:20px">${initials(d.name)}</div>
@@ -1323,6 +1363,7 @@ function doctorView(){
   ${(d.qualifications||[]).map(q=>`<div class="small" style="margin-top:4px">${esc(q)}</div>`).join("")}
   <p class="small" style="margin-top:6px">${esc(d.experience)}</p>
   </div></div>
+  ${availabilityAlert}
   <div class="mb-card">
   <div class="kpi"><span>Clinic</span><b>${esc(d.clinicName)}</b></div>
   <div class="kpi"><span>Consultation Time</span><b>${esc(d.workingHours)}</b></div>
